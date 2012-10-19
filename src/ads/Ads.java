@@ -4,9 +4,8 @@
  */
 package ads;
 
-import ads.data.ADSUser;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import ads.logic.ServerController;
+import ads.presentation.ClientController;
 
 /**
  *
@@ -18,15 +17,9 @@ public class Ads {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        // TODO code application logic here
-        System.out.println("Hello");
-        ADSUser u = new ADSUser();
-        System.out.println("Hello");
-        try {
-            Thread.sleep(10000);
-        System.out.println("Hello");
-        } catch (InterruptedException ex) {
-            Logger.getLogger(Ads.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        if(args[1].equals("server"))
+            ServerController.main(args);
+        else if(args[1].equals("client"))
+            ClientController.main(args);
     }
 }
