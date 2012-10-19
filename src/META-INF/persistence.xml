@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence version="2.0" xmlns="http://java.sun.com/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd">
+  <persistence-unit name="adsPU" transaction-type="RESOURCE_LOCAL">
+    <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
+    <class>ads.data.ADSUser</class>
+    <class>ads.data.UserList</class>
+    <class>ads.data.Box</class>
+    <class>ads.data.BoxList</class>
+    <class>ads.data.RobotList</class>
+    <class>ads.data.Delivery</class>
+    <class>ads.data.DeliveryHistory</class>
+    <class>ads.data.Office</class>
+    <class>ads.data.FloorMap</class>
+    <class>ads.data.DeliveryStep</class>
+    <class>ads.data.BookedDelivery</class>
+    <class>ads.data.PickedUpDelivery</class>
+    <class>ads.data.DeliveredDelivery</class>
+    <properties>
+      <property name="javax.persistence.jdbc.url" value="jdbc:mysql://localhost:3306/ads?zeroDateTimeBehavior=convertToNull"/>
+      <property name="javax.persistence.jdbc.password" value="adspassword"/>
+      <property name="javax.persistence.jdbc.driver" value="com.mysql.jdbc.Driver"/>
+      <property name="javax.persistence.jdbc.user" value="ads"/>
+      <property name="eclipselink.ddl-generation" value="drop-and-create-tables"/>
+    </properties>
+  </persistence-unit>
+</persistence>
