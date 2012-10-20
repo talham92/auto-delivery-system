@@ -4,7 +4,10 @@
  */
 package ads.logic;
 
-import ads.data.ADSUser;
+import ads.resources.data.ADSUser;
+import ads.resources.data.FloorMap;
+import ads.resources.data.Office;
+import ads.resources.data.UserList;
 import java.rmi.AccessException;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
@@ -104,6 +107,30 @@ public class ServerController implements ServerControllerInterface {
         deinitRMI();
         deinitPersistance();
         System.exit(0);
+    }
+
+    @Override
+    public String register(String firstName, String lastName, String roomNumber, String email, String username, String password, String password1) {
+        Office office = null;
+
+        // Check business rules
+/*TODO
+        if (UserList.searchByName(firstName, lastName)!=null) return "A user with a name "+firstName+" "+lastName+" already exist";
+        if (UserList.searchUsername(username)!=null) return "A user with a username "+username+" already exist";
+        Office office = FloorMap.searchByRoomNumber(roomNumber);
+        if (office == null) return "The room number does not exist";
+        */
+        if (!EmailChecker.checkEmail(email)) return "The e-mail address is not correct";
+        if (!password.equals(password1)) return "The password does not match with the repeated password";
+
+        // Everything is correct, create and persist the user
+        em.getTransaction().begin();
+        ADSUser u = new ADSUser(firstName, lastName, office, email, username, password);
+        em.persist(u);
+        em.getTransaction().commit();
+        
+        // Everything went well, return null
+        return null;
     }
 
 }

@@ -2,19 +2,19 @@
 <persistence version="2.0" xmlns="http://java.sun.com/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd">
   <persistence-unit name="adsPU" transaction-type="RESOURCE_LOCAL">
     <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
-    <class>ads.data.ADSUser</class>
-    <class>ads.data.UserList</class>
-    <class>ads.data.Box</class>
-    <class>ads.data.BoxList</class>
-    <class>ads.data.RobotList</class>
-    <class>ads.data.Delivery</class>
-    <class>ads.data.DeliveryHistory</class>
-    <class>ads.data.Office</class>
-    <class>ads.data.FloorMap</class>
-    <class>ads.data.DeliveryStep</class>
-    <class>ads.data.BookedDelivery</class>
-    <class>ads.data.PickedUpDelivery</class>
-    <class>ads.data.DeliveredDelivery</class>
+    <class>ads.resources.data.RobotList</class>
+    <class>ads.resources.data.UserList</class>
+    <class>ads.resources.data.Box</class>
+    <class>ads.resources.data.ADSUser</class>
+    <class>ads.resources.data.DeliveryHistory</class>
+    <class>ads.resources.data.DeliveryStep</class>
+    <class>ads.resources.data.Delivery</class>
+    <class>ads.resources.data.PickedUpDelivery</class>
+    <class>ads.resources.data.BoxList</class>
+    <class>ads.resources.data.Office</class>
+    <class>ads.resources.data.BookedDelivery</class>
+    <class>ads.resources.data.DeliveredDelivery</class>
+    <class>ads.resources.data.FloorMap</class>
     <properties>
       <property name="javax.persistence.jdbc.url" value="jdbc:mysql://localhost:3306/ads?zeroDateTimeBehavior=convertToNull"/>
       <property name="javax.persistence.jdbc.password" value="adspassword"/>

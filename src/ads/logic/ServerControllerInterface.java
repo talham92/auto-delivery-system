@@ -14,4 +14,5 @@ import java.rmi.RemoteException;
 public interface ServerControllerInterface extends Remote {
     public boolean checkLogin(String username, String password) throws RemoteException;
     public void stopServer(String username, String password) throws RemoteException;
+    public String register(String firstName, String lastName, String roomNumber, String email, String username, String password, String password1) throws RemoteException;
 }
