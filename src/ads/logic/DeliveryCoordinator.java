@@ -24,7 +24,7 @@ public class DeliveryCoordinator {
             // First add the deliveries to the user in the userlist
         
         //Add the assigned deliveries to the pending deliveries
-        for(int i=0; i<targetList.size(); i++){
+        for(int i=0; i<targetList.size(); i++) {
             Delivery newDel=new Delivery(targetList.get(i)[1], urgency,targetList.get(i)[0]);
             pendingDeliveries.add(newDel);
         }

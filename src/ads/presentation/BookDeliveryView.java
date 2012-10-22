@@ -6,17 +6,11 @@ package ads.presentation;
 
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.rmi.RemoteException;
 import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.List;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
-import javax.swing.ListSelectionModel;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableColumn;
 
 /**
  *
@@ -25,30 +19,30 @@ import javax.swing.table.TableColumn;
 public class BookDeliveryView extends javax.swing.JFrame {
     ArrayList<String[]> targetList;
     String[] selectedReceiver;
-    private ClientController controller;
+    private ClientControllerInterface controller;
     /**
      * Creates new form BookDeliveryView
      */
-    public BookDeliveryView(ClientController c) {
+    public BookDeliveryView(ClientControllerInterface c) {
         initComponents();
         selectedReceiver = new String[2];
-        targetList=new ArrayList<String[]>();
+        targetList=new ArrayList<>();
         jTable2.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
                 if (e.getClickCount() == 2) {
-                   JTable target = (JTable)e.getSource();
-                   int rowIndex = target.getSelectedRow();
-                   int columns = jTable2.getColumnCount();
+                    JTable target = (JTable)e.getSource();
+                    int rowIndex = target.getSelectedRow();
+                    int columns = jTable2.getColumnCount();
                     String s="";
                     for(int col = 0; col < columns; col++)  
-                     {
-                         Object o = jTable2.getValueAt(rowIndex, col);  
-                         s += o.toString();
-                         selectedReceiver[col]=o.toString();
-                         if(col < columns - 1)  
-                             s += ",";
-                     }
+                    {
+                        Object o = jTable2.getValueAt(rowIndex, col);  
+                        s += o.toString();
+                        selectedReceiver[col]=o.toString();
+                        if(col < columns - 1)
+                            s += ",";
+                    }
                     DefaultTableModel model_ = (DefaultTableModel) jTable3.getModel();
                     model_.addRow(new Object[]{selectedReceiver[0], selectedReceiver[1]});
                     targetList.add(selectedReceiver);
@@ -254,15 +248,28 @@ public class BookDeliveryView extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        // TODO add your handling code here:
-        String[] receiverData=null;
-   
-           receiverData = controller.searchUser_NameOffice(jTextPane1.getText(), jTextPane3.getText());
+        // Obtain the result for the search
+        List<String[]> data;
+        data = controller.searchUser_NameOffice(jTextPane1.getText(), jTextPane3.getText());
+
+        // Obtain the model for the table
+        DefaultTableModel model = (DefaultTableModel) jTable2.getModel();
+
+        // Remove all rows
+        int rows = model.getRowCount(); 
+        for(int i = rows - 1; i >=0; i--) {
+            model.removeRow(i); 
+        }
+
+        // Add all the rows from the result
+        for(String[] row : data) {
+            model.addRow(new Object[]{row[0], row[1]});
+        }
+
         
-           DefaultTableModel model = (DefaultTableModel) jTable2.getModel();
-           model.addRow(new Object[]{receiverData[0], receiverData[1]});
-           //jTable2.getSelectionModel().setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-           //jTable2.getSelectionModel().addListSelectionListener(new TableSelectionHandler());
+        
+        //jTable2.getSelectionModel().setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        //jTable2.getSelectionModel().addListSelectionListener(new TableSelectionHandler());
     }//GEN-LAST:event_jButton1ActionPerformed
     /*
     class TableSelectionHandler implements ListSelectionListener{
@@ -295,9 +302,9 @@ public class BookDeliveryView extends javax.swing.JFrame {
         }
     */
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
-        if(targetList.size() != 0){
+        if(!targetList.isEmpty()){
             controller.bookDelivery(
-                    new String(jComboBox1.getSelectedItem().toString()),
+                    jComboBox1.getSelectedItem().toString(),
                     targetList,
                     this);
             DefaultTableModel model_3 = (DefaultTableModel) jTable3.getModel();

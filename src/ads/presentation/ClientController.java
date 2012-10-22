@@ -5,11 +5,14 @@
 package ads.presentation;
 
 import ads.logic.ServerControllerInterface;
+import ads.resources.data.ADSUser;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
@@ -136,8 +139,8 @@ public class ClientController implements ClientControllerInterface {
             register.setVisible(false);
             // 2. free frame resources
             register.dispose();
-            // 3. turn to nonLoggedInStage
-            stateNonLoggedIn();
+            // 3. turn to state booking
+            stateBooking();
         } else {
             // Show an error indicating that the username or the password
             // are incorrect
@@ -233,17 +236,28 @@ public class ClientController implements ClientControllerInterface {
             }
         });
     }
+    
     @Override
-    public String[] searchUser_NameOffice(String name, String office)
+    public List<String[]> searchUser_NameOffice(String name, String office)
     {
+        Set<ADSUser> result;
         try {
             //This method returns the receiver Name and Address by using name and office of the user
-            return server.searchUser_NameOffice(name, office);
+            result = server.searchUser_NameOffice(this.username, this.password, name, office);
         } catch (RemoteException ex) {
             Logger.getLogger(ClientController.class.getName()).log(Level.SEVERE, null, ex);
+            result = null;
         }
-        return null;
+
+        List<String[]> resultString = new ArrayList<>(result.size());
+        for(ADSUser u : result) {
+            resultString.add(new String[] {u.getFirstName()+" "+u.getLastName(), u.getOffice().getOfficeAddress()});
+        }
+        
+        return resultString;
     }
+    
+    @Override
     public void bookDelivery(String urgency, ArrayList<String[]> targetList, BookDeliveryView bookDeliveryView)
     {
         int err=0;
@@ -253,7 +267,7 @@ public class ClientController implements ClientControllerInterface {
         }
         // Try to call the related function of the server
         try {
-            server.bookDelivery(urgency, targetList);
+            server.bookDelivery(this.username, this.password, urgency, targetList);
             // If no error encountered, error will be null.
         } catch (RemoteException ex) {
             Logger.getLogger(ClientController.class.getName()).log(Level.SEVERE, null, ex);

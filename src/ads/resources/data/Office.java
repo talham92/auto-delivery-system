@@ -18,28 +18,27 @@ import javax.persistence.Id;
 public class Office implements Serializable {
     private static final long serialVersionUID = 8L;
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
     private String officeAddress;
     
-    public Long getId() {
-        return id;
-    }
+
     public Office(){}
     public Office(String officeAddress){
         this.officeAddress=officeAddress;
     }
-    
-    public String getOfficeAddress(){
+
+    public String getOfficeAddress() {
         return officeAddress;
     }
-    public void setId(Long id) {
-        this.id = id;
+
+    public void setOfficeAddress(String officeAddress) {
+        this.officeAddress = officeAddress;
     }
+    
+    
     @Override
     public int hashCode() {
         int hash = 0;
-        hash += (id != null ? id.hashCode() : 0);
+        hash += (officeAddress != null ? officeAddress.hashCode() : 0);
         return hash;
     }
 
@@ -50,7 +49,7 @@ public class Office implements Serializable {
             return false;
         }
         Office other = (Office) object;
-        if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
+        if ((this.officeAddress == null && other.officeAddress != null) || (this.officeAddress != null && !this.officeAddress.equals(other.officeAddress))) {
             return false;
         }
         return true;
@@ -58,7 +57,7 @@ public class Office implements Serializable {
 
     @Override
     public String toString() {
-        return "ads.data.Office[ id=" + id + " ]";
+        return "ads.data.Office[ officeAddress=" + officeAddress + " ]";
     }
     
 }

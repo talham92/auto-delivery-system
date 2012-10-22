@@ -4,12 +4,8 @@
  */
 package ads.logic;
 
-import ads.presentation.BookDeliveryView;
 import ads.resources.data.ADSUser;
-import ads.resources.data.FloorMap;
 import ads.resources.data.Office;
-import ads.resources.data.UserList;
-import java.util.List;
 import java.rmi.AccessException;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
@@ -17,13 +13,14 @@ import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
-import javax.persistence.Query;
-import org.eclipse.persistence.sessions.server.Server;
 
 /**
  *
@@ -34,12 +31,13 @@ public class ServerController implements ServerControllerInterface {
     private EntityManager em;
     
     
-    private int tempCount;
+//    private int tempCount;
     private DeliveryCoordinator delCoordinator;
     public ServerController() {
-        tempCount=0;
+//        tempCount=0;
         delCoordinator=new DeliveryCoordinator();
         initPersistance();
+        insertTestingDataSet();
     }
     
     /**
@@ -47,6 +45,28 @@ public class ServerController implements ServerControllerInterface {
      */
     public static void main(String[] args) {
         initRMI();
+    }
+
+    private void insertTestingDataSet() {
+        em.getTransaction().begin();
+        Office o = new Office("601");
+        em.persist(o);
+        o = new Office("602");
+        em.persist(o);
+        o = new Office("603");
+        em.persist(o);
+        o = new Office("604");
+        em.persist(o);
+        o = new Office("605");
+        em.persist(o);
+        o = new Office("606");
+        em.persist(o);
+        o = new Office("admin");
+        em.persist(o);
+        ADSUser u = new ADSUser("Admin", "istrator", o, "a@a.c", "admin", "admin");
+        u.setAdmin(true);
+        em.persist(u);
+        em.getTransaction().commit();
     }
 
     private static void initRMI() {
@@ -72,19 +92,6 @@ public class ServerController implements ServerControllerInterface {
     private void initPersistance() {
         emf = Persistence.createEntityManagerFactory("adsPU");
         em = emf.createEntityManager();
-//
-//        em.getTransaction().begin();
-//
-//        ADSUser p1 = new ADSUser();
-//        em.persist(p1);
-//
-//        ADSUser p2 = new ADSUser();
-//        em.persist(p2);
-//
-//        em.getTransaction().commit();
-//
-//        em.close();
-//        emf.close();
     }
 
     private void deinitPersistance() {
@@ -107,26 +114,6 @@ public class ServerController implements ServerControllerInterface {
     }
 
     @Override
-    public boolean checkLogin(String username, String password) {
-        try{
-            em.getTransaction().begin();
-            Query query = em.createQuery("select u from ADSUser u");// where u.firstName='mehmet' and u.office='111'");
-            List<ADSUser> results = (List<ADSUser>)query.getResultList();
-            for(ADSUser u : results) {
-                System.out.println("got a person: " + u.getFirstName() + " " + u.getPassword());
-            }
-            em.getTransaction().commit();
-            if (results.size()==1)
-                return true;
-        }
-        catch(Exception ex)
-        {
-            em.getTransaction().rollback();
-        }
-        return false;
-    }
-    
-    @Override
     public void stopServer(String username, String password) {
         deinitRMI();
         deinitPersistance();
@@ -134,63 +121,100 @@ public class ServerController implements ServerControllerInterface {
     }
 
     @Override
+    public boolean checkLogin(String username, String password) {
+        try {
+            ADSUser u = em.find(ADSUser.class, username);
+            if (u == null || !u.getPassword().equals(password))
+                return false;
+            else
+                return true;
+        } catch(Exception ex) {
+            return false;
+        }
+    }
+    
+    @Override
     public String register(String firstName, String lastName, String roomNumber, String email, String username, String password, String password1) {
-        Office office = new Office(roomNumber);
-
         // Check business rules
-/*TODO
-        if (UserList.searchByName(firstName, lastName)!=null) return "A user with a name "+firstName+" "+lastName+" already exist";
-        if (UserList.searchUsername(username)!=null) return "A user with a username "+username+" already exist";
-        Office office = FloorMap.searchByRoomNumber(roomNumber);
-        if (office == null) return "The room number does not exist";
-        */
-        if (!EmailChecker.checkEmail(email)) return "The e-mail address is not correct";
+        // 1. A user with a repeated name.
+        if (!em.createNamedQuery("User.searchByName")
+                .setParameter("firstName", firstName)
+                .setParameter("lastName", lastName)
+                .getResultList()
+                .isEmpty())
+            return "A user with a name "+firstName+" "+lastName+" already exist";
+        // 2. A user with a repeated username
+        if (em.find(ADSUser.class, username)!=null)
+            return "A user with a username "+username+" already exist";
+
+        Office office = em.find(Office.class, roomNumber);
+
+        // 3. The office does not exist
+        if (office == null)
+            return "The room number does not exist";
+
+        // 4. The e-mail address syntax is not correct
+        if (!EmailChecker.checkEmail(email))
+            return "The e-mail address is not correct";
+        
+        // 5. The password does not match with the repeated password
         if (!password.equals(password1)) return "The password does not match with the repeated password";
 
+        
         // Everything is correct, create and persist the user
         em.getTransaction().begin();
-        try{
+        try {
             ADSUser u = new ADSUser(firstName, lastName, office, email, username, password);
             em.persist(u);
             em.getTransaction().commit();
+            // Everything went well, return null
+            return null;
         }
         catch(Exception ex)
         {
+            ex.printStackTrace();
             em.getTransaction().rollback();
+            // There was an error, retorn the appropiate error message
+            return "Unexpected error occurred when storing user information";
         }
-        // Everything went well, return null
-        return null;
     }
 
     @Override
-    public String[] searchUser_NameOffice(String name, String office) throws RemoteException{
-        //throw new UnsupportedOperationException("Not supported yet.");
-          String[] receiverInfo = new String[2];
-//        if (tempCount==0) {receiverInfo[0]="Marc Antony"; receiverInfo[1]= "Colosseum 12";}
-//        else              {receiverInfo[0]="Hasan Sabbah"; receiverInfo[1]= "Alamut"; tempCount=-1;}
-//        tempCount++;
-        try{
-            em.getTransaction().begin();
-            Query query = em.createQuery("select u from ADSUser u where u.firstName='name' and u.office='office'");
-            List<ADSUser> results = (List<ADSUser>)query.getResultList();
-            for(ADSUser u : results) {
-                receiverInfo[0]=u.getFirstName();
-                receiverInfo[1]=u.getOffice().getOfficeAddress();
-                System.out.println("got a person: " + u.getFirstName() + " " + u.getOffice());
-            }
-            em.getTransaction().commit();
+    public Set<ADSUser> searchUser_NameOffice(String username, String password, String name, String office) {
+        if(!this.checkLogin(username, password)) {
+            return null;
         }
-        catch(Exception ex)
-        {
-            em.getTransaction().rollback();
-        }
-        return receiverInfo;
-    }
-
-    @Override
-    public void bookDelivery(String urgency, ArrayList<String[]> targetList) throws RemoteException {
-        delCoordinator.bookDelivery(urgency, targetList);
         
+        Set<ADSUser> results = new HashSet<>(20);
+        try {
+            if(name != null && !name.equals("")) {
+                results.addAll(em.createNamedQuery("User.searchByPartialNameES")
+                .setParameter("name", name)
+                .getResultList());
+                results.addAll(em.createNamedQuery("User.searchByPartialNameSSES")
+                .setParameter("name", name)
+                .getResultList());
+                results.addAll(em.createNamedQuery("User.searchByPartialNameSES")
+                .setParameter("name", name)
+                .getResultList());
+                results.addAll(em.createNamedQuery("User.searchByPartialNameCFLSES")
+                .setParameter("name", name)
+                .getResultList());
+            }
+            if(office != null && !office.equals("")) {
+                results.addAll(em.createNamedQuery("User.searchByOffice")
+                .setParameter("office", office)
+                .getResultList());
+            }
+        } catch(Exception ex) {
+            ex.printStackTrace();
+        }
+        return results;
     }
-    
+
+    @Override
+    public void bookDelivery(String username, String password, String urgency, ArrayList<String[]> targetList) throws RemoteException {
+        delCoordinator.bookDelivery(urgency, targetList);
+    }
+
 }

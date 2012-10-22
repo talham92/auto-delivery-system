@@ -1,37 +1,63 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package ads.resources.data;
 
 import java.io.Serializable;
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
+import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 
 /**
- *
+ * Class representing a User.
  * @author mgamell
  */
 @Entity
+@NamedQueries({
+    @NamedQuery(
+        name="User.searchByName",
+        query="SELECT c FROM ADSUser c WHERE c.firstName LIKE :firstName AND c.lastName LIKE :lastName"
+    ),
+////        query="SELECT c FROM ADSUser c WHERE UPPER(c.firstName) LIKE UPPER(CONCAT(:nameUser,'%'))"
+//        query="SELECT c FROM ADSUser c WHERE UPPER(c.firstName) LIKE UPPER(':name%') OR UPPER(c.lastName) LIKE UPPER(':name%')" +
+//        " UNION " + "SELECT c FROM ADSUser c WHERE UPPER(c.firstName) LIKE UPPER('% :name%') OR UPPER(c.lastName) LIKE UPPER('% :name%')" +
+//        " UNION " + "SELECT c FROM ADSUser c WHERE UPPER(c.firstName) LIKE UPPER('%:name%') OR UPPER(c.lastName) LIKE UPPER('%:name%')" +
+//        " UNION " + "SELECT c FROM ADSUser c WHERE CONCAT(UPPER(c.firstName),UPPER(c.lastName)) LIKE UPPER('%:name%')"
+    @NamedQuery(
+        name="User.searchByPartialNameES",
+        query="SELECT c FROM ADSUser c WHERE c.firstName LIKE CONCAT(:name,'%') OR c.lastName LIKE CONCAT(:name,'%')"
+    ),
+    @NamedQuery(
+        name="User.searchByPartialNameSSES",
+        query="SELECT c FROM ADSUser c WHERE c.firstName LIKE CONCAT('% ',CONCAT(:name,'%')) OR c.lastName LIKE CONCAT('% ',CONCAT(:name,'%'))"
+    ),
+    @NamedQuery(
+        name="User.searchByPartialNameSES",
+        query="SELECT c FROM ADSUser c WHERE c.firstName LIKE CONCAT('%',CONCAT(:name,'%')) OR c.lastName LIKE CONCAT('%',CONCAT(:name,'%'))"
+    ),
+    @NamedQuery(
+        name="User.searchByPartialNameCFLSES",
+        query="SELECT c FROM ADSUser c WHERE CONCAT(c.firstName,c.lastName) LIKE CONCAT('%',CONCAT(:name,'%'))"
+    ),
+    @NamedQuery(
+        name="User.searchByOffice",
+        query="SELECT c FROM ADSUser c JOIN c.office o WHERE o.officeAddress LIKE :office"
+    )
+})
 public class ADSUser implements Serializable {
     private static final long serialVersionUID = 1L;
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
     private String firstName;
     private String lastName;
-    @OneToOne(fetch=FetchType.LAZY)
+    @ManyToOne(fetch=FetchType.LAZY, cascade=CascadeType.ALL)
 //    @JoinColumn(nullable=false)
     private Office office;
     private String email;
+    @Id
     private String username;
     private String password;
-
+    private boolean admin;
+    
     public ADSUser() {
     }
 
@@ -42,21 +68,13 @@ public class ADSUser implements Serializable {
         this.email = email;
         this.username = username;
         this.password = password;
+        this.admin = false;
     }
-    
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
     
     @Override
     public int hashCode() {
         int hash = 0;
-        hash += (id != null ? id.hashCode() : 0);
+        hash += (username != null ? username.hashCode() : 0);
         return hash;
     }
 
@@ -67,7 +85,7 @@ public class ADSUser implements Serializable {
             return false;
         }
         ADSUser other = (ADSUser) object;
-        if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
+        if ((this.username == null && other.username != null) || (this.username != null && !this.username.equals(other.username))) {
             return false;
         }
         return true;
@@ -75,7 +93,7 @@ public class ADSUser implements Serializable {
 
     @Override
     public String toString() {
-        return "ads.data.User[ id=" + id + " ]";
+        return "ads.data.User[ username=" + username + " ]";
     }
 
     public String getFirstName() {
@@ -114,11 +132,23 @@ public class ADSUser implements Serializable {
         return password;
     }
 
-    public Office getOffice(){
-        return office;
-    }
     public void setPassword(String password) {
         this.password = password;
     }
-    
+
+    public Office getOffice() {
+        return office;
+    }
+
+    public void setOffice(Office office) {
+        this.office = office;
+    }
+
+    public boolean isAdmin() {
+        return admin;
+    }
+
+    public void setAdmin(boolean admin) {
+        this.admin = admin;
+    }
 }

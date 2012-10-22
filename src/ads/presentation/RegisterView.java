@@ -189,7 +189,7 @@ public class RegisterView extends javax.swing.JFrame {
                 lastName.getText(),
                 room.getText(),
                 email.getText(),
-                username.getName(),
+                username.getText(),
                 new String(password.getPassword()),
                 new String(password1.getPassword()),
                 this);
