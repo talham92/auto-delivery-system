@@ -9,6 +9,7 @@ import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
@@ -135,8 +136,8 @@ public class ClientController implements ClientControllerInterface {
             register.setVisible(false);
             // 2. free frame resources
             register.dispose();
-            // 3. turn to BookDelivery state
-            stateBooking();
+            // 3. turn to nonLoggedInStage
+            stateNonLoggedIn();
         } else {
             // Show an error indicating that the username or the password
             // are incorrect
@@ -232,5 +233,38 @@ public class ClientController implements ClientControllerInterface {
             }
         });
     }
-
+    @Override
+    public String[] searchUser_NameOffice(String name, String office)
+    {
+        try {
+            //This method returns the receiver Name and Address by using name and office of the user
+            return server.searchUser_NameOffice(name, office);
+        } catch (RemoteException ex) {
+            Logger.getLogger(ClientController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
+    }
+    public void bookDelivery(String urgency, ArrayList<String[]> targetList, BookDeliveryView bookDeliveryView)
+    {
+        int err=0;
+        if(state != STATE_BOOKING) {
+            Logger.getLogger(ClientController.class.getName()).log(Level.SEVERE, "register error: state != STATE_BOOKING");
+            System.exit(-1);
+        }
+        // Try to call the related function of the server
+        try {
+            server.bookDelivery(urgency, targetList);
+            // If no error encountered, error will be null.
+        } catch (RemoteException ex) {
+            Logger.getLogger(ClientController.class.getName()).log(Level.SEVERE, null, ex);
+            err=1;
+        }
+        if(err!=0){
+        JOptionPane.showMessageDialog(bookDeliveryView,
+                "Deliveries are sucessfully booked",
+                "Success",
+                JOptionPane.INFORMATION_MESSAGE);
+        }
+    }
+    
 }

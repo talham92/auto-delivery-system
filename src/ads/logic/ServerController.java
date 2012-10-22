@@ -4,21 +4,25 @@
  */
 package ads.logic;
 
+import ads.presentation.BookDeliveryView;
 import ads.resources.data.ADSUser;
 import ads.resources.data.FloorMap;
 import ads.resources.data.Office;
 import ads.resources.data.UserList;
+import java.util.List;
 import java.rmi.AccessException;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
+import javax.persistence.Query;
 import org.eclipse.persistence.sessions.server.Server;
 
 /**
@@ -28,8 +32,13 @@ import org.eclipse.persistence.sessions.server.Server;
 public class ServerController implements ServerControllerInterface {
     private EntityManagerFactory emf;
     private EntityManager em;
-
+    
+    
+    private int tempCount;
+    private DeliveryCoordinator delCoordinator;
     public ServerController() {
+        tempCount=0;
+        delCoordinator=new DeliveryCoordinator();
         initPersistance();
     }
     
@@ -99,7 +108,22 @@ public class ServerController implements ServerControllerInterface {
 
     @Override
     public boolean checkLogin(String username, String password) {
-        return true;
+        try{
+            em.getTransaction().begin();
+            Query query = em.createQuery("select u from ADSUser u");// where u.firstName='mehmet' and u.office='111'");
+            List<ADSUser> results = (List<ADSUser>)query.getResultList();
+            for(ADSUser u : results) {
+                System.out.println("got a person: " + u.getFirstName() + " " + u.getPassword());
+            }
+            em.getTransaction().commit();
+            if (results.size()==1)
+                return true;
+        }
+        catch(Exception ex)
+        {
+            em.getTransaction().rollback();
+        }
+        return false;
     }
     
     @Override
@@ -111,7 +135,7 @@ public class ServerController implements ServerControllerInterface {
 
     @Override
     public String register(String firstName, String lastName, String roomNumber, String email, String username, String password, String password1) {
-        Office office = null;
+        Office office = new Office(roomNumber);
 
         // Check business rules
 /*TODO
@@ -125,12 +149,48 @@ public class ServerController implements ServerControllerInterface {
 
         // Everything is correct, create and persist the user
         em.getTransaction().begin();
-        ADSUser u = new ADSUser(firstName, lastName, office, email, username, password);
-        em.persist(u);
-        em.getTransaction().commit();
-        
+        try{
+            ADSUser u = new ADSUser(firstName, lastName, office, email, username, password);
+            em.persist(u);
+            em.getTransaction().commit();
+        }
+        catch(Exception ex)
+        {
+            em.getTransaction().rollback();
+        }
         // Everything went well, return null
         return null;
     }
 
+    @Override
+    public String[] searchUser_NameOffice(String name, String office) throws RemoteException{
+        //throw new UnsupportedOperationException("Not supported yet.");
+          String[] receiverInfo = new String[2];
+//        if (tempCount==0) {receiverInfo[0]="Marc Antony"; receiverInfo[1]= "Colosseum 12";}
+//        else              {receiverInfo[0]="Hasan Sabbah"; receiverInfo[1]= "Alamut"; tempCount=-1;}
+//        tempCount++;
+        try{
+            em.getTransaction().begin();
+            Query query = em.createQuery("select u from ADSUser u where u.firstName='name' and u.office='office'");
+            List<ADSUser> results = (List<ADSUser>)query.getResultList();
+            for(ADSUser u : results) {
+                receiverInfo[0]=u.getFirstName();
+                receiverInfo[1]=u.getOffice().getOfficeAddress();
+                System.out.println("got a person: " + u.getFirstName() + " " + u.getOffice());
+            }
+            em.getTransaction().commit();
+        }
+        catch(Exception ex)
+        {
+            em.getTransaction().rollback();
+        }
+        return receiverInfo;
+    }
+
+    @Override
+    public void bookDelivery(String urgency, ArrayList<String[]> targetList) throws RemoteException {
+        delCoordinator.bookDelivery(urgency, targetList);
+        
+    }
+    
 }

@@ -16,11 +16,23 @@ import javax.persistence.Id;
  */
 @Entity
 public class Delivery implements Serializable {
+    String targetAddress;
+    String receiverName;
+    String urgency;
     private static final long serialVersionUID = 6L;
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
+    public Delivery() {
+    }
+
+    public Delivery(String targetAddress, String urgency, String receiverName)
+    {
+        this.urgency=urgency;
+        this.targetAddress=targetAddress;
+        this.receiverName=receiverName;
+    }
     public Long getId() {
         return id;
     }

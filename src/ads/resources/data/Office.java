@@ -20,15 +20,22 @@ public class Office implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-
+    private String officeAddress;
+    
     public Long getId() {
         return id;
     }
-
+    public Office(){}
+    public Office(String officeAddress){
+        this.officeAddress=officeAddress;
+    }
+    
+    public String getOfficeAddress(){
+        return officeAddress;
+    }
     public void setId(Long id) {
         this.id = id;
     }
-
     @Override
     public int hashCode() {
         int hash = 0;

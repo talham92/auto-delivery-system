@@ -114,6 +114,9 @@ public class ADSUser implements Serializable {
         return password;
     }
 
+    public Office getOffice(){
+        return office;
+    }
     public void setPassword(String password) {
         this.password = password;
     }
