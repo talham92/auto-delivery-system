@@ -173,11 +173,16 @@ public class BookDeliveryView extends javax.swing.JFrame {
         nameField.setNextFocusableComponent(officeField);
         nameField.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                nameFieldActionPerformed(evt);
+                jButton1ActionPerformed(evt);
             }
         });
 
         officeField.setNextFocusableComponent(nameField);
+        officeField.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -338,10 +343,6 @@ public class BookDeliveryView extends javax.swing.JFrame {
         }
         targetList.clear();
     }//GEN-LAST:event_clearAllButtonActionPerformed
-
-    private void nameFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_nameFieldActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_nameFieldActionPerformed
 
     private void frameFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_frameFocusGained
         this.nameField.requestFocus();

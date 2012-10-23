@@ -4,6 +4,7 @@
  */
 package ads.presentation;
 
+import ads.logic.NonBookedDeliveryException;
 import ads.logic.ServerControllerInterface;
 import ads.resources.data.ADSUser;
 import java.rmi.NotBoundException;
@@ -260,7 +261,6 @@ public class ClientController implements ClientControllerInterface {
     @Override
     public void bookDelivery(String urgency, ArrayList<String[]> targetList, BookDeliveryView bookDeliveryView)
     {
-        int err=0;
         if(state != STATE_BOOKING) {
             Logger.getLogger(ClientController.class.getName()).log(Level.SEVERE, "register error: state != STATE_BOOKING");
             System.exit(-1);
@@ -269,15 +269,20 @@ public class ClientController implements ClientControllerInterface {
         try {
             server.bookDelivery(this.username, this.password, urgency, targetList);
             // If no error encountered, error will be null.
-        } catch (RemoteException ex) {
-            Logger.getLogger(ClientController.class.getName()).log(Level.SEVERE, null, ex);
-            err=1;
-        }
-        if(err!=0){
-        JOptionPane.showMessageDialog(bookDeliveryView,
+            JOptionPane.showMessageDialog(bookDeliveryView,
                 "Deliveries are sucessfully booked",
                 "Success",
                 JOptionPane.INFORMATION_MESSAGE);
+        } catch (NonBookedDeliveryException ex) {
+            JOptionPane.showMessageDialog(bookDeliveryView,
+                "Error while booking deliveries: "+ex.getMessage(),
+                "Error",
+                JOptionPane.ERROR_MESSAGE);
+        } catch (RemoteException ex) {
+            JOptionPane.showMessageDialog(bookDeliveryView,
+                "Unknown error while booking deliveries",
+                "Error",
+                JOptionPane.ERROR_MESSAGE);
         }
     }
     

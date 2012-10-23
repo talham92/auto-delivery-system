@@ -5,65 +5,78 @@
 package ads.resources.data;
 
 import java.io.Serializable;
+import java.sql.Timestamp;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.IdClass;
 
 /**
  *
  * @author mgamell
  */
+@IdClass(DeliveryPK.class)
 @Entity
 public class Delivery implements Serializable {
-    String targetAddress;
-    String receiverName;
-    String urgency;
     private static final long serialVersionUID = 6L;
+
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
+    private ADSUser sender;
+    @Id
+    private ADSUser receiver;
+    @Id
+    private Timestamp timestampField;
+    private DeliveryStep state;
+    private String urgency;
 
     public Delivery() {
     }
 
-    public Delivery(String targetAddress, String urgency, String receiverName)
-    {
-        this.urgency=urgency;
-        this.targetAddress=targetAddress;
-        this.receiverName=receiverName;
-    }
-    public Long getId() {
-        return id;
+    public Delivery(ADSUser sender, ADSUser receiver, Timestamp timestampField, DeliveryStep state, String urgency) {
+        this.sender = sender;
+        this.receiver = receiver;
+        this.timestampField = timestampField;
+        this.state = state;
+        this.urgency = urgency;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public ADSUser getSender() {
+        return sender;
     }
 
-    @Override
-    public int hashCode() {
-        int hash = 0;
-        hash += (id != null ? id.hashCode() : 0);
-        return hash;
+    public void setSender(ADSUser sender) {
+        this.sender = sender;
     }
 
-    @Override
-    public boolean equals(Object object) {
-        // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof Delivery)) {
-            return false;
-        }
-        Delivery other = (Delivery) object;
-        if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
-            return false;
-        }
-        return true;
+    public ADSUser getReceiver() {
+        return receiver;
     }
 
-    @Override
-    public String toString() {
-        return "ads.data.Delivery[ id=" + id + " ]";
+    public void setReceiver(ADSUser receiver) {
+        this.receiver = receiver;
     }
-    
+
+    public Timestamp getTimestampField() {
+        return timestampField;
+    }
+
+    public void setTimestampField(Timestamp timestampField) {
+        this.timestampField = timestampField;
+    }
+
+    public DeliveryStep getState() {
+        return state;
+    }
+
+    public void setState(DeliveryStep state) {
+        this.state = state;
+    }
+
+    public String getUrgency() {
+        return urgency;
+    }
+
+    public void setUrgency(String urgency) {
+        this.urgency = urgency;
+    }
+
 }

@@ -29,15 +29,12 @@ import javax.persistence.Persistence;
 public class ServerController implements ServerControllerInterface {
     private EntityManagerFactory emf;
     private EntityManager em;
-    
-    
-//    private int tempCount;
     private DeliveryCoordinator delCoordinator;
+
     public ServerController() {
-//        tempCount=0;
-        delCoordinator=new DeliveryCoordinator();
         initPersistance();
         insertTestingDataSet();
+        delCoordinator=new DeliveryCoordinator(em);
     }
     
     /**
@@ -213,8 +210,12 @@ public class ServerController implements ServerControllerInterface {
     }
 
     @Override
-    public void bookDelivery(String username, String password, String urgency, ArrayList<String[]> targetList) throws RemoteException {
-        delCoordinator.bookDelivery(urgency, targetList);
+    public void bookDelivery(String username, String password, String urgency, ArrayList<String[]> targetListUsernames) throws RemoteException, NonBookedDeliveryException{
+        if(!this.checkLogin(username, password)) {
+            return;
+        }
+
+        delCoordinator.bookDelivery(urgency, targetListUsernames, username);
     }
 
 }
