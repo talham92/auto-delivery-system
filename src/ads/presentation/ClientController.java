@@ -35,7 +35,6 @@ public class ClientController implements ClientControllerInterface {
     private String username;
     private String password;
     
-    
     private void initGUI() {
         /* Set the Nimbus look and feel */
         try {
@@ -252,14 +251,14 @@ public class ClientController implements ClientControllerInterface {
 
         List<String[]> resultString = new ArrayList<>(result.size());
         for(ADSUser u : result) {
-            resultString.add(new String[] {u.getFirstName()+" "+u.getLastName(), u.getOffice().getOfficeAddress()});
+            resultString.add(new String[] {u.getUsername(), u.getFirstName()+" "+u.getLastName(), u.getOffice().getOfficeAddress()});
         }
         
         return resultString;
     }
     
     @Override
-    public void bookDelivery(String urgency, ArrayList<String[]> targetList, BookDeliveryView bookDeliveryView)
+    public void bookDelivery(String urgency, List<String> targetList, BookDeliveryView bookDeliveryView)
     {
         if(state != STATE_BOOKING) {
             Logger.getLogger(ClientController.class.getName()).log(Level.SEVERE, "register error: state != STATE_BOOKING");

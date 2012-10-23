@@ -12,7 +12,6 @@ import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -210,7 +209,7 @@ public class ServerController implements ServerControllerInterface {
     }
 
     @Override
-    public void bookDelivery(String username, String password, String urgency, ArrayList<String[]> targetListUsernames) throws RemoteException, NonBookedDeliveryException{
+    public void bookDelivery(String username, String password, String urgency, List<String> targetListUsernames) throws RemoteException, NonBookedDeliveryException{
         if(!this.checkLogin(username, password)) {
             return;
         }

@@ -7,7 +7,9 @@ package ads.presentation;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
@@ -17,7 +19,7 @@ import javax.swing.table.DefaultTableModel;
  * @author MFA
  */
 public class BookDeliveryView extends javax.swing.JFrame {
-    ArrayList<String[]> targetList;
+    Set<String[]> targetList;
     String[] selectedReceiver;
     private ClientControllerInterface controller;
     /**
@@ -26,7 +28,7 @@ public class BookDeliveryView extends javax.swing.JFrame {
     public BookDeliveryView(ClientControllerInterface c) {
         initComponents();
         selectedReceiver = new String[2];
-        targetList=new ArrayList<>();
+        targetList=new HashSet<>();
         resultTable.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -131,9 +133,17 @@ public class BookDeliveryView extends javax.swing.JFrame {
 
             },
             new String [] {
-                "Receiver", "Address"
+                "Username", "Receiver", "Address"
             }
-        ));
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
         jScrollPane7.setViewportView(resultTable);
 
         confirmAllButton.setText("Confirm all");
@@ -158,9 +168,17 @@ public class BookDeliveryView extends javax.swing.JFrame {
 
             },
             new String [] {
-                "Receiver", "Address"
+                "Username", "Receiver", "Address"
             }
-        ));
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, true, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
         jScrollPane8.setViewportView(targetTable);
 
         clearAllButton.setLabel("Clear Target List");
@@ -312,10 +330,16 @@ public class BookDeliveryView extends javax.swing.JFrame {
         }
     */
     private void confirmAllButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_confirmAllButtonActionPerformed
+        List<String> targetUsernames = new ArrayList<>(targetList.size());
+        
+        for(String[] target : targetList) {
+            targetUsernames.add(target[0]);
+        }
+        
         if(!targetList.isEmpty()){
             controller.bookDelivery(
                     jComboBox1.getSelectedItem().toString(),
-                    targetList,
+                    targetUsernames,
                     this);
             DefaultTableModel model_3 = (DefaultTableModel) targetTable.getModel();
             while (model_3.getRowCount()>0){

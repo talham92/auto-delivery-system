@@ -9,7 +9,7 @@ import ads.resources.data.BookedDelivery;
 import ads.resources.data.Delivery;
 import ads.resources.data.DeliveryStep;
 import java.sql.Timestamp;
-import java.util.ArrayList;
+import java.util.List;
 import javax.persistence.EntityManager;
 
 /**
@@ -26,7 +26,7 @@ public class DeliveryCoordinator {
         this.em = em;
     }
 
-    public void bookDelivery(String urgency, ArrayList<String[]> targetListUsername, String username)
+    public void bookDelivery(String urgency, List<String> targetListUsername, String username)
     throws NonBookedDeliveryException
     {
         ADSUser sender = null;
@@ -46,7 +46,7 @@ public class DeliveryCoordinator {
 
         em.getTransaction().begin();
         //Add the assigned deliveries to the pending deliveries
-        for(String[] receiverUsername : targetListUsername) {
+        for(String receiverUsername : targetListUsername) {
             ADSUser receiver;
             try {
                 receiver = em.find(ADSUser.class, receiverUsername);
