@@ -28,7 +28,13 @@ public class ClientController implements ClientControllerInterface {
     public static final int STATE_EDITING = 4;
     public static final int STATE_SHOWING_HELP = 5;
     public static final int STATE_VIEWING_DELIVERY_HISTORY = 6;
-
+    public static final int STATE_ADMIN_MAIN = 7;
+    public static final int STATE_ADMIN_CREATING_FLOOR_MAP = 8;
+    
+    private static final int userNotCorrect=0;
+    private static final int userCorrect_Admin=1;
+    private static final int userCorrect_NotAdmin=2;
+    
     private int state;
     private final ClientController controller;
     private String username;
@@ -190,7 +196,7 @@ public class ClientController implements ClientControllerInterface {
         }
         
         // Access the server to know whether the login is correct or not
-        boolean loginCorrect = false;
+        int loginCorrect = userNotCorrect;
         try {
             loginCorrect = server.checkLogin(username, password);
         } catch (RemoteException ex) {
@@ -199,7 +205,7 @@ public class ClientController implements ClientControllerInterface {
         }
 
         // Check the server answer
-        if(!loginCorrect) {
+        if(loginCorrect==userNotCorrect) {
             // Show an error indicating that the username or the password
             // are incorrect
             JOptionPane.showMessageDialog(l,
@@ -219,10 +225,42 @@ public class ClientController implements ClientControllerInterface {
             // 2. free frame resources
             l.dispose();
             // 3. turn to BookDelivery state
-            stateBooking();
+            if(loginCorrect==userCorrect_Admin)
+                stateAdminMain();
+            else if(loginCorrect==userCorrect_NotAdmin)
+                stateBooking();
         }
     }
-
+    private void stateAdminMain(){
+        state=STATE_ADMIN_MAIN;
+        //Create the related form and display
+        java.awt.EventQueue.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                new AdminMainView(controller).setVisible(true);
+            }
+        });
+    }
+    
+    @Override
+    public void wantsToCreateFloorMap(AdminMainView v){
+        // set the admin main view invisible and dispose it
+        v.setVisible(false);
+        v.dispose();
+        
+        stateAdminCreateFloorMap();
+    }
+    private void stateAdminCreateFloorMap(){
+        state = STATE_ADMIN_CREATING_FLOOR_MAP; // set the state of the controller
+        //
+        // Create and display the form
+        java.awt.EventQueue.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                new AdminCreateFloorMapView(controller).setVisible(true);
+            }
+        });
+    }        
     private void stateBooking() {
         // Change the state to Booking. Does not need to check the coming state,
         // as this state is accessible by every other.
