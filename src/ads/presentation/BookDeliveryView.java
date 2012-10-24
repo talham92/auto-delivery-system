@@ -19,12 +19,14 @@ import javax.swing.table.DefaultTableModel;
 public class BookDeliveryView extends javax.swing.JFrame {
     ArrayList<String[]> targetList;
     String[] selectedReceiver;
+
     private ClientControllerInterface controller;
     /**
      * Creates new form BookDeliveryView
      */
     public BookDeliveryView(ClientControllerInterface c) {
         initComponents();
+        controller = c;
         selectedReceiver = new String[2];
         targetList=new ArrayList<>();
         resultTable.addMouseListener(new MouseAdapter() {
@@ -34,23 +36,40 @@ public class BookDeliveryView extends javax.swing.JFrame {
                     JTable target = (JTable)e.getSource();
                     int rowIndex = target.getSelectedRow();
                     int columns = resultTable.getColumnCount();
-                    String s="";
                     for(int col = 0; col < columns; col++)  
                     {
                         Object o = resultTable.getValueAt(rowIndex, col);  
-                        s += o.toString();
                         selectedReceiver[col]=o.toString();
-                        if(col < columns - 1)
-                            s += ",";
                     }
-                    DefaultTableModel model_ = (DefaultTableModel) targetTable.getModel();
-                    model_.addRow(new Object[]{selectedReceiver[0], selectedReceiver[1]});
-                    targetList.add(selectedReceiver);
-                    System.out.println("rowIndex:"+rowIndex+"  "+s);
+                    //Check whether this is already added or not
+                    //System.out.println("__"+targetList.size());
+                    if(!checkIsAlreadyInTargetList(selectedReceiver))
+                    {
+                        DefaultTableModel model_ = (DefaultTableModel) targetTable.getModel();
+                        model_.addRow(new Object[]{selectedReceiver[0], selectedReceiver[1]});
+                        String[] newSelectedReceiver = new String[2];
+                        newSelectedReceiver[0]=new String(selectedReceiver[0]);
+                        newSelectedReceiver[1]=new String(selectedReceiver[1]);
+                        targetList.add(newSelectedReceiver);
+                        //System.out.println("rowIndex:"+rowIndex+"  "+s);
+                    }
+                    else{
+                        outputText.append("The receiver with name: "+selectedReceiver[0]+" and office: "+selectedReceiver[1]+" is already in the target list \n");
+                    }
                 }
             }
+            
         });
-        controller = c;
+    }
+    private boolean checkIsAlreadyInTargetList(String[] selectedReceiver) {
+        String[] temp;
+        for(int i=0; i<targetList.size(); i++){
+            temp=targetList.get(i);
+            if(temp[0].equals(selectedReceiver[0]) && temp[1].equals(selectedReceiver[1])) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
@@ -83,9 +102,11 @@ public class BookDeliveryView extends javax.swing.JFrame {
                 return false;   //Disallow the editing of any cell
             }
         };
-        clearAllButton = new javax.swing.JButton();
+        clearTargetList = new javax.swing.JButton();
         nameField = new javax.swing.JTextField();
         officeField = new javax.swing.JTextField();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        outputText = new javax.swing.JTextArea();
 
         jInternalFrame1.setVisible(true);
 
@@ -163,10 +184,10 @@ public class BookDeliveryView extends javax.swing.JFrame {
         ));
         jScrollPane8.setViewportView(targetTable);
 
-        clearAllButton.setLabel("Clear Target List");
-        clearAllButton.addActionListener(new java.awt.event.ActionListener() {
+        clearTargetList.setLabel("Clear Target List");
+        clearTargetList.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                clearAllButtonActionPerformed(evt);
+                clearTargetListActionPerformed(evt);
             }
         });
 
@@ -178,6 +199,10 @@ public class BookDeliveryView extends javax.swing.JFrame {
         });
 
         officeField.setNextFocusableComponent(nameField);
+
+        outputText.setColumns(20);
+        outputText.setRows(5);
+        jScrollPane1.setViewportView(outputText);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -192,8 +217,8 @@ public class BookDeliveryView extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(clearAllButton)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(clearTargetList)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(confirmAllButton, javax.swing.GroupLayout.PREFERRED_SIZE, 111, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jLabel5)
@@ -214,7 +239,8 @@ public class BookDeliveryView extends javax.swing.JFrame {
                                             .addComponent(nameField, javax.swing.GroupLayout.DEFAULT_SIZE, 105, Short.MAX_VALUE)
                                             .addComponent(officeField))))))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jScrollPane7, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)))
+                        .addComponent(jScrollPane7, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -235,15 +261,17 @@ public class BookDeliveryView extends javax.swing.JFrame {
                             .addComponent(jLabel2))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jButton1)
-                        .addGap(0, 39, Short.MAX_VALUE)))
+                        .addGap(0, 45, Short.MAX_VALUE)))
                 .addGap(18, 18, 18)
                 .addComponent(jLabel5)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jScrollPane8, javax.swing.GroupLayout.DEFAULT_SIZE, 143, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jScrollPane8, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 57, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(confirmAllButton)
-                    .addComponent(clearAllButton)
+                    .addComponent(clearTargetList)
                     .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel3))
                 .addContainerGap())
@@ -270,9 +298,6 @@ public class BookDeliveryView extends javax.swing.JFrame {
         for(String[] row : data) {
             model.addRow(new Object[]{row[0], row[1]});
         }
-
-        
-        
         //jTable2.getSelectionModel().setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         //jTable2.getSelectionModel().addListSelectionListener(new TableSelectionHandler());
     }//GEN-LAST:event_jButton1ActionPerformed
@@ -317,6 +342,7 @@ public class BookDeliveryView extends javax.swing.JFrame {
                 model_3.removeRow(0);
             }
             targetList.clear();
+            outputText.append("All the deliveries in the target list are confirmed.\n");
         }
         else{
             JOptionPane.showMessageDialog(this,
@@ -330,14 +356,15 @@ public class BookDeliveryView extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_jComboBox1ActionPerformed
 
-    private void clearAllButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_clearAllButtonActionPerformed
+    private void clearTargetListActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_clearTargetListActionPerformed
         // TODO add your handling code here: 
         DefaultTableModel model = (DefaultTableModel) targetTable.getModel();
         while (model.getRowCount()>0){
             model.removeRow(0);
         }
         targetList.clear();
-    }//GEN-LAST:event_clearAllButtonActionPerformed
+        outputText.append("Target List is cleared !\n");
+    }//GEN-LAST:event_clearTargetListActionPerformed
 
     private void nameFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_nameFieldActionPerformed
         // TODO add your handling code here:
@@ -348,7 +375,7 @@ public class BookDeliveryView extends javax.swing.JFrame {
     }//GEN-LAST:event_frameFocusGained
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton clearAllButton;
+    private javax.swing.JButton clearTargetList;
     private javax.swing.JButton confirmAllButton;
     private javax.swing.JButton jButton1;
     private javax.swing.JComboBox jComboBox1;
@@ -358,10 +385,12 @@ public class BookDeliveryView extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
+    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane7;
     private javax.swing.JScrollPane jScrollPane8;
     private javax.swing.JTextField nameField;
     private javax.swing.JTextField officeField;
+    private javax.swing.JTextArea outputText;
     private javax.swing.JTable resultTable;
     private javax.swing.JTable targetTable;
     // End of variables declaration//GEN-END:variables
