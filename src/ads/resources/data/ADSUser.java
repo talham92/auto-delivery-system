@@ -51,13 +51,8 @@ public class ADSUser implements Serializable {
     private static final long serialVersionUID = 1L;
     private String firstName;
     private String lastName;
-//<<<<<<< local
-    @OneToOne(fetch=FetchType.LAZY)
-    @JoinColumn(nullable=false)
-//=======
     @ManyToOne(fetch=FetchType.LAZY, cascade=CascadeType.ALL)
 //    @JoinColumn(nullable=false)
-//>>>>>>> other
     private Office office;
     private String email;
     @Id
