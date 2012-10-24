@@ -27,7 +27,7 @@ public class BookDeliveryView extends javax.swing.JFrame {
      */
     public BookDeliveryView(ClientControllerInterface c) {
         initComponents();
-        selectedReceiver = new String[2];
+        selectedReceiver = new String[3];
         targetList=new HashSet<>();
         resultTable.addMouseListener(new MouseAdapter() {
             @Override
@@ -36,19 +36,18 @@ public class BookDeliveryView extends javax.swing.JFrame {
                     JTable target = (JTable)e.getSource();
                     int rowIndex = target.getSelectedRow();
                     int columns = resultTable.getColumnCount();
-                    String s="";
                     for(int col = 0; col < columns; col++)  
                     {
-                        Object o = resultTable.getValueAt(rowIndex, col);  
-                        s += o.toString();
+                        Object o = resultTable.getValueAt(rowIndex, col);
                         selectedReceiver[col]=o.toString();
-                        if(col < columns - 1)
-                            s += ",";
                     }
-                    DefaultTableModel model_ = (DefaultTableModel) targetTable.getModel();
-                    model_.addRow(new Object[]{selectedReceiver[0], selectedReceiver[1]});
-                    targetList.add(selectedReceiver);
-                    System.out.println("rowIndex:"+rowIndex+"  "+s);
+                    
+                    // If the targetList already contains the receiver, do not add it.
+                    if(!targetList.contains(selectedReceiver)) {
+                        DefaultTableModel model_ = (DefaultTableModel) targetTable.getModel();
+                        model_.addRow(new Object[]{selectedReceiver[0], selectedReceiver[1]});
+                        targetList.add(selectedReceiver);
+                    }
                 }
             }
         });
@@ -291,10 +290,8 @@ public class BookDeliveryView extends javax.swing.JFrame {
 
         // Add all the rows from the result
         for(String[] row : data) {
-            model.addRow(new Object[]{row[0], row[1]});
+            model.addRow(new Object[]{row[0], row[1], row[2]});
         }
-
-        
         
         //jTable2.getSelectionModel().setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         //jTable2.getSelectionModel().addListSelectionListener(new TableSelectionHandler());
