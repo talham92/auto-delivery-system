@@ -6,6 +6,7 @@ package ads.logic;
 
 import ads.resources.data.ADSUser;
 import ads.resources.data.Office;
+import ads.resources.data.Persistance;
 import java.rmi.AccessException;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
@@ -18,22 +19,23 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
 
 /**
  *
  * @author mgamell
  */
 public class ServerController implements ServerControllerInterface {
-    private EntityManagerFactory emf;
-    private EntityManager em;
+    private static ServerController singleton = new ServerController();
     private DeliveryCoordinator delCoordinator;
 
-    public ServerController() {
-        initPersistance();
+    public static ServerController getInstance() {
+        return singleton;
+    }
+
+    private ServerController() {
+        Persistance.initPersistance();
         insertTestingDataSet();
-        delCoordinator=new DeliveryCoordinator(em);
+        delCoordinator = DeliveryCoordinator.getInstance();
     }
     
     /**
@@ -44,6 +46,7 @@ public class ServerController implements ServerControllerInterface {
     }
 
     private void insertTestingDataSet() {
+        EntityManager em = Persistance.getEntityManager();
         em.getTransaction().begin();
         Office o = new Office("601");
         em.persist(o);
@@ -67,7 +70,7 @@ public class ServerController implements ServerControllerInterface {
 
     private static void initRMI() {
         try {
-            ServerController obj = new ServerController();
+            ServerController obj = ServerController.getInstance();
             ServerControllerInterface stub = (ServerControllerInterface) UnicastRemoteObject.exportObject(obj, 0);
 
             // Bind the remote object's stub in the registry
@@ -83,16 +86,6 @@ public class ServerController implements ServerControllerInterface {
             e.printStackTrace();
         }
 
-    }
-
-    private void initPersistance() {
-        emf = Persistence.createEntityManagerFactory("adsPU");
-        em = emf.createEntityManager();
-    }
-
-    private void deinitPersistance() {
-        em.close();
-        emf.close();
     }
 
     private void deinitRMI() {
@@ -112,12 +105,14 @@ public class ServerController implements ServerControllerInterface {
     @Override
     public void stopServer(String username, String password) {
         deinitRMI();
-        deinitPersistance();
+        Persistance.deinitPersistance();
         System.exit(0);
     }
 
     @Override
     public boolean checkLogin(String username, String password) {
+        EntityManager em = Persistance.getEntityManager();
+
         try {
             ADSUser u = em.find(ADSUser.class, username);
             if (u == null || !u.getPassword().equals(password))
@@ -131,6 +126,7 @@ public class ServerController implements ServerControllerInterface {
     
     @Override
     public String register(String firstName, String lastName, String roomNumber, String email, String username, String password, String password1) {
+        EntityManager em = Persistance.getEntityManager();
         // Check business rules
         // 1. A user with a repeated name.
         if (!em.createNamedQuery("User.searchByName")
@@ -177,6 +173,8 @@ public class ServerController implements ServerControllerInterface {
 
     @Override
     public Set<ADSUser> searchUser_NameOffice(String username, String password, String name, String office) {
+        EntityManager em = Persistance.getEntityManager();
+
         if(!this.checkLogin(username, password)) {
             return null;
         }

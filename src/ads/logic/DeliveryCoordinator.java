@@ -7,28 +7,38 @@ package ads.logic;
 import ads.resources.data.ADSUser;
 import ads.resources.data.BookedDelivery;
 import ads.resources.data.Delivery;
+import ads.resources.data.DeliveryHistory;
 import ads.resources.data.DeliveryStep;
+import ads.resources.data.Persistance;
 import java.sql.Timestamp;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.persistence.EntityManager;
 
 /**
  *
- * @author MFA
+ * @author MFA, mgamell
  */
 public class DeliveryCoordinator {
-//    private ArrayList<Delivery> pendingDeliveries;
-    private EntityManager em;
+    private static DeliveryCoordinator singleton = new DeliveryCoordinator();
+    private Thread deliveryWaiterThread;
     
-    public DeliveryCoordinator(EntityManager em)
+    // Eager initialization
+    public static DeliveryCoordinator getInstance() {
+        return singleton;
+    }
+    
+    private DeliveryCoordinator()
     {
-//        pendingDeliveries = new ArrayList<Delivery>();
-        this.em = em;
+        deliveryWaiterThread = new Thread(new DeliveryWaiterThread());
+        //deliveryWaiterThread.start();
     }
 
     public void bookDelivery(String urgency, List<String> targetListUsername, String username)
     throws NonBookedDeliveryException
     {
+        EntityManager em = Persistance.getEntityManager();
         ADSUser sender = null;
         try {
             sender = em.find(ADSUser.class, username);
@@ -59,8 +69,34 @@ public class DeliveryCoordinator {
             DeliveryStep state = new BookedDelivery((Timestamp)timestampField.clone());
 
             Delivery newDel = new Delivery(sender, receiver, timestampField, state, urgency);
+            em.persist(newDel);
         }
         em.getTransaction().commit();
     }
     
+    private class DeliveryWaiterThread implements Runnable {
+        private boolean finish;
+        private DeliveryWaiterThread() {
+            this.finish = false;
+        }
+        @Override
+        public void run() {
+            while(!finish) {
+                // Check if there are pending deliveries
+                if(DeliveryHistory.hasPendingDeliveries()) {
+                    // There are no pending deliveries. Wait a delay and retry.
+                    try {
+                        Thread.sleep(500);
+                    } catch (InterruptedException ex) {}
+                    continue;
+                }
+                // There are pending deliveries!
+                // Get Most prioritary delivery.
+                Delivery delivery = DeliveryHistory.getMostPrioritaryDelivery();
+                //
+                
+//                //todo
+            }
+        }
+    }
 }

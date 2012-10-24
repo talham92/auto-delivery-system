@@ -56,7 +56,7 @@ public class ADSUser implements Serializable {
     @Id
     private String username;
     private String password;
-    private boolean admin;
+    private boolean administrator;
     
     public ADSUser() {
     }
@@ -68,7 +68,7 @@ public class ADSUser implements Serializable {
         this.email = email;
         this.username = username;
         this.password = password;
-        this.admin = false;
+        this.administrator = false;
     }
     
     @Override
@@ -145,10 +145,10 @@ public class ADSUser implements Serializable {
     }
 
     public boolean isAdmin() {
-        return admin;
+        return administrator;
     }
 
     public void setAdmin(boolean admin) {
-        this.admin = admin;
+        this.administrator = admin;
     }
 }

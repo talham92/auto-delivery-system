@@ -6,7 +6,6 @@
     <class>ads.resources.data.UserList</class>
     <class>ads.resources.data.Box</class>
     <class>ads.resources.data.ADSUser</class>
-    <class>ads.resources.data.DeliveryHistory</class>
     <class>ads.resources.data.DeliveryStep</class>
     <class>ads.resources.data.Delivery</class>
     <class>ads.resources.data.PickedUpDelivery</class>
@@ -15,6 +14,7 @@
     <class>ads.resources.data.BookedDelivery</class>
     <class>ads.resources.data.DeliveredDelivery</class>
     <class>ads.resources.data.FloorMap</class>
+    <class>ads.resources.data.DeliveryHistory</class>
     <properties>
       <property name="javax.persistence.jdbc.url" value="jdbc:mysql://localhost:3306/ads?zeroDateTimeBehavior=convertToNull"/>
       <property name="javax.persistence.jdbc.password" value="adspassword"/>
