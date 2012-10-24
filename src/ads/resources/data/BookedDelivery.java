@@ -5,6 +5,7 @@
 package ads.resources.data;
 
 import java.io.Serializable;
+import java.sql.Timestamp;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -20,6 +21,14 @@ public class BookedDelivery extends DeliveryStep implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
+    private Timestamp timeCreation;
+
+    public BookedDelivery() {
+    }
+    
+    public BookedDelivery(Timestamp time) {
+        this.timeCreation = time;
+    }
 
     public Long getId() {
         return id;
@@ -29,6 +38,14 @@ public class BookedDelivery extends DeliveryStep implements Serializable {
         this.id = id;
     }
 
+    public Timestamp getTimeCreation() {
+        return timeCreation;
+    }
+
+    public void setTimeCreation(Timestamp timeCreation) {
+        this.timeCreation = timeCreation;
+    }    
+    
     @Override
     public int hashCode() {
         int hash = 0;

@@ -5,53 +5,26 @@
 package ads.resources.data;
 
 import java.io.Serializable;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.EntityManager;
 
 /**
  *
  * @author mgamell
  */
-@Entity
 public class DeliveryHistory implements Serializable {
-    private static final long serialVersionUID = 7L;
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
 
-    public Long getId() {
-        return id;
+    private DeliveryHistory() throws Exception {
+        throw new Exception("Don't try to instantiate DeliveryHistory");
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public static boolean hasPendingDeliveries() {
+//todo
+        throw new RuntimeException("nonimplemented");
     }
 
-    @Override
-    public int hashCode() {
-        int hash = 0;
-        hash += (id != null ? id.hashCode() : 0);
-        return hash;
+    public static Delivery getMostPrioritaryDelivery() {
+        EntityManager em = Persistance.getEntityManager();
+        throw new RuntimeException("nonimplemented");
+//todo
     }
-
-    @Override
-    public boolean equals(Object object) {
-        // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof DeliveryHistory)) {
-            return false;
-        }
-        DeliveryHistory other = (DeliveryHistory) object;
-        if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
-            return false;
-        }
-        return true;
-    }
-
-    @Override
-    public String toString() {
-        return "ads.data.DeliveryList[ id=" + id + " ]";
-    }
-    
 }

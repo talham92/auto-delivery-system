@@ -17,7 +17,6 @@ interface ClientControllerInterface {
     public void register(String firstName, String lastName, String roomNumber, String email, String username, String password, String password1, RegisterView register);
     
     public List<String[]> searchUser_NameOffice(String name, String office);
-    public void bookDelivery(String urgency, ArrayList<String[]> targetList, BookDeliveryView bookDeliveryView);
+    public void bookDelivery(String urgency, List<String> targetList, BookDeliveryView bookDeliveryView);
     public void wantsToCreateFloorMap(AdminMainView v);
-    //public void createFloorMap();
 }
