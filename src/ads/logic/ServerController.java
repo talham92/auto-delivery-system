@@ -27,6 +27,11 @@ import javax.persistence.Persistence;
  * @author mgamell
  */
 public class ServerController implements ServerControllerInterface {
+    private static final int userNotCorrect=0;
+    private static final int userCorrect_Admin=1;
+    private static final int userCorrect_NotAdmin=2;
+    
+    
     private EntityManagerFactory emf;
     private EntityManager em;
     
@@ -66,6 +71,17 @@ public class ServerController implements ServerControllerInterface {
         ADSUser u = new ADSUser("Admin", "istrator", o, "a@a.c", "admin", "admin");
         u.setAdmin(true);
         em.persist(u);
+        //Add some additional users for test purposes
+        o = new Office("101");
+        em.persist(o);
+        u = new ADSUser("mehmet", "aktas", o, "mfa@gmail.com", "mfa", "1111");
+        em.persist(u);
+        //
+        o = new Office("102");
+        em.persist(o);
+        u = new ADSUser("ali", "veli", o, "aliveli@hotmail.com", "aliveli", "2222");
+        em.persist(u);
+        
         em.getTransaction().commit();
     }
 
@@ -121,21 +137,39 @@ public class ServerController implements ServerControllerInterface {
     }
 
     @Override
-    public boolean checkLogin(String username, String password) {
+    public int checkLogin(String username, String password) {
         try {
             ADSUser u = em.find(ADSUser.class, username);
             if (u == null || !u.getPassword().equals(password))
-                return false;
-            else
-                return true;
+                return userNotCorrect;
+            else{
+                if(u.isAdmin())
+                    return userCorrect_Admin;
+                else
+                    return userCorrect_NotAdmin;
+            }
         } catch(Exception ex) {
-            return false;
+            return userNotCorrect;
         }
     }
     
     @Override
     public String register(String firstName, String lastName, String roomNumber, String email, String username, String password, String password1) {
+//<<<<<<< local
+        Office office = new Office(roomNumber);
+        //Office office = null;
+//=======
+//>>>>>>> other
         // Check business rules
+//<<<<<<< local
+/*TODO
+        if (UserList.searchByName(firstName, lastName)!=null) return "A user with a name "+firstName+" "+lastName+" already exist";
+        if (UserList.searchUsername(username)!=null) return "A user with a username "+username+" already exist";
+        Office office = FloorMap.searchByRoomNumber(roomNumber);
+        if (office == null) return "The room number does not exist";
+        */
+        if (!EmailChecker.checkEmail(email)) return "The e-mail address is not correct";
+//=======
         // 1. A user with a repeated name.
         if (!em.createNamedQuery("User.searchByName")
                 .setParameter("firstName", firstName)
@@ -147,7 +181,7 @@ public class ServerController implements ServerControllerInterface {
         if (em.find(ADSUser.class, username)!=null)
             return "A user with a username "+username+" already exist";
 
-        Office office = em.find(Office.class, roomNumber);
+        office = em.find(Office.class, roomNumber);
 
         // 3. The office does not exist
         if (office == null)
@@ -158,6 +192,7 @@ public class ServerController implements ServerControllerInterface {
             return "The e-mail address is not correct";
         
         // 5. The password does not match with the repeated password
+//>>>>>>> other
         if (!password.equals(password1)) return "The password does not match with the repeated password";
 
         
@@ -172,16 +207,21 @@ public class ServerController implements ServerControllerInterface {
         }
         catch(Exception ex)
         {
+//<<<<<<< local
+            //em.getTransaction().rollback();
+            System.out.println(ex.toString());
+//=======
             ex.printStackTrace();
             em.getTransaction().rollback();
             // There was an error, retorn the appropiate error message
             return "Unexpected error occurred when storing user information";
+//>>>>>>> other
         }
     }
 
     @Override
     public Set<ADSUser> searchUser_NameOffice(String username, String password, String name, String office) {
-        if(!this.checkLogin(username, password)) {
+        if(this.checkLogin(username, password)==userNotCorrect) {
             return null;
         }
         

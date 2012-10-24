@@ -18,4 +18,6 @@ interface ClientControllerInterface {
     
     public List<String[]> searchUser_NameOffice(String name, String office);
     public void bookDelivery(String urgency, ArrayList<String[]> targetList, BookDeliveryView bookDeliveryView);
+    public void wantsToCreateFloorMap(AdminMainView v);
+    //public void createFloorMap();
 }

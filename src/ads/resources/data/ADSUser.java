@@ -5,9 +5,11 @@ import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToOne;
 
 /**
  * Class representing a User.
@@ -49,8 +51,13 @@ public class ADSUser implements Serializable {
     private static final long serialVersionUID = 1L;
     private String firstName;
     private String lastName;
+//<<<<<<< local
+    @OneToOne(fetch=FetchType.LAZY)
+    @JoinColumn(nullable=false)
+//=======
     @ManyToOne(fetch=FetchType.LAZY, cascade=CascadeType.ALL)
 //    @JoinColumn(nullable=false)
+//>>>>>>> other
     private Office office;
     private String email;
     @Id
