@@ -128,7 +128,9 @@ public class ServerController implements ServerControllerInterface {
         EntityManager em = Persistance.getEntityManager();
         try {
             ADSUser u = em.find(ADSUser.class, username);
-            if (u == null || !u.getPassword().equals(password))
+            // Note that the find in the database is case insensitive. Then, we
+            // can't worry only about password, but we need to check also the username
+            if (u == null || !u.getUsername().equals(username) || !u.getPassword().equals(password))
                 return userNotCorrect;
             else{
                 if(u.isAdmin())
