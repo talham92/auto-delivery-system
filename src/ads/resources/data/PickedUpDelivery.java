@@ -5,10 +5,9 @@
 package ads.resources.data;
 
 import java.io.Serializable;
+import java.sql.Timestamp;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.OneToOne;
 
 /**
  *
@@ -17,41 +16,28 @@ import javax.persistence.Id;
 @Entity
 public class PickedUpDelivery extends DeliveryStep implements Serializable {
     private static final long serialVersionUID = 12L;
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
+    @OneToOne
+    private BookedDelivery previousState;
 
-    public Long getId() {
-        return id;
+    public PickedUpDelivery() {
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public PickedUpDelivery(Timestamp timeCreation, BookedDelivery previousState) {
+        super(timeCreation);
+        this.previousState = previousState;
     }
 
-    @Override
-    public int hashCode() {
-        int hash = 0;
-        hash += (id != null ? id.hashCode() : 0);
-        return hash;
+    public BookedDelivery getPreviousState() {
+        return previousState;
     }
 
-    @Override
-    public boolean equals(Object object) {
-        // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof PickedUpDelivery)) {
-            return false;
-        }
-        PickedUpDelivery other = (PickedUpDelivery) object;
-        if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
-            return false;
-        }
-        return true;
+    public void setPreviousState(BookedDelivery previousState) {
+        this.previousState = previousState;
     }
 
     @Override
     public String toString() {
-        return "ads.data.PickedUpDelivery[ id=" + id + " ]";
+        return "ads.data.PickedUpDelivery[ id=" + super.getId() + " ]";
     }
     
 }

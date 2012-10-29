@@ -4,9 +4,11 @@
  */
 package ads.logic;
 
+import ads.resources.communication.ServerCommunicator;
 import ads.resources.data.ADSUser;
 import ads.resources.data.Office;
-import ads.resources.data.Persistance;
+import ads.resources.datacontroller.Persistance;
+import ads.resources.datacontroller.UserController;
 import java.rmi.AccessException;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
@@ -26,9 +28,6 @@ import javax.persistence.EntityManager;
  */
 public class ServerController implements ServerControllerInterface {
     private static ServerController singleton = new ServerController();
-    private static final int userNotCorrect=0;
-    private static final int userCorrect_Admin=1;
-    private static final int userCorrect_NotAdmin=2;
     private DeliveryCoordinator delCoordinator;
 
     public static ServerController getInstance() {
@@ -39,6 +38,7 @@ public class ServerController implements ServerControllerInterface {
         Persistance.initPersistance();
         insertTestingDataSet();
         delCoordinator = DeliveryCoordinator.getInstance();
+        ServerCommunicator.init();
     }
     
     /**
@@ -125,24 +125,9 @@ public class ServerController implements ServerControllerInterface {
 
     @Override
     public int checkLogin(String username, String password) {
-        EntityManager em = Persistance.getEntityManager();
-        try {
-            ADSUser u = em.find(ADSUser.class, username);
-            // Note that the find in the database is case insensitive. Then, we
-            // can't worry only about password, but we need to check also the username
-            if (u == null || !u.getUsername().equals(username) || !u.getPassword().equals(password))
-                return userNotCorrect;
-            else{
-                if(u.isAdmin())
-                    return userCorrect_Admin;
-                else
-                    return userCorrect_NotAdmin;
-            }
-        } catch(Exception ex) {
-            return userNotCorrect;
-        }
+        return UserController.checkLogin(username, password);
     }
-    
+   
     @Override
     public String register(String firstName, String lastName, String roomNumber, String email, String username, String password, String password1) {
         EntityManager em = Persistance.getEntityManager();
@@ -198,7 +183,7 @@ public class ServerController implements ServerControllerInterface {
     public Set<ADSUser> searchUser_NameOffice(String username, String password, String name, String office) {
         EntityManager em = Persistance.getEntityManager();
 
-        if(this.checkLogin(username, password)==userNotCorrect) {
+        if(this.checkLogin(username, password)==UserController.userNotCorrect) {
             return null;
         }
         
@@ -230,8 +215,8 @@ public class ServerController implements ServerControllerInterface {
     }
 
     @Override
-    public void bookDelivery(String username, String password, String urgency, List<String> targetListUsernames) throws RemoteException, NonBookedDeliveryException{
-        if(this.checkLogin(username, password)==userNotCorrect) {
+    public void bookDelivery(String username, String password, double urgency, List<String> targetListUsernames) throws RemoteException, NonBookedDeliveryException{
+        if(this.checkLogin(username, password)==UserController.userNotCorrect) {
             return;
         }
 

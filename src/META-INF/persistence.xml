@@ -14,13 +14,13 @@
     <class>ads.resources.data.BookedDelivery</class>
     <class>ads.resources.data.DeliveredDelivery</class>
     <class>ads.resources.data.FloorMap</class>
-    <class>ads.resources.data.DeliveryHistory</class>
+    <class>ads.resources.datacontroller.DeliveryHistory</class>
+    <class>ads.resources.data.RobotPosition</class>
     <properties>
       <property name="javax.persistence.jdbc.url" value="jdbc:mysql://localhost:3306/ads?zeroDateTimeBehavior=convertToNull"/>
       <property name="javax.persistence.jdbc.password" value="adspassword"/>
       <property name="javax.persistence.jdbc.driver" value="com.mysql.jdbc.Driver"/>
       <property name="javax.persistence.jdbc.user" value="ads"/>
-      <property name="eclipselink.ddl-generation" value="drop-and-create-tables"/>
     </properties>
   </persistence-unit>
 </persistence>

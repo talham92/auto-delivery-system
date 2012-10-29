@@ -5,6 +5,7 @@
 package ads.resources.data;
 
 import java.io.Serializable;
+import java.sql.Timestamp;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -20,13 +21,13 @@ public abstract class DeliveryStep implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
+    private Timestamp timeCreation;
 
-    public Long getId() {
-        return id;
+    public DeliveryStep(Timestamp timeCreation) {
+        this.timeCreation = timeCreation;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public DeliveryStep() {
     }
 
     @Override
@@ -38,7 +39,6 @@ public abstract class DeliveryStep implements Serializable {
 
     @Override
     public boolean equals(Object object) {
-        // TODO: Warning - this method won't work in the case the id fields are not set
         if (!(object instanceof DeliveryStep)) {
             return false;
         }
@@ -54,4 +54,20 @@ public abstract class DeliveryStep implements Serializable {
         return "ads.data.DeliveryStep[ id=" + id + " ]";
     }
     
+    public Timestamp getTimeCreation() {
+        return timeCreation;
+    }
+
+    public void setTimeCreation(Timestamp timeCreation) {
+        this.timeCreation = timeCreation;
+    }    
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
 }

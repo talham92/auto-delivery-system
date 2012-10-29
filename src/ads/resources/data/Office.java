@@ -9,6 +9,7 @@ import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
+import javax.persistence.NamedQuery;
 import javax.persistence.OneToOne;
 
 /**
@@ -18,7 +19,22 @@ import javax.persistence.OneToOne;
 @Entity
 public class Office implements Serializable {
     private static final long serialVersionUID = 8L;
+    // MARC: MEHMET! I KNOW I SHOULD TOUCH THIS CLASS, BUT WE SHOULD HAVE A NUMERIC ID, AND ID=0 MUST BE COMPULSORY REPRESENTING POINT 0.
     @Id
+    private int id;
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+    
+    
+    
+    
+    
     private String officeAddress;
     @OneToOne(fetch=FetchType.LAZY, cascade=CascadeType.ALL)
     private Office nextOffice;

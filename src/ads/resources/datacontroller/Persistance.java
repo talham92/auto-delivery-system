@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package ads.resources.data;
+package ads.resources.datacontroller;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;

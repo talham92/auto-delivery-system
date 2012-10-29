@@ -106,6 +106,7 @@ public class BookDeliveryView extends javax.swing.JFrame {
         );
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setMinimumSize(new java.awt.Dimension(598, 370));
         addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusGained(java.awt.event.FocusEvent evt) {
                 frameFocusGained(evt);
@@ -156,17 +157,11 @@ public class BookDeliveryView extends javax.swing.JFrame {
             }
         });
 
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "ASAP", "In 5 minutes" }));
-        jComboBox1.setEnabled(false);
-        jComboBox1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jComboBox1ActionPerformed(evt);
-            }
-        });
+        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "1", "2", "3", "4", "5" }));
+        jComboBox1.setSelectedIndex(1);
 
         jLabel3.setFont(new java.awt.Font("Times New Roman", 0, 14)); // NOI18N
-        jLabel3.setText("When to pick up?");
-        jLabel3.setEnabled(false);
+        jLabel3.setText("Priority (higher is more prioritary)");
 
         targetTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -224,7 +219,7 @@ public class BookDeliveryView extends javax.swing.JFrame {
                         .addComponent(jLabel3)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 122, Short.MAX_VALUE)
                         .addComponent(clearAllButton)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(confirmAllButton, javax.swing.GroupLayout.PREFERRED_SIZE, 111, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -248,7 +243,7 @@ public class BookDeliveryView extends javax.swing.JFrame {
                                             .addComponent(officeField))))))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(jScrollPane7, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
-                    .addComponent(jScrollPane8, javax.swing.GroupLayout.DEFAULT_SIZE, 537, Short.MAX_VALUE))
+                    .addComponent(jScrollPane8))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -349,7 +344,7 @@ public class BookDeliveryView extends javax.swing.JFrame {
         
         if(!targetList.isEmpty()){
             controller.bookDelivery(
-                    jComboBox1.getSelectedItem().toString(),
+                    Integer.parseInt(jComboBox1.getSelectedItem().toString())/jComboBox1.getItemCount(),
                     targetUsernames,
                     this);
             DefaultTableModel model_3 = (DefaultTableModel) targetTable.getModel();
@@ -366,12 +361,7 @@ public class BookDeliveryView extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_confirmAllButtonActionPerformed
 
-    private void jComboBox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox1ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jComboBox1ActionPerformed
-
     private void clearAllButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_clearAllButtonActionPerformed
-        // TODO add your handling code here: 
         DefaultTableModel model = (DefaultTableModel) targetTable.getModel();
         while (model.getRowCount()>0){
             model.removeRow(0);

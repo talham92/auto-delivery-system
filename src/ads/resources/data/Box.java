@@ -9,30 +9,54 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
+import javax.persistence.OneToOne;
 
 /**
  *
  * @author mgamell
  */
 @Entity
+@NamedQueries({
+    @NamedQuery(
+        name="Box.searchEmpty",
+        query="SELECT c FROM Box c WHERE c.delivery IS NULL"
+    ),
+    @NamedQuery(
+        name="Box.searchDelivery",
+//        query="SELECT c FROM Box c WHERE c.delivery.sender LIKE :sender AND c.delivery.receiver LIKE :receiver AND c.delivery.timestampfield like :timestampfield"
+        query="SELECT c FROM Box c WHERE c.delivery"
+    )
+})
 public class Box implements Serializable {
     private static final long serialVersionUID = 3L;
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
+    private int id;
+    @OneToOne
+    private Delivery delivery;
 
-    public Long getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(int id) {
         this.id = id;
     }
 
+    public Delivery getDelivery() {
+        return delivery;
+    }
+
+    public void setDelivery(Delivery delivery) {
+        this.delivery = delivery;
+    }
+    
     @Override
     public int hashCode() {
         int hash = 0;
-        hash += (id != null ? id.hashCode() : 0);
+        hash += id;
         return hash;
     }
 
@@ -43,7 +67,7 @@ public class Box implements Serializable {
             return false;
         }
         Box other = (Box) object;
-        if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
+        if (id != other.id) {
             return false;
         }
         return true;
