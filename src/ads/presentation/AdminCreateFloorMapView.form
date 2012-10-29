@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<Form version="1.5" maxVersion="1.8" type="org.netbeans.modules.form.forminfo.JFrameFormInfo">
+  <Properties>
+    <Property name="defaultCloseOperation" type="int" value="3"/>
+  </Properties>
+  <SyntheticProperties>
+    <SyntheticProperty name="formSizePolicy" type="int" value="1"/>
+  </SyntheticProperties>
+  <AuxValues>
+    <AuxValue name="FormSettings_autoResourcing" type="java.lang.Integer" value="0"/>
+    <AuxValue name="FormSettings_autoSetComponentName" type="java.lang.Boolean" value="false"/>
+    <AuxValue name="FormSettings_generateFQN" type="java.lang.Boolean" value="true"/>
+    <AuxValue name="FormSettings_generateMnemonicsCode" type="java.lang.Boolean" value="false"/>
+    <AuxValue name="FormSettings_i18nAutoMode" type="java.lang.Boolean" value="false"/>
+    <AuxValue name="FormSettings_layoutCodeTarget" type="java.lang.Integer" value="1"/>
+    <AuxValue name="FormSettings_listenerGenerationStyle" type="java.lang.Integer" value="0"/>
+    <AuxValue name="FormSettings_variablesLocal" type="java.lang.Boolean" value="false"/>
+    <AuxValue name="FormSettings_variablesModifier" type="java.lang.Integer" value="2"/>
+  </AuxValues>
+
+  <Layout>
+    <DimensionLayout dim="0">
+      <Group type="103" groupAlignment="0" attributes="0">
+          <Group type="102" alignment="0" attributes="0">
+              <EmptySpace max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="1" max="-2" attributes="0">
+                  <Component id="floorMapPanel" alignment="0" max="32767" attributes="0"/>
+                  <Component id="createMap" min="-2" max="-2" attributes="0"/>
+                  <Component id="jScrollPane3" alignment="0" pref="484" max="32767" attributes="0"/>
+                  <Component id="jScrollPane1" alignment="0" max="32767" attributes="0"/>
+              </Group>
+              <EmptySpace pref="45" max="32767" attributes="0"/>
+          </Group>
+      </Group>
+    </DimensionLayout>
+    <DimensionLayout dim="1">
+      <Group type="103" groupAlignment="0" attributes="0">
+          <Group type="102" alignment="1" attributes="0">
+              <EmptySpace min="-2" pref="20" max="-2" attributes="0"/>
+              <Component id="jScrollPane3" min="-2" max="-2" attributes="0"/>
+              <EmptySpace type="separate" max="-2" attributes="0"/>
+              <Component id="jScrollPane1" min="-2" max="-2" attributes="0"/>
+              <EmptySpace type="separate" max="-2" attributes="0"/>
+              <Component id="createMap" min="-2" max="-2" attributes="0"/>
+              <EmptySpace pref="170" max="32767" attributes="0"/>
+              <Component id="floorMapPanel" min="-2" max="-2" attributes="0"/>
+              <EmptySpace max="-2" attributes="0"/>
+          </Group>
+      </Group>
+    </DimensionLayout>
+  </Layout>
+  <SubComponents>
+    <Container class="javax.swing.JPanel" name="floorMapPanel">
+      <AuxValues>
+        <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new javax.swing.JPanel(){&#xa;    @Override&#xa;    public void paintComponent(Graphics g)   {&#xa;        // Paint background&#xa;        super.paintComponent(g);&#xa;&#xa;        // Get the drawing area&#xa;        int dy = getSize ().height;&#xa;        int dx = getSize ().width;&#xa;        int mid_y = dy/2;&#xa;        int mid_x = dx/2;&#xa;        int rect_x = 3 * dx/4;&#xa;        int rect_y = 3 * dy/4;&#xa;&#xa;        // Set current drawing color&#xa;        g.setColor (Color.BLACK);&#xa;&#xa;        // Draw a rectangle centered at the mid-point&#xa;        g.drawRect (mid_x-rect_x/2, mid_y-rect_y/2,  rect_x, rect_y );&#xa;&#xa;        // Set a new drawing color&#xa;        g.setColor (Color.LIGHT_GRAY);&#xa;&#xa;        // Fill a rectangle centered at the mid-point. Put it&#xa;        // within the previous rectangle so that border shows.&#xa;        g.fillRect (mid_x-rect_x/2 + 10, mid_y-rect_y/2+10, rect_x-20, rect_y-20);&#xa;&#xa;        // Set a new drawing color&#xa;        g.setColor (Color.DARK_GRAY);&#xa;&#xa;        // Draw a circle around the mid-point&#xa;        g.drawOval (mid_x-rect_x/6, mid_y-rect_y/6, rect_x/3, rect_y/3);&#xa;&#xa;        // Fill an oval inside the circle&#xa;        g.fillOval (mid_x-rect_x/6+10, mid_y-rect_y/6+10, rect_x/3-20, rect_y/3-20);&#xa;    } // paintComponent&#xa;}"/>
+        <AuxValue name="JavaCodeGenerator_CreateCodePre" type="java.lang.String" value="floorMapPanel = new javax.swing.JPanel(){&#xa;    @Override&#xa;    public void paintComponent(Graphics g)   {&#xa;        // Paint background&#xa;        super.paintComponent(g);&#xa;&#xa;        // Get the drawing area&#xa;        int dy = getSize ().height;&#xa;        int dx = getSize ().width;&#xa;        int mid_y = dy/2;&#xa;        int mid_x = dx/2;&#xa;        int rect_x = 3 * dx/4;&#xa;        int rect_y = 3 * dy/4;&#xa;&#xa;        // Set current drawing color&#xa;        g.setColor (Color.BLACK);&#xa;&#xa;        // Draw a rectangle centered at the mid-point&#xa;        g.drawRect (mid_x-rect_x/2, mid_y-rect_y/2,  rect_x, rect_y );&#xa;&#xa;        // Set a new drawing color&#xa;        g.setColor (Color.LIGHT_GRAY);&#xa;&#xa;        // Fill a rectangle centered at the mid-point. Put it&#xa;        // within the previous rectangle so that border shows.&#xa;        g.fillRect (mid_x-rect_x/2 + 10, mid_y-rect_y/2+10, rect_x-20, rect_y-20);&#xa;&#xa;        // Set a new drawing color&#xa;        g.setColor (Color.DARK_GRAY);&#xa;&#xa;        // Draw a circle around the mid-point&#xa;        g.drawOval (mid_x-rect_x/6, mid_y-rect_y/6, rect_x/3, rect_y/3);&#xa;&#xa;        // Fill an oval inside the circle&#xa;        g.fillOval (mid_x-rect_x/6+10, mid_y-rect_y/6+10, rect_x/3-20, rect_y/3-20);&#xa;    } // paintComponent&#xa;};"/>
+      </AuxValues>
+
+      <Layout>
+        <DimensionLayout dim="0">
+          <Group type="103" groupAlignment="0" attributes="0">
+              <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
+          </Group>
+        </DimensionLayout>
+        <DimensionLayout dim="1">
+          <Group type="103" groupAlignment="0" attributes="0">
+              <EmptySpace min="0" pref="174" max="32767" attributes="0"/>
+          </Group>
+        </DimensionLayout>
+      </Layout>
+    </Container>
+    <Component class="javax.swing.JButton" name="createMap">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Create Map"/>
+      </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="createMapActionPerformed"/>
+      </Events>
+    </Component>
+    <Container class="javax.swing.JScrollPane" name="jScrollPane1">
+      <AuxValues>
+        <AuxValue name="autoScrollPane" type="java.lang.Boolean" value="true"/>
+      </AuxValues>
+
+      <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>
+      <SubComponents>
+        <Component class="javax.swing.JTextArea" name="enterMapTA">
+          <Properties>
+            <Property name="columns" type="int" value="20"/>
+            <Property name="rows" type="int" value="5"/>
+          </Properties>
+        </Component>
+      </SubComponents>
+    </Container>
+    <Container class="javax.swing.JScrollPane" name="jScrollPane3">
+      <AuxValues>
+        <AuxValue name="autoScrollPane" type="java.lang.Boolean" value="true"/>
+      </AuxValues>
+
+      <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>
+      <SubComponents>
+        <Component class="javax.swing.JTextArea" name="jTextArea2">
+          <Properties>
+            <Property name="columns" type="int" value="20"/>
+            <Property name="rows" type="int" value="5"/>
+            <Property name="text" type="java.lang.String" value="Sample Map Creation Code:&#xa;node1/adjNode,dir,dist|adjNode,dir,dist&#xa;node2/adjNode,dir,dist&#xa;node1/adjNode,dir,dist|adjNode,dir,dist|adjNode,dir,dist"/>
+          </Properties>
+          <AuxValues>
+            <AuxValue name="JavaCodeGenerator_AddingCodePost" type="java.lang.String" value="jTextArea2.setEditable(false);"/>
+          </AuxValues>
+        </Component>
+      </SubComponents>
+    </Container>
+  </SubComponents>
+</Form>
