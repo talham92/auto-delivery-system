@@ -116,13 +116,13 @@ public class DeliveryCoordinator {
                     RobotPositionAccessor.updateRobotPositionToNext();
                     // Get Most prioritary delivery.
                     System.out.println(" robot in point ... id="+RobotPositionAccessor.getRobotPosition().getId());
-                    Delivery delivery = DeliveryHistory.getMostPrioritaryDelivery();
-                    System.out.println(" mostPrioritaryDelivery in point ... id="+delivery.getNextUser().getOffice().getId());
                     // Check if the robot needs to stop at that position or it
                     // needs to continue to the next one
-                    if(delivery.getNextUser().getOffice().equals(RobotPositionAccessor.getRobotPosition())
-                            && !(SectionedBox.isFull() && delivery.isBookedNotYetPickedUp())
-                            ) {
+                    
+                    for(Delivery delivery = DeliveryHistory.getMostPrioritaryDelivery(); (delivery != null) && delivery.getNextUser().getOffice().equals(RobotPositionAccessor.getRobotPosition())
+                            && !(SectionedBox.isFull() && delivery.isBookedNotYetPickedUp());
+                            delivery = DeliveryHistory.getMostPrioritaryDelivery()) {
+                        System.out.println("  mostPrioritaryDelivery in point ... id="+delivery.getNextUser().getOffice().getId());
                         System.out.println("  needs to stop!");
                         // The robot needs to stop!
                         ServerCommunicator.ringBuzzer();
@@ -159,6 +159,9 @@ public class DeliveryCoordinator {
                         } else {
                             ServerCommunicator.showPasswordIncorrectError();
                             //todo: IMPORTANT: add state to the delivery saying that this pickup/delivery failed!
+                            
+                            // todo: assumption: if the password is incorrectly inserted three times in this office, leave the office (regardless the remaining deliveries)
+                            break;
                         }
                     }
                 }
