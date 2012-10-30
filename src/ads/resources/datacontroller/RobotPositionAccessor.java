@@ -4,6 +4,7 @@
  */
 package ads.resources.datacontroller;
 
+import ads.resources.data.FloorMap;
 import ads.resources.data.Office;
 import javax.persistence.EntityManager;
 
@@ -17,6 +18,14 @@ public class RobotPositionAccessor {
         throw new Exception("Don't try to instantiate me");
     }
 
+//    public static void init() {
+//        EntityManager em = Persistance.getEntityManager();
+//        ads.resources.data.RobotPosition r = new ads.resources.data.RobotPosition(FloorMap.getPoint0(), false);
+//        em.getTransaction().begin();
+//        em.persist(r);
+//        em.getTransaction().commit();
+//    }
+
     public static Office getRobotPosition() {
         EntityManager em = Persistance.getEntityManager();
         ads.resources.data.RobotPosition r = em.find(ads.resources.data.RobotPosition.class, 1L);
@@ -27,8 +36,9 @@ public class RobotPositionAccessor {
         EntityManager em = Persistance.getEntityManager();
         ads.resources.data.RobotPosition r = em.find(ads.resources.data.RobotPosition.class, 1L);
         r.setLastKnownPosition(r.getLastKnownPosition().getNextOffice());
-        em.refresh(r);
+        em.getTransaction().begin();
+//        em.remove(r);
+        em.persist(r);
+        em.getTransaction().commit();
     }
-
-
 }
