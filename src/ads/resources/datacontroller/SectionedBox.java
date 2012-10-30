@@ -33,7 +33,7 @@ public class SectionedBox {
         } catch(NoResultException e) {
             throw e;
         }
-        if(box.getDelivery() == null) {
+        if(box.getDelivery() != null) {
             throw new RuntimeException("Box.searchEmpty returned a box nonempty!");
         }
         box.setDelivery(delivery);
@@ -43,9 +43,7 @@ public class SectionedBox {
     public static int deallocateBox(Delivery delivery) {
         EntityManager em = Persistance.getEntityManager();
         Box box = (Box) em.createNamedQuery("Box.searchDelivery")
-                .setParameter("sender", delivery.getSender())
-                .setParameter("receiver", delivery.getReceiver())
-                .setParameter("timestampfield", delivery.getTimestampField())
+                .setParameter("delivery", delivery)
                 .getSingleResult();
         if(!box.getDelivery().equals(delivery)) {
             throw new RuntimeException("Box.searchDelivery returned a box incorrect!");
@@ -58,7 +56,7 @@ public class SectionedBox {
     public static boolean isFull() {
         EntityManager em = Persistance.getEntityManager();
         try {
-            Box box = (Box) em.createNamedQuery("Box.searchEmpty")
+            em.createNamedQuery("Box.searchEmpty")
                     .setMaxResults(1)
                     .getSingleResult();
         } catch(NonUniqueResultException e) {

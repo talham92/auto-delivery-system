@@ -35,7 +35,8 @@ public class DeliveryHistory implements Serializable {
             .setParameter("class", Arrays.asList(BookedDelivery.class, PickedUpDelivery.class))
             .getResultList();
             if(pendingDeliveries == null || pendingDeliveries.isEmpty()) {
-                throw new Exception("There are no deliveries!");
+//                throw new Exception("There are no deliveries!");
+                return null;
             }
 
             Delivery mostPrioritaryDelivery = null;

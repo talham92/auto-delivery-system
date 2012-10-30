@@ -4,6 +4,9 @@
  */
 package ads.resources.communication;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 /**
  *
  * @author mgamell
@@ -13,12 +16,20 @@ public class ServerCommunicator {
 
     public static void init() {
         /* Create and display the form */
+        stub = null;
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 stub = new RobotStub();
                 stub.setVisible(true);
             }
         });
+        while(stub == null) {
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException ex) {
+                Logger.getLogger(ServerCommunicator.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        };
     }
     
     public static void moveRobotToNextPoint() {

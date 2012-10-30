@@ -25,5 +25,9 @@ public class FloorMap {
 //            EntityManager em = Persistance.getEntityManager();
 //    em.find();
 
+    public static int getIdPoint0() {
+        return 1;
+    }
+
 
 }

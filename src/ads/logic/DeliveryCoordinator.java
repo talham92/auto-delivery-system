@@ -11,6 +11,7 @@ import ads.resources.data.BookedDelivery;
 import ads.resources.data.Delivery;
 import ads.resources.datacontroller.DeliveryHistory;
 import ads.resources.data.DeliveryStep;
+import ads.resources.data.FloorMap;
 import ads.resources.datacontroller.Persistance;
 import ads.resources.datacontroller.RobotPositionAccessor;
 import ads.resources.datacontroller.SectionedBox;
@@ -71,6 +72,7 @@ public class DeliveryCoordinator {
             java.util.Date date = new java.util.Date();
             Timestamp timestampField = new Timestamp(date.getTime());
             DeliveryStep state = new BookedDelivery((Timestamp)timestampField.clone());
+            em.persist(state);
 
             // The following instruction assigns delivery to the ADSuser automatically
             Delivery newDel = new Delivery(sender, receiver, timestampField, state, urgency);
@@ -87,15 +89,18 @@ public class DeliveryCoordinator {
         @Override
         public void run() {
             while(!finish) {
+                System.out.println("begin loop");
                 // Check if there are pending deliveries
-                if(DeliveryHistory.hasPendingDeliveries()) {
+                if(!DeliveryHistory.hasPendingDeliveries()) {
+                System.out.println(" no pending deliveries");
                     // There are no pending deliveries. Check the robot position
-                    if(RobotPositionAccessor.getRobotPosition().getId()==0) {
+                    if(RobotPositionAccessor.getRobotPosition().getId()==FloorMap.getIdPoint0()) {
                         // The robot is in the point 0, just Wait a delay and retry.
                         try {
                             Thread.sleep(500);
                         } catch (InterruptedException ex) {}
                     } else {
+                        System.out.println("  robot in point !=0... id="+RobotPositionAccessor.getRobotPosition().getId());
                         // The robot is not in the point 0, continue moving.
                         // Move the robot to the next point
                         ServerCommunicator.moveRobotToNextPoint();
@@ -103,18 +108,22 @@ public class DeliveryCoordinator {
                         RobotPositionAccessor.updateRobotPositionToNext();
                     }
                 } else {
+                    System.out.println(" pending deliveries");
                     // There are pending deliveries!
                     // Move the robot to the next point
                     ServerCommunicator.moveRobotToNextPoint();
                     // Update the position
                     RobotPositionAccessor.updateRobotPositionToNext();
                     // Get Most prioritary delivery.
+                    System.out.println(" robot in point ... id="+RobotPositionAccessor.getRobotPosition().getId());
                     Delivery delivery = DeliveryHistory.getMostPrioritaryDelivery();
+                    System.out.println(" mostPrioritaryDelivery in point ... id="+delivery.getNextUser().getOffice().getId());
                     // Check if the robot needs to stop at that position or it
                     // needs to continue to the next one
                     if(delivery.getNextUser().getOffice().equals(RobotPositionAccessor.getRobotPosition())
                             && !(SectionedBox.isFull() && delivery.isBookedNotYetPickedUp())
                             ) {
+                        System.out.println("  needs to stop!");
                         // The robot needs to stop!
                         ServerCommunicator.ringBuzzer();
                         boolean error = true;

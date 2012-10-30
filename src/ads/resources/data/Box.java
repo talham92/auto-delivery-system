@@ -26,7 +26,7 @@ import javax.persistence.OneToOne;
     @NamedQuery(
         name="Box.searchDelivery",
 //        query="SELECT c FROM Box c WHERE c.delivery.sender LIKE :sender AND c.delivery.receiver LIKE :receiver AND c.delivery.timestampfield like :timestampfield"
-        query="SELECT c FROM Box c WHERE c.delivery"
+        query="SELECT c FROM Box c WHERE c.delivery = :delivery"
     )
 })
 public class Box implements Serializable {

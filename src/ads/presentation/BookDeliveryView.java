@@ -19,20 +19,26 @@ import javax.swing.table.DefaultTableModel;
  * @author MFA
  */
 public class BookDeliveryView extends javax.swing.JFrame {
-    Set<String[]> targetList;
-    String[] selectedReceiver;
+    private Set<String[]> targetList;
     private ClientControllerInterface controller;
     /**
      * Creates new form BookDeliveryView
      */
     public BookDeliveryView(ClientControllerInterface c) {
         initComponents();
-        selectedReceiver = new String[3];
         targetList=new HashSet<>();
         resultTable.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
+for(String[] i : targetList) {
+    System.out.println("targetList1--- "+i[0]+"  "+i[1]+"  "+i[2]);
+}
                 if (e.getClickCount() == 2) {
+    String[] selectedReceiver;
+        selectedReceiver = new String[3];
+for(String[] i : targetList) {
+    System.out.println("targetList2--- "+i[0]+"  "+i[1]+"  "+i[2]);
+}
                     JTable target = (JTable)e.getSource();
                     int rowIndex = target.getSelectedRow();
                     int columns = resultTable.getColumnCount();
@@ -41,15 +47,31 @@ public class BookDeliveryView extends javax.swing.JFrame {
                         Object o = resultTable.getValueAt(rowIndex, col);
                         selectedReceiver[col]=o.toString();
                     }
-                    
+for(String[] i : targetList) {
+    System.out.println("targetList--- "+i[0]+"  "+i[1]+"  "+i[2]);
+}
+    System.out.println("selectedReceiver--- "+selectedReceiver[0]+"  "+selectedReceiver[1]+"  "+selectedReceiver[2]);
+
+                    // Check if the targetList contains selected receiver
+                    boolean selectedReceiverContained = false;
+                    for(String[] i : targetList) {
+                        if(i[0].equals(selectedReceiver[0])) {
+                            selectedReceiverContained = true;
+                            break;
+                        }
+                    }
+    
                     // If the targetList already contains the receiver, do not add it.
-                    if(!targetList.contains(selectedReceiver)) {
+                    if(!selectedReceiverContained) {
                         DefaultTableModel model_ = (DefaultTableModel) targetTable.getModel();
                         model_.addRow(new Object[]{selectedReceiver[0], selectedReceiver[1]});
                         targetList.add(selectedReceiver);
                     } else {
                         outputText.append("The receiver with username: "+selectedReceiver[0]+" is already in the target list\n");
                     }
+for(String[] i : targetList) {
+    System.out.println("targetListEND--- "+i[0]+"  "+i[1]+"  "+i[2]);
+}
                 }
             }
         });

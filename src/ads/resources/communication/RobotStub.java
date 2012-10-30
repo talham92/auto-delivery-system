@@ -6,6 +6,7 @@ package ads.resources.communication;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -33,9 +34,13 @@ public class RobotStub extends javax.swing.JFrame {
 
     public String waitForPassword(int timeout) {
         this.outputLog.append("request: wait for password\n");
-        this.outputLog.append("action: return 1111\n");
-        this.outputLog.append("answer: 1111\n\n");
-        return "1111";
+        String password = JOptionPane.showInputDialog(this,
+            "Insert password",
+            "Password",
+            JOptionPane.INFORMATION_MESSAGE);
+        this.outputLog.append("action: ask for password\n");
+        this.outputLog.append("answer: "+password+"\n\n");
+        return password;
     }
 
     public void ringBuzzer() {
@@ -95,8 +100,8 @@ public class RobotStub extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(193, Short.MAX_VALUE))
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 278, Short.MAX_VALUE)
+                .addContainerGap())
         );
 
         pack();

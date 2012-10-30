@@ -8,6 +8,8 @@ import java.io.Serializable;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToOne;
@@ -19,8 +21,9 @@ import javax.persistence.OneToOne;
 @Entity
 public class Office implements Serializable {
     private static final long serialVersionUID = 8L;
-    // MARC: MEHMET! I KNOW I SHOULD TOUCH THIS CLASS, BUT WE SHOULD HAVE A NUMERIC ID, AND ID=0 MUST BE COMPULSORY REPRESENTING POINT 0.
+    // TODO: MARC: MEHMET! I KNOW I SHOULD TOUCH THIS CLASS, BUT WE SHOULD HAVE A NUMERIC ID, AND ID=0 MUST BE COMPULSORY REPRESENTING POINT 0.
     @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
 
     public int getId() {
@@ -42,11 +45,6 @@ public class Office implements Serializable {
     private Office previousOffice;
 
     public Office(){}
-
-    // todo: eliminate this constructor
-    public Office(String officeAddress){
-        this.officeAddress=officeAddress;
-    }
 
     public Office(String officeAddress, Office nextOffice, Office previousOffice) {
         this.officeAddress = officeAddress;

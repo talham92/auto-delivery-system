@@ -6,7 +6,9 @@ package ads.logic;
 
 import ads.resources.communication.ServerCommunicator;
 import ads.resources.data.ADSUser;
+import ads.resources.data.Box;
 import ads.resources.data.Office;
+import ads.resources.data.RobotPosition;
 import ads.resources.datacontroller.Persistance;
 import ads.resources.datacontroller.UserController;
 import java.rmi.AccessException;
@@ -37,8 +39,9 @@ public class ServerController implements ServerControllerInterface {
     private ServerController() {
         Persistance.initPersistance();
         insertTestingDataSet();
-        delCoordinator = DeliveryCoordinator.getInstance();
         ServerCommunicator.init();
+//        RobotPositionAccessor.init();
+        delCoordinator = DeliveryCoordinator.getInstance();
     }
     
     /**
@@ -51,33 +54,45 @@ public class ServerController implements ServerControllerInterface {
     private void insertTestingDataSet() {
         EntityManager em = Persistance.getEntityManager();
         em.getTransaction().begin();
-        Office o = new Office("601");
-        em.persist(o);
-        o = new Office("602");
-        em.persist(o);
-        o = new Office("603");
-        em.persist(o);
-        o = new Office("604");
-        em.persist(o);
-        o = new Office("605");
-        em.persist(o);
-        o = new Office("606");
-        em.persist(o);
-        o = new Office("admin");
-        em.persist(o);
-        ADSUser u = new ADSUser("Admin", "istrator", o, "a@a.c", "admin", "admin");
+        Office o1 = new Office("601", null, null);
+        Office o2 = new Office("602", null, o1);
+        Office o3 = new Office("603", null, o2);
+        Office o4 = new Office("604", null, o3);
+        Office o5 = new Office("605", null, o4);
+        o1.setPreviousOffice(o5);
+        o1.setNextOffice(o2);
+        o2.setNextOffice(o3);
+        o3.setNextOffice(o4);
+        o4.setNextOffice(o5);
+        o5.setNextOffice(o1);
+
+        em.persist(o1);
+        em.persist(o2);
+        em.persist(o3);
+        em.persist(o4);
+        em.persist(o5);
+
+        RobotPosition r = new RobotPosition(o1, false);
+        em.persist(r);
+        
+        ADSUser u = new ADSUser("Admin", "istrator", o1, "a@a.c", "admin", "admin");
         u.setAdmin(true);
         em.persist(u);
         //Add some additional users for test purposes
-        o = new Office("101");
-        em.persist(o);
-        u = new ADSUser("mehmet", "aktas", o, "mfa@gmail.com", "mfa", "1111");
+        u = new ADSUser("mehmet", "aktas", o2, "mfa@gmail.com", "mfa", "1111");
         em.persist(u);
-        //
-        o = new Office("102");
-        em.persist(o);
-        u = new ADSUser("ali", "veli", o, "aliveli@hotmail.com", "aliveli", "2222");
+        u = new ADSUser("marc", "gamell", o5, "marcgamell@gmail.com", "mgamell", "a");
         em.persist(u);
+        u = new ADSUser("ali", "veli", o4, "aliveli@hotmail.com", "aliveli", "2222");
+        em.persist(u);
+        
+        Box b;
+        b = new Box();
+        em.persist(b);
+        b = new Box();
+        em.persist(b);
+        b = new Box();
+        em.persist(b);
         
         em.getTransaction().commit();
     }
@@ -131,7 +146,7 @@ public class ServerController implements ServerControllerInterface {
     @Override
     public String register(String firstName, String lastName, String roomNumber, String email, String username, String password, String password1) {
         EntityManager em = Persistance.getEntityManager();
-        Office office = new Office(roomNumber);
+        Office office;
         // Check business rules
         if (!EmailChecker.checkEmail(email)) return "The e-mail address is not correct";
         // 1. A user with a repeated name.

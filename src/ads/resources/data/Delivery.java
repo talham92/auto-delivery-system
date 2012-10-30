@@ -4,11 +4,14 @@
  */
 package ads.resources.data;
 
+import ads.resources.datacontroller.Persistance;
 import java.io.Serializable;
 import java.sql.Timestamp;
 import javax.persistence.Entity;
+import javax.persistence.EntityManager;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.IdClass;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToOne;
@@ -17,7 +20,6 @@ import javax.persistence.OneToOne;
  *
  * @author mgamell
  */
-@IdClass(DeliveryPK.class)
 @Entity
 @NamedQuery(
     name="Delivery.searchPending",
@@ -27,12 +29,13 @@ public class Delivery implements Serializable {
     private static final long serialVersionUID = 6L;
 
     @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private int id;
+    
     @ManyToOne
     private ADSUser sender;
-    @Id
     @ManyToOne
     private ADSUser receiver;
-    @Id
     private Timestamp timestampField;
     @OneToOne
     private DeliveryStep state;
@@ -49,6 +52,23 @@ public class Delivery implements Serializable {
         this.priority = urgency;
     }
 
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public double getPriority() {
+        return priority;
+    }
+
+    public void setPriority(double priority) {
+        this.priority = priority;
+    }
+
+    
     public ADSUser getSender() {
         return sender;
     }
@@ -102,9 +122,12 @@ public class Delivery implements Serializable {
     }
 
     public void updateState() {
+        EntityManager em = Persistance.getEntityManager();
+        em.getTransaction().begin();
         java.util.Date date = new java.util.Date();
         Timestamp timestampAux = new Timestamp(date.getTime());
         if(this.state instanceof DeliveredDelivery) {
+            em.getTransaction().rollback();
             throw new RuntimeException("This delivery has been already delivered, it is closed!");
         } else if(this.state instanceof BookedDelivery) {
             // Create a new state and store the previous one.
@@ -113,8 +136,12 @@ public class Delivery implements Serializable {
             // Create a new state and store the previous one.
             state = new DeliveredDelivery((Timestamp)timestampAux.clone(), (PickedUpDelivery) state);
         } else {
+            em.getTransaction().rollback();
             throw new RuntimeException("This delivery is in an unidentified state!");
         }
+        em.persist(state);
+        em.persist(this);
+        em.getTransaction().commit();
     }
 
     public boolean isBookedNotYetPickedUp() {
