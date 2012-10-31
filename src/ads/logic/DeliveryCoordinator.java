@@ -4,6 +4,7 @@
  */
 package ads.logic;
 
+import ads.presentation.ClientController;
 import ads.resources.communication.ServerCommunicator;
 import ads.resources.communication.TimeoutException;
 import ads.resources.data.ADSUser;
@@ -18,6 +19,8 @@ import ads.resources.datacontroller.SectionedBox;
 import ads.resources.datacontroller.UserController;
 import java.sql.Timestamp;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.persistence.EntityManager;
 
 /**
@@ -88,11 +91,12 @@ public class DeliveryCoordinator {
         }
         @Override
         public void run() {
+            Logger log = Logger.getLogger(DeliveryWaiterThread.class.getName());
             while(!finish) {
-                System.out.println("begin loop");
+                log.log(Level.INFO, "begin loop");
                 // Check if there are pending deliveries
                 if(!DeliveryHistory.hasPendingDeliveries()) {
-                System.out.println(" no pending deliveries");
+                log.log(Level.INFO, " no pending deliveries");
                     // There are no pending deliveries. Check the robot position
                     if(RobotPositionAccessor.getRobotPosition().getId()==FloorMap.getIdPoint0()) {
                         // The robot is in the point 0, just Wait a delay and retry.
@@ -100,30 +104,34 @@ public class DeliveryCoordinator {
                             Thread.sleep(500);
                         } catch (InterruptedException ex) {}
                     } else {
-                        System.out.println("  robot in point !=0... id="+RobotPositionAccessor.getRobotPosition().getId());
+                        log.log(Level.INFO, "  robot in point !=0... id={0}", RobotPositionAccessor.getRobotPosition().getId());
                         // The robot is not in the point 0, continue moving.
                         // Move the robot to the next point
+                        RobotPositionAccessor.setMoving(true);
                         ServerCommunicator.moveRobotToNextPoint();
                         // Update the position
+                        RobotPositionAccessor.setMoving(false);
                         RobotPositionAccessor.updateRobotPositionToNext();
                     }
                 } else {
-                    System.out.println(" pending deliveries");
+                    log.log(Level.INFO, " pending deliveries");
                     // There are pending deliveries!
                     // Move the robot to the next point
+                    RobotPositionAccessor.setMoving(true);
                     ServerCommunicator.moveRobotToNextPoint();
                     // Update the position
+                    RobotPositionAccessor.setMoving(false);
                     RobotPositionAccessor.updateRobotPositionToNext();
                     // Get Most prioritary delivery.
-                    System.out.println(" robot in point ... id="+RobotPositionAccessor.getRobotPosition().getId());
+                    log.log(Level.INFO, " robot in point ... id={0}", RobotPositionAccessor.getRobotPosition().getId());
                     // Check if the robot needs to stop at that position or it
                     // needs to continue to the next one
                     
                     for(Delivery delivery = DeliveryHistory.getMostPrioritaryDelivery(); (delivery != null) && delivery.getNextUser().getOffice().equals(RobotPositionAccessor.getRobotPosition())
                             && !(SectionedBox.isFull() && delivery.isBookedNotYetPickedUp());
                             delivery = DeliveryHistory.getMostPrioritaryDelivery()) {
-                        System.out.println("  mostPrioritaryDelivery in point ... id="+delivery.getNextUser().getOffice().getId());
-                        System.out.println("  needs to stop!");
+                        log.log(Level.INFO, "  mostPrioritaryDelivery in point ... id={0}", delivery.getNextUser().getOffice().getId());
+                        log.log(Level.INFO, "  needs to stop!");
                         // The robot needs to stop!
                         ServerCommunicator.ringBuzzer();
                         boolean error = true;

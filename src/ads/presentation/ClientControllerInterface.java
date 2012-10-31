@@ -4,6 +4,7 @@
  */
 package ads.presentation;
 
+import ads.logic.SystemStatus;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,4 +20,6 @@ interface ClientControllerInterface {
     public List<String[]> searchUser_NameOffice(String name, String office);
     public void bookDelivery(double urgency, List<String> targetList, BookDeliveryView bookDeliveryView);
     public void wantsToCreateFloorMap(AdminMainView v);
+
+    public SystemStatus getSystemStatus() throws Exception ;
 }

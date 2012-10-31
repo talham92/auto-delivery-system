@@ -6,6 +6,7 @@ package ads.presentation;
 
 import ads.logic.NonBookedDeliveryException;
 import ads.logic.ServerControllerInterface;
+import ads.logic.SystemStatus;
 import ads.resources.data.ADSUser;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
@@ -321,6 +322,11 @@ public class ClientController implements ClientControllerInterface {
                 "Error",
                 JOptionPane.ERROR_MESSAGE);
         }
+    }
+
+    @Override
+    public SystemStatus getSystemStatus() throws Exception {
+        return server.getSystemStatus(this.username, this.password);
     }
     
 }

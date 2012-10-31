@@ -21,4 +21,6 @@ public interface ServerControllerInterface extends Remote {
     
     public Set<ADSUser> searchUser_NameOffice(String username, String password, String name, String office) throws RemoteException;
     public void bookDelivery(String username, String password, double urgency, List<String> targetListUsernames) throws RemoteException, NonBookedDeliveryException;
+
+    public SystemStatus getSystemStatus(String username, String password) throws RemoteException;
 }

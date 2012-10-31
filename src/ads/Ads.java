@@ -5,6 +5,7 @@
 package ads;
 
 import ads.logic.ServerController;
+import ads.presentation.AdminCreateFloorMapView;
 import ads.presentation.ClientController;
 
 /**
@@ -21,5 +22,20 @@ public class Ads {
             ServerController.main(args);
         else if(args[1].equals("client"))
             ClientController.main(args);
+//        new Thread(new Runnable() {
+//            public void run() {
+//                ServerController.main(new String[]{});
+//            }
+//        }).start();
+//        new Thread(new Runnable() {
+//            public void run() {
+//                ClientController.main(new String[]{});
+//            }
+//        }).start();
+//        new Thread(new Runnable() {
+//            public void run() {
+//                ClientController.main(new String[]{});
+//            }
+//        }).start();
     }
 }

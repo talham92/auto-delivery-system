@@ -10,6 +10,7 @@ import ads.resources.data.Box;
 import ads.resources.data.Office;
 import ads.resources.data.RobotPosition;
 import ads.resources.datacontroller.Persistance;
+import ads.resources.datacontroller.RobotPositionAccessor;
 import ads.resources.datacontroller.UserController;
 import java.rmi.AccessException;
 import java.rmi.NotBoundException;
@@ -236,6 +237,14 @@ public class ServerController implements ServerControllerInterface {
         }
 
         delCoordinator.bookDelivery(urgency, targetListUsernames, username);
+    }
+
+    @Override
+    public SystemStatus getSystemStatus(String username, String password) throws RemoteException {
+        if(this.checkLogin(username, password)!=UserController.userCorrect_Admin) {
+            throw new RemoteException("You are not the administrator!");
+        }
+        return new SystemStatus(RobotPositionAccessor.getRobotPosition().getOfficeAddress(), RobotPositionAccessor.isMoving());
     }
 
 }
