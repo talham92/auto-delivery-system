@@ -4,9 +4,11 @@
  */
 package ads.resources.communication;
 
+import java.awt.EventQueue;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
+import javax.swing.JScrollBar;
 
 /**
  *
@@ -22,52 +24,94 @@ public class RobotStub extends javax.swing.JFrame {
     }
 
     public void moveRobotToNextPoint() {
-        this.outputLog.append("request: move robot to next point\n");
-        this.outputLog.append("action: sleep 1;\n");
+        logText("request: move robot to next point\n");
+        logText("action: sleep 1;\n");
+        
         try {
             Thread.sleep(1000);
         } catch (InterruptedException ex) {
             Logger.getLogger(RobotStub.class.getName()).log(Level.SEVERE, null, ex);
         }
-        this.outputLog.append("answer: Done\n\n");
+        logText("answer: Done\n\n");
+        
     }
 
     public String waitForPassword(int timeout) {
-        this.outputLog.append("request: wait for password\n");
+        logText("request: wait for password\n");
+        
         String password = JOptionPane.showInputDialog(this,
             "Insert password",
             "Password",
             JOptionPane.INFORMATION_MESSAGE);
-        this.outputLog.append("action: ask for password\n");
-        this.outputLog.append("answer: "+password+"\n\n");
+        logText("action: ask for password\n");
+        logText("answer: "+password+"\n\n");
+        
         return password;
     }
 
     public void ringBuzzer() {
-        this.outputLog.append("request: ring buzzer\n");
-        this.outputLog.append("answer\n\n");
+        logText("request: ring buzzer\n");
+        logText("answer\n\n");
+        
     }
 
     public void showPasswordIncorrectError() {
-        this.outputLog.append("request: show password incorrect error\n");
-        this.outputLog.append("answer\n\n");
+        logText("request: show password incorrect error\n");
+        logText("answer\n\n");
+        
     }
 
     public void showPasswordIncorrectWarning() {
-        this.outputLog.append("request: show password incorrect warning\n");
-        this.outputLog.append("answer\n\n");
+        logText("request: show password incorrect warning\n");
+        logText("answer\n\n");
+        
     }
 
     public void showPasswordCorrectMessage() {
-        this.outputLog.append("request: show password correct\n");
-        this.outputLog.append("answer\n\n");
+        logText("request: show password correct\n");
+        logText("answer\n\n");
+        
     }
 
     public void openTray(int trayNum) {
-        this.outputLog.append("request: open tray "+trayNum+"\n");
-        this.outputLog.append("answer\n\n");
+        logText("request: open tray "+trayNum+"\n");
+        logText("answer\n\n");
+        
     }
 
+    // From http://binfalse.de/2012/04/conditionally-autoscroll-a-jscrollpane/
+    private void logText (String text)
+    {
+        final JScrollBar vbar = jScrollPane1.getVerticalScrollBar ();
+        // is the scroll bar at the bottom?
+        boolean end = vbar.getMaximum () == vbar.getValue () + vbar.getVisibleAmount ();
+
+        // append some new text to the text area
+        // (or do something else that increases the contents of the JScrollPane)
+        this.outputLog.append (text);
+
+        // if scroll bar already was at the bottom we schedule
+        // a new scroll event to again scroll to the bottom
+        // As you can see, here a new event is put in the EventQueue, and this event is told to put another event in the queue that will do the scroll event. Correct, that’s a bit strange, but the swing stuff is very lazy and it might take a while until the new maximum position of the scroll bar is calculated after the whole GUI stuff is re-validated. So let’s be sure that our event definitely happens when all dependent swing events are processed.
+        if (end)
+        {
+            EventQueue.invokeLater (new Runnable ()
+            {
+                public void run ()
+                {
+                    EventQueue.invokeLater (new Runnable ()
+                    {
+                        public void run ()
+                        {
+                            vbar.setValue (vbar.getMaximum ());
+                        }
+                    });
+                }
+            });
+
+        }
+    }
+    
     
     /**
      * This method is called from within the constructor to initialize the form.
