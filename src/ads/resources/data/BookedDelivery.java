@@ -19,8 +19,8 @@ public class BookedDelivery extends DeliveryStep implements Serializable {
     public BookedDelivery() {
     }
     
-    public BookedDelivery(Timestamp time) {
-        super(time);
+    public BookedDelivery(Timestamp time, Delivery delivery) {
+        super(time, delivery);
     }
 
     @Override
