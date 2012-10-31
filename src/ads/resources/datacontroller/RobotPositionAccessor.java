@@ -14,6 +14,21 @@ import javax.persistence.EntityManager;
  */
 public class RobotPositionAccessor {
 
+    public static boolean isMoving() {
+        EntityManager em = Persistance.getEntityManager();
+        ads.resources.data.RobotPosition r = em.find(ads.resources.data.RobotPosition.class, 1L);
+        return r.isIsMoving();
+    }
+
+    public static void setMoving(boolean isMoving) {
+        EntityManager em = Persistance.getEntityManager();
+        ads.resources.data.RobotPosition r = em.find(ads.resources.data.RobotPosition.class, 1L);
+        r.setIsMoving(isMoving);
+        em.getTransaction().begin();
+        em.persist(r);
+        em.getTransaction().commit();
+    }
+
     public RobotPositionAccessor() throws Exception {
         throw new Exception("Don't try to instantiate me");
     }
@@ -37,7 +52,6 @@ public class RobotPositionAccessor {
         ads.resources.data.RobotPosition r = em.find(ads.resources.data.RobotPosition.class, 1L);
         r.setLastKnownPosition(r.getLastKnownPosition().getNextOffice());
         em.getTransaction().begin();
-//        em.remove(r);
         em.persist(r);
         em.getTransaction().commit();
     }

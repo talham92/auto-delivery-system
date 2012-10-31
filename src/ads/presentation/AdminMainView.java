@@ -10,12 +10,13 @@ package ads.presentation;
  */
 public class AdminMainView extends javax.swing.JFrame {
     private ClientControllerInterface controller;
+    
     /**
      * Creates new form AdminMainView
      */
     public AdminMainView(ClientControllerInterface c) {
-        initComponents();
         controller = c;
+        initComponents();
     }
 
     /**
@@ -28,6 +29,8 @@ public class AdminMainView extends javax.swing.JFrame {
     private void initComponents() {
 
         jButton1 = new javax.swing.JButton();
+        jTabbedPane1 = new javax.swing.JTabbedPane();
+        jPanel1 = new javax.swing.JPanel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -38,22 +41,43 @@ public class AdminMainView extends javax.swing.JFrame {
             }
         });
 
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 375, Short.MAX_VALUE)
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 167, Short.MAX_VALUE)
+        );
+
+        jTabbedPane1.addTab("tab1", jPanel1);
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jButton1)
-                .addContainerGap(275, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jTabbedPane1)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jButton1)
+                        .addGap(0, 265, Short.MAX_VALUE)))
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addGap(65, 65, 65)
                 .addComponent(jButton1)
-                .addContainerGap(212, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jTabbedPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 195, Short.MAX_VALUE)
+                .addContainerGap())
         );
+
+        jTabbedPane1.addTab("Status", new StatusPanel(controller));
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -66,5 +90,7 @@ public class AdminMainView extends javax.swing.JFrame {
    
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
+    private javax.swing.JPanel jPanel1;
+    private javax.swing.JTabbedPane jTabbedPane1;
     // End of variables declaration//GEN-END:variables
 }
