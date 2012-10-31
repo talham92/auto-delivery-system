@@ -4,10 +4,9 @@
  */
 package ads.resources.datacontroller;
 
-import ads.resources.data.BookedDelivery;
+import ads.resources.data.DeliveredDelivery;
 import ads.resources.data.Delivery;
 import ads.resources.data.FloorMap;
-import ads.resources.data.PickedUpDelivery;
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.List;
@@ -32,7 +31,7 @@ public class DeliveryHistory implements Serializable {
         
         try {
             List<Delivery> pendingDeliveries = em.createNamedQuery("Delivery.searchPending")
-            .setParameter("class", Arrays.asList(BookedDelivery.class, PickedUpDelivery.class))
+            .setParameter("delivereddeliveryclass", Arrays.asList(DeliveredDelivery.class))
             .getResultList();
             if(pendingDeliveries == null || pendingDeliveries.isEmpty()) {
 //                throw new Exception("There are no deliveries!");
@@ -41,9 +40,11 @@ public class DeliveryHistory implements Serializable {
 
             Delivery mostPrioritaryDelivery = null;
             double maxPriority = -1;
+            
+            System.out.println(pendingDeliveries);
 
             for(Delivery d : pendingDeliveries) {
-                double priority = FloorMap.getMaxNumOfHops()/FloorMap.calculateNumOfHops(RobotPositionAccessor.getRobotPosition(), d.getNextUser().getOffice()) + d.getUrgency();
+                double priority = FloorMap.getMaxNumOfHops()/FloorMap.calculateNumOfHops(RobotPositionAccessor.getRobotPosition(), d.getNextUser().getOffice()) + d.getPriority();
                 if(priority > maxPriority) {
                     mostPrioritaryDelivery = d;
                     maxPriority = priority;

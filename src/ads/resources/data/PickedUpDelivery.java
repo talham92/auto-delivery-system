@@ -7,7 +7,6 @@ package ads.resources.data;
 import java.io.Serializable;
 import java.sql.Timestamp;
 import javax.persistence.Entity;
-import javax.persistence.OneToOne;
 
 /**
  *
@@ -16,23 +15,12 @@ import javax.persistence.OneToOne;
 @Entity
 public class PickedUpDelivery extends DeliveryStep implements Serializable {
     private static final long serialVersionUID = 12L;
-    @OneToOne
-    private BookedDelivery previousState;
 
     public PickedUpDelivery() {
     }
 
-    public PickedUpDelivery(Timestamp timeCreation, BookedDelivery previousState) {
-        super(timeCreation);
-        this.previousState = previousState;
-    }
-
-    public BookedDelivery getPreviousState() {
-        return previousState;
-    }
-
-    public void setPreviousState(BookedDelivery previousState) {
-        this.previousState = previousState;
+    public PickedUpDelivery(Timestamp timeCreation, Delivery delivery) {
+        super(timeCreation, delivery);
     }
 
     @Override

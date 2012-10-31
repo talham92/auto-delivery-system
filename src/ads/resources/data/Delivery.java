@@ -7,6 +7,9 @@ package ads.resources.data;
 import ads.resources.datacontroller.Persistance;
 import java.io.Serializable;
 import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import javax.persistence.Entity;
 import javax.persistence.EntityManager;
 import javax.persistence.GeneratedValue;
@@ -14,17 +17,13 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQuery;
-import javax.persistence.OneToOne;
+import javax.persistence.OneToMany;
 
 /**
  *
  * @author mgamell
  */
 @Entity
-@NamedQuery(
-    name="Delivery.searchPending",
-    query="SELECT c FROM Delivery c WHERE TYPE(c.state) IN :class"
-)
 public class Delivery implements Serializable {
     private static final long serialVersionUID = 6L;
 
@@ -37,20 +36,18 @@ public class Delivery implements Serializable {
     @ManyToOne
     private ADSUser receiver;
     private Timestamp timestampField;
-    @OneToOne
-    private DeliveryStep state;
     private double priority;
 
     public Delivery() {
     }
 
-    public Delivery(ADSUser sender, ADSUser receiver, Timestamp timestampField, DeliveryStep state, double urgency) {
+    public Delivery(ADSUser sender, ADSUser receiver, Timestamp timestampField, double priority) {
         this.sender = sender;
         this.receiver = receiver;
         this.timestampField = timestampField;
-        this.state = state;
-        this.priority = urgency;
+        this.priority = priority;
     }
+
 
     public int getId() {
         return id;
@@ -93,28 +90,13 @@ public class Delivery implements Serializable {
         this.timestampField = timestampField;
     }
 
-    public DeliveryStep getState() {
-        return state;
-    }
-
-    public void setState(DeliveryStep state) {
-        this.state = state;
-    }
-
-    public double getUrgency() {
-        return priority;
-    }
-
-    public void setUrgency(double urgency) {
-        this.priority = urgency;
-    }
-
     public ADSUser getNextUser() {
-        if(this.state instanceof DeliveredDelivery) {
+        DeliveryStep state = getCurrentState();
+        if(state instanceof DeliveredDelivery) {
             throw new RuntimeException("This delivery has been already delivered, it is closed!");
-        } else if(this.state instanceof BookedDelivery) {
+        } else if(state instanceof BookedDelivery) {
             return this.sender;
-        } else if(this.state instanceof PickedUpDelivery) {
+        } else if(state instanceof PickedUpDelivery) {
             return this.receiver;
         } else {
             throw new RuntimeException("This delivery is in an unidentified state!");
@@ -126,30 +108,32 @@ public class Delivery implements Serializable {
         em.getTransaction().begin();
         java.util.Date date = new java.util.Date();
         Timestamp timestampAux = new Timestamp(date.getTime());
-        if(this.state instanceof DeliveredDelivery) {
+        DeliveryStep state = getCurrentState();
+        DeliveryStep newState;
+        if(state instanceof DeliveredDelivery) {
             em.getTransaction().rollback();
             throw new RuntimeException("This delivery has been already delivered, it is closed!");
-        } else if(this.state instanceof BookedDelivery) {
+        } else if(state instanceof BookedDelivery) {
             // Create a new state and store the previous one.
-            state = new PickedUpDelivery((Timestamp)timestampAux.clone(), (BookedDelivery) state);
-        } else if(this.state instanceof PickedUpDelivery) {
+            newState = new PickedUpDelivery((Timestamp)timestampAux.clone(), this);
+        } else if(state instanceof PickedUpDelivery) {
             // Create a new state and store the previous one.
-            state = new DeliveredDelivery((Timestamp)timestampAux.clone(), (PickedUpDelivery) state);
+            newState = new DeliveredDelivery((Timestamp)timestampAux.clone(), this);
         } else {
             em.getTransaction().rollback();
             throw new RuntimeException("This delivery is in an unidentified state!");
         }
-        em.persist(state);
-        em.persist(this);
+        em.persist(newState);
         em.getTransaction().commit();
     }
 
     public boolean isBookedNotYetPickedUp() {
-        if(this.state instanceof DeliveredDelivery) {
+        DeliveryStep state = getCurrentState();
+        if(state instanceof DeliveredDelivery) {
             return false;
-        } else if(this.state instanceof BookedDelivery) {
+        } else if(state instanceof BookedDelivery) {
             return true;
-        } else if(this.state instanceof PickedUpDelivery) {
+        } else if(state instanceof PickedUpDelivery) {
             return false;
         } else {
             throw new RuntimeException("This delivery is in an unidentified state!");
@@ -157,11 +141,12 @@ public class Delivery implements Serializable {
     }
 
     public boolean isPickedUpNotYetDelivered() {
-        if(this.state instanceof DeliveredDelivery) {
+        DeliveryStep state = getCurrentState();
+        if(state instanceof DeliveredDelivery) {
             return false;
-        } else if(this.state instanceof BookedDelivery) {
+        } else if(state instanceof BookedDelivery) {
             return false;
-        } else if(this.state instanceof PickedUpDelivery) {
+        } else if(state instanceof PickedUpDelivery) {
             return true;
         } else {
             throw new RuntimeException("This delivery is in an unidentified state!");
@@ -169,14 +154,32 @@ public class Delivery implements Serializable {
     }
 
     public boolean isDelivered() {
-        if(this.state instanceof DeliveredDelivery) {
+        DeliveryStep state = getCurrentState();
+        if(state instanceof DeliveredDelivery) {
             return true;
-        } else if(this.state instanceof BookedDelivery) {
+        } else if(state instanceof BookedDelivery) {
             return false;
-        } else if(this.state instanceof PickedUpDelivery) {
+        } else if(state instanceof PickedUpDelivery) {
             return false;
         } else {
             throw new RuntimeException("This delivery is in an unidentified state!");
         }
+    }
+
+    public DeliveryStep getCurrentState() {
+        EntityManager em = Persistance.getEntityManager();
+        DeliveryStep deliveryStep = (DeliveryStep) em.createNamedQuery("Delivery.searchStateListOrderedByDate")
+                .setParameter("delivery", this)
+                .setMaxResults(1)
+                .getSingleResult();
+        return deliveryStep;
+    }
+
+    public List<DeliveryStep> getStateList() {
+        EntityManager em = Persistance.getEntityManager();
+        List<DeliveryStep> deliverySteps = em.createNamedQuery("Delivery.searchStateListOrderedByDate")
+                .setParameter("delivery", this)
+                .getResultList();
+        return deliverySteps;
     }
 }

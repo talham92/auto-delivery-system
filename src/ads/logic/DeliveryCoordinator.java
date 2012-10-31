@@ -42,7 +42,7 @@ public class DeliveryCoordinator {
         deliveryWaiterThread.start();
     }
 
-    public void bookDelivery(double urgency, List<String> targetListUsername, String username)
+    public void bookDelivery(double priority, List<String> targetListUsername, String username)
     throws NonBookedDeliveryException
     {
         EntityManager em = Persistance.getEntityManager();
@@ -58,7 +58,7 @@ public class DeliveryCoordinator {
             throw new NonBookedDeliveryException("receiver username "+username+"were not found");
         }
 
-        if(urgency > 1.0 || urgency < 0.0) {
+        if(priority > 1.0 || priority < 0.0) {
             throw new NonBookedDeliveryException("urgency must be a double value between 0.0 and 1.0");
         }
 
@@ -74,12 +74,12 @@ public class DeliveryCoordinator {
             }
             java.util.Date date = new java.util.Date();
             Timestamp timestampField = new Timestamp(date.getTime());
-            DeliveryStep state = new BookedDelivery((Timestamp)timestampField.clone());
+            // The following instruction assigns delivery to the ADSuser automatically
+            Delivery newDel = new Delivery(sender, receiver, timestampField, priority);
+            DeliveryStep state = new BookedDelivery((Timestamp)timestampField.clone(), newDel);
+            em.persist(newDel);
             em.persist(state);
 
-            // The following instruction assigns delivery to the ADSuser automatically
-            Delivery newDel = new Delivery(sender, receiver, timestampField, state, urgency);
-            em.persist(newDel);
         }
         em.getTransaction().commit();
     }

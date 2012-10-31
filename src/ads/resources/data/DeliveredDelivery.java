@@ -20,23 +20,11 @@ import javax.persistence.OneToOne;
 public class DeliveredDelivery extends DeliveryStep implements Serializable {
     private static final long serialVersionUID = 13L;
 
-    @OneToOne
-    private PickedUpDelivery previousState;
-
     public DeliveredDelivery() {
     }
 
-    public DeliveredDelivery(Timestamp timeCreation, PickedUpDelivery previousState) {
-        super(timeCreation);
-        this.previousState = previousState;
-    }
-
-    public PickedUpDelivery getPreviousState() {
-        return previousState;
-    }
-
-    public void setPreviousState(PickedUpDelivery previousState) {
-        this.previousState = previousState;
+    public DeliveredDelivery(Timestamp timeCreation, Delivery delivery) {
+        super(timeCreation, delivery);
     }
 
     @Override
