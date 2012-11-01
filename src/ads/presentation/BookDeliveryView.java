@@ -18,13 +18,13 @@ import javax.swing.table.DefaultTableModel;
  *
  * @author MFA, mgamell
  */
-public class BookDeliveryView2 extends javax.swing.JPanel {
+public class BookDeliveryView extends javax.swing.JPanel {
     private Set<String[]> targetList;
     private ClientControllerInterface controller;
     /**
      * Creates new form BookDeliveryView
      */
-    public BookDeliveryView2(ClientControllerInterface c) {
+    public BookDeliveryView(ClientControllerInterface c) {
         initComponents();
         targetList=new HashSet<>();
         resultTable.addMouseListener(new MouseAdapter() {
