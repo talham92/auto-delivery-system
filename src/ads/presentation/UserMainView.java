@@ -15,6 +15,7 @@ public class UserMainView extends javax.swing.JFrame {
     private ClientControllerInterface controller;
     private UserMainView thisView;
     private DeliveryStatusView deliveryStatusView;
+    private BookDeliveryView2 bookDeliveryView;
     /**
      * Creates new form UserMainView
      */
@@ -22,6 +23,8 @@ public class UserMainView extends javax.swing.JFrame {
         thisView = this;
         controller = c;
         initComponents();
+        bookDeliveryView = new BookDeliveryView2(controller);
+        jTabbedPane1.addTab("Book Delivery", bookDeliveryView);
         deliveryStatusView = new DeliveryStatusView(controller);
         jTabbedPane1.addTab("Track Status", deliveryStatusView);
         jTabbedPane1.addChangeListener(new ChangeListener() {
@@ -51,34 +54,11 @@ public class UserMainView extends javax.swing.JFrame {
     private void initComponents() {
 
         jTabbedPane1 = new javax.swing.JTabbedPane();
-        jPanel1 = new javax.swing.JPanel();
-        jLabel1 = new javax.swing.JLabel();
-        jButton1 = new javax.swing.JButton();
+        logoutButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        jLabel1.setText("BOOK DELIVERY");
-
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(197, 197, 197)
-                .addComponent(jLabel1)
-                .addContainerGap(197, Short.MAX_VALUE))
-        );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(108, 108, 108)
-                .addComponent(jLabel1)
-                .addContainerGap(342, Short.MAX_VALUE))
-        );
-
-        jTabbedPane1.addTab("Book Delivery", jPanel1);
-
-        jButton1.setText("Logout");
+        logoutButton.setText("Logout");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -89,17 +69,17 @@ public class UserMainView extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jTabbedPane1)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(jButton1)))
+                        .addGap(0, 707, Short.MAX_VALUE)
+                        .addComponent(logoutButton)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jButton1)
+                .addComponent(logoutButton)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jTabbedPane1)
+                .addComponent(jTabbedPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 511, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -108,9 +88,7 @@ public class UserMainView extends javax.swing.JFrame {
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JPanel jPanel1;
     private javax.swing.JTabbedPane jTabbedPane1;
+    private javax.swing.JButton logoutButton;
     // End of variables declaration//GEN-END:variables
 }
