@@ -124,7 +124,7 @@ public class BookDeliveryView extends javax.swing.JPanel {
 
             },
             new String [] {
-                "Username", "Receiver", "Address"
+                "Username", "Name", "Address"
             }
         ) {
             boolean[] canEdit = new boolean [] {
@@ -135,6 +135,7 @@ public class BookDeliveryView extends javax.swing.JPanel {
                 return canEdit [columnIndex];
             }
         });
+        resultTable.getTableHeader().setReorderingAllowed(false);
         jScrollPane7.setViewportView(resultTable);
 
         confirmAllButton.setText("Confirm all");
@@ -155,7 +156,7 @@ public class BookDeliveryView extends javax.swing.JPanel {
 
             },
             new String [] {
-                "Username", "Receiver", "Address"
+                "Username", "Name", "Address"
             }
         ) {
             boolean[] canEdit = new boolean [] {
@@ -166,6 +167,7 @@ public class BookDeliveryView extends javax.swing.JPanel {
                 return canEdit [columnIndex];
             }
         });
+        targetTable.getTableHeader().setReorderingAllowed(false);
         jScrollPane8.setViewportView(targetTable);
 
         clearAllButton.setLabel("Clear Target List");
