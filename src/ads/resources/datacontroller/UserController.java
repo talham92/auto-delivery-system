@@ -42,4 +42,13 @@ public class UserController {
             return userNotCorrect;
         }
     }
+
+    public static ADSUser findUser(String username) {
+        EntityManager em = Persistance.getEntityManager();
+        try {
+            return em.find(ADSUser.class, username);
+        } catch(Exception ex) {
+            return null;
+        }
+    }
 }

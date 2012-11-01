@@ -7,8 +7,11 @@ package ads.logic;
 import ads.resources.communication.ServerCommunicator;
 import ads.resources.data.ADSUser;
 import ads.resources.data.Box;
+import ads.resources.data.Delivery;
+import ads.resources.data.DeliveryStep;
 import ads.resources.data.Office;
 import ads.resources.data.RobotPosition;
+import ads.resources.datacontroller.DeliveryHistory;
 import ads.resources.datacontroller.Persistance;
 import ads.resources.datacontroller.RobotPositionAccessor;
 import ads.resources.datacontroller.UserController;
@@ -18,6 +21,7 @@ import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -245,6 +249,33 @@ public class ServerController implements ServerControllerInterface {
             throw new RemoteException("You are not the administrator!");
         }
         return new SystemStatus(RobotPositionAccessor.getRobotPosition().getOfficeAddress(), RobotPositionAccessor.isMoving());
+    }
+
+    @Override
+    public List<Delivery> getUserDeliveryList(String username, String password) throws RemoteException {
+        if(this.checkLogin(username, password)==UserController.userNotCorrect) {
+            throw new RemoteException("You don't have enough permission!");
+        }
+        ADSUser sender = UserController.findUser(username);
+        return DeliveryHistory.getUserDeliveryList(sender);
+    }
+
+    @Override
+    public List<String[]> getUserDeliveryDetails(String username, String password, int deliveryId) throws RemoteException {
+        if(this.checkLogin(username, password)==UserController.userNotCorrect) {
+            throw new RemoteException("You don't have enough permission!");
+        }
+        ADSUser sender = UserController.findUser(username);
+        Delivery delivery = DeliveryHistory.getDelivery(deliveryId);
+        if(!delivery.getSender().equals(sender)) {
+            throw new RemoteException("You don't have enough permission!");
+        }
+        List<DeliveryStep> deliveryStates = delivery.getStateList();
+        List<String[]> r = new ArrayList(deliveryStates.size());
+        for (DeliveryStep ds : deliveryStates) {
+             r.add(new String[]{ds.getTimeCreation().toString(), ds.getClass().getSimpleName()});
+        }
+        return r;
     }
 
 }
