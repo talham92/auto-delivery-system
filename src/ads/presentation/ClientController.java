@@ -307,7 +307,7 @@ public class ClientController implements ClientControllerInterface {
     }
     
     @Override
-    public void bookDelivery(double urgency, List<String> targetList, BookDeliveryView2 bookDeliveryView)
+    public void bookDelivery(double urgency, List<String> targetList, BookDeliveryView bookDeliveryView)
     {
         if(state != STATE_BOOKING) {
             Logger.getLogger(ClientController.class.getName()).log(Level.SEVERE, "register error: state != STATE_BOOKING");

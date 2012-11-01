@@ -15,7 +15,7 @@ public class UserMainView extends javax.swing.JFrame {
     private ClientControllerInterface controller;
     private UserMainView thisView;
     private DeliveryStatusView deliveryStatusView;
-    private BookDeliveryView2 bookDeliveryView;
+    private BookDeliveryView bookDeliveryView;
     /**
      * Creates new form UserMainView
      */
@@ -23,7 +23,7 @@ public class UserMainView extends javax.swing.JFrame {
         thisView = this;
         controller = c;
         initComponents();
-        bookDeliveryView = new BookDeliveryView2(controller);
+        bookDeliveryView = new BookDeliveryView(controller);
         jTabbedPane1.addTab("Book Delivery", bookDeliveryView);
         deliveryStatusView = new DeliveryStatusView(controller);
         jTabbedPane1.addTab("Track Status", deliveryStatusView);
