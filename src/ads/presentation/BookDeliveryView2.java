@@ -16,15 +16,15 @@ import javax.swing.table.DefaultTableModel;
 
 /**
  *
- * @author MFA
+ * @author MFA, mgamell
  */
-public class BookDeliveryView extends javax.swing.JFrame {
+public class BookDeliveryView2 extends javax.swing.JPanel {
     private Set<String[]> targetList;
     private ClientControllerInterface controller;
     /**
      * Creates new form BookDeliveryView
      */
-    public BookDeliveryView(ClientControllerInterface c) {
+    public BookDeliveryView2(ClientControllerInterface c) {
         initComponents();
         targetList=new HashSet<>();
         resultTable.addMouseListener(new MouseAdapter() {
@@ -74,9 +74,8 @@ public class BookDeliveryView extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jInternalFrame1 = new javax.swing.JInternalFrame();
         jLabel1 = new javax.swing.JLabel();
-        jButton1 = new javax.swing.JButton();
+        searchButton = new javax.swing.JButton();
         jLabel4 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
@@ -101,34 +100,13 @@ public class BookDeliveryView extends javax.swing.JFrame {
         jScrollPane1 = new javax.swing.JScrollPane();
         outputText = new javax.swing.JTextArea();
 
-        jInternalFrame1.setVisible(true);
-
-        javax.swing.GroupLayout jInternalFrame1Layout = new javax.swing.GroupLayout(jInternalFrame1.getContentPane());
-        jInternalFrame1.getContentPane().setLayout(jInternalFrame1Layout);
-        jInternalFrame1Layout.setHorizontalGroup(
-            jInternalFrame1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
-        );
-        jInternalFrame1Layout.setVerticalGroup(
-            jInternalFrame1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
-        );
-
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setMinimumSize(new java.awt.Dimension(598, 370));
-        addFocusListener(new java.awt.event.FocusAdapter() {
-            public void focusGained(java.awt.event.FocusEvent evt) {
-                frameFocusGained(evt);
-            }
-        });
-
         jLabel1.setFont(new java.awt.Font("Times New Roman", 0, 14)); // NOI18N
         jLabel1.setText("name");
 
-        jButton1.setText("Search");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        searchButton.setText("Search");
+        searchButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                searchButtonActionPerformed(evt);
             }
         });
 
@@ -197,17 +175,15 @@ public class BookDeliveryView extends javax.swing.JFrame {
             }
         });
 
-        nameField.setNextFocusableComponent(officeField);
         nameField.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                searchButtonActionPerformed(evt);
             }
         });
 
-        officeField.setNextFocusableComponent(nameField);
         officeField.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                searchButtonActionPerformed(evt);
             }
         });
 
@@ -216,11 +192,11 @@ public class BookDeliveryView extends javax.swing.JFrame {
         outputText.setText("Work log\n");
         jScrollPane1.setViewportView(outputText);
 
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
-        getContentPane().setLayout(layout);
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
+        this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+            .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(jScrollPane1)
@@ -228,30 +204,30 @@ public class BookDeliveryView extends javax.swing.JFrame {
                         .addComponent(jLabel3)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 122, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(clearAllButton)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(confirmAllButton, javax.swing.GroupLayout.PREFERRED_SIZE, 111, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
                         .addComponent(jLabel5)
-                        .addGap(0, 0, Short.MAX_VALUE))
+                        .addGap(488, 488, 488))
                     .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel4)
                             .addGroup(layout.createSequentialGroup()
                                 .addGap(10, 10, 10)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                    .addComponent(jButton1)
+                                    .addComponent(searchButton)
                                     .addGroup(layout.createSequentialGroup()
                                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                             .addComponent(jLabel1)
                                             .addComponent(jLabel2))
                                         .addGap(18, 18, 18)
                                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                            .addComponent(nameField, javax.swing.GroupLayout.DEFAULT_SIZE, 105, Short.MAX_VALUE)
-                                            .addComponent(officeField))))))
+                                            .addComponent(nameField)
+                                            .addComponent(officeField, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE))))))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jScrollPane7, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
+                        .addComponent(jScrollPane7, javax.swing.GroupLayout.DEFAULT_SIZE, 481, Short.MAX_VALUE))
                     .addComponent(jScrollPane8))
                 .addContainerGap())
         );
@@ -272,12 +248,12 @@ public class BookDeliveryView extends javax.swing.JFrame {
                             .addComponent(officeField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel2))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton1)
-                        .addGap(0, 13, Short.MAX_VALUE)))
-                .addGap(18, 18, 18)
+                        .addComponent(searchButton)
+                        .addGap(0, 77, Short.MAX_VALUE)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel5)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane8, javax.swing.GroupLayout.DEFAULT_SIZE, 81, Short.MAX_VALUE)
+                .addComponent(jScrollPane8, javax.swing.GroupLayout.DEFAULT_SIZE, 105, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 66, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -288,11 +264,9 @@ public class BookDeliveryView extends javax.swing.JFrame {
                     .addComponent(jLabel3))
                 .addContainerGap())
         );
-
-        pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+    private void searchButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchButtonActionPerformed
         // Obtain the result for the search
         List<String[]> data;
         data = controller.searchUser_NameOffice(nameField.getText(), officeField.getText());
@@ -301,61 +275,32 @@ public class BookDeliveryView extends javax.swing.JFrame {
         DefaultTableModel model = (DefaultTableModel) resultTable.getModel();
 
         // Remove all rows
-        int rows = model.getRowCount(); 
+        int rows = model.getRowCount();
         for(int i = rows - 1; i >=0; i--) {
-            model.removeRow(i); 
+            model.removeRow(i);
         }
 
         // Add all the rows from the result
         for(String[] row : data) {
             model.addRow(new Object[]{row[0], row[1], row[2]});
         }
-        
+
         //jTable2.getSelectionModel().setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         //jTable2.getSelectionModel().addListSelectionListener(new TableSelectionHandler());
-    }//GEN-LAST:event_jButton1ActionPerformed
-    /*
-    class TableSelectionHandler implements ListSelectionListener{
-        @Override
-        public void valueChanged(ListSelectionEvent e) {
-            if(e.getValueIsAdjusting()==false)
-            {
-                ListSelectionModel lsm = (ListSelectionModel)e.getSource();
-                ++count;
-                if(count==1)
-                {
-                    int firstIndex = e.getFirstIndex();
-                    int lastIndex = e.getLastIndex();
-                    int rowIndex = lsm.getLeadSelectionIndex();
-                    int columns = jTable2.getColumnCount();
-                    String s="";
-                    for(int col = 0; col < columns; col++)  
-                     {  
-                         Object o = jTable2.getValueAt(rowIndex, col);  
-                         s += o.toString();  
-                         if(col < columns - 1)  
-                             s += ",";  
-                     }
-                    System.out.println("rowIndex:"+rowIndex+"  "+s);
-                }
-                else if(count==3) count=0;
-                
-               }
-            }
-        }
-    */
+    }//GEN-LAST:event_searchButtonActionPerformed
+
     private void confirmAllButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_confirmAllButtonActionPerformed
         List<String> targetUsernames = new ArrayList<>(targetList.size());
-        
+
         for(String[] target : targetList) {
             targetUsernames.add(target[0]);
         }
-        
+
         if(!targetList.isEmpty()){
             controller.bookDelivery(
-                    ((double)Integer.parseInt(jComboBox1.getSelectedItem().toString()))/((double)jComboBox1.getItemCount()),
-                    targetUsernames,
-                    this);
+                ((double)Integer.parseInt(jComboBox1.getSelectedItem().toString()))/((double)jComboBox1.getItemCount()),
+                targetUsernames,
+                this);
             DefaultTableModel model_3 = (DefaultTableModel) targetTable.getModel();
             while (model_3.getRowCount()>0){
                 model_3.removeRow(0);
@@ -378,16 +323,10 @@ public class BookDeliveryView extends javax.swing.JFrame {
         targetList.clear();
     }//GEN-LAST:event_clearAllButtonActionPerformed
 
-    private void frameFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_frameFocusGained
-        this.nameField.requestFocus();
-    }//GEN-LAST:event_frameFocusGained
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton clearAllButton;
     private javax.swing.JButton confirmAllButton;
-    private javax.swing.JButton jButton1;
     private javax.swing.JComboBox jComboBox1;
-    private javax.swing.JInternalFrame jInternalFrame1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
@@ -400,7 +339,7 @@ public class BookDeliveryView extends javax.swing.JFrame {
     private javax.swing.JTextField officeField;
     private javax.swing.JTextArea outputText;
     private javax.swing.JTable resultTable;
+    private javax.swing.JButton searchButton;
     private javax.swing.JTable targetTable;
     // End of variables declaration//GEN-END:variables
 }
-

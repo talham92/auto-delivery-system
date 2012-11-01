@@ -276,14 +276,6 @@ public class ClientController implements ClientControllerInterface {
                     new UserMainView(controller).setVisible(true);
                 }
             });
-
-// todo: unify screens!!!            
-java.awt.EventQueue.invokeLater(new Runnable() {
-    @Override
-    public void run() {
-        new BookDeliveryView(controller).setVisible(true);
-    }
-});
         }
 
         // Change the state to Booking.
@@ -315,7 +307,7 @@ java.awt.EventQueue.invokeLater(new Runnable() {
     }
     
     @Override
-    public void bookDelivery(double urgency, List<String> targetList, BookDeliveryView bookDeliveryView)
+    public void bookDelivery(double urgency, List<String> targetList, BookDeliveryView2 bookDeliveryView)
     {
         if(state != STATE_BOOKING) {
             Logger.getLogger(ClientController.class.getName()).log(Level.SEVERE, "register error: state != STATE_BOOKING");
