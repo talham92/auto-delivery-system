@@ -5,6 +5,7 @@
 package ads.logic;
 
 import ads.resources.data.ADSUser;
+import ads.resources.data.Delivery;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.util.List;
@@ -23,4 +24,6 @@ public interface ServerControllerInterface extends Remote {
     public void bookDelivery(String username, String password, double urgency, List<String> targetListUsernames) throws RemoteException, NonBookedDeliveryException;
 
     public SystemStatus getSystemStatus(String username, String password) throws RemoteException;
+    public List<Delivery> getUserDeliveryList(String username, String password) throws RemoteException;
+    public List<String[]> getUserDeliveryDetails(String username, String password, int deliveryId) throws RemoteException;
 }

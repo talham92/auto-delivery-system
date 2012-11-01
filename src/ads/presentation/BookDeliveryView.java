@@ -30,15 +30,9 @@ public class BookDeliveryView extends javax.swing.JFrame {
         resultTable.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-for(String[] i : targetList) {
-    System.out.println("targetList1--- "+i[0]+"  "+i[1]+"  "+i[2]);
-}
                 if (e.getClickCount() == 2) {
-    String[] selectedReceiver;
-        selectedReceiver = new String[3];
-for(String[] i : targetList) {
-    System.out.println("targetList2--- "+i[0]+"  "+i[1]+"  "+i[2]);
-}
+                    String[] selectedReceiver;
+                    selectedReceiver = new String[3];
                     JTable target = (JTable)e.getSource();
                     int rowIndex = target.getSelectedRow();
                     int columns = resultTable.getColumnCount();
@@ -47,10 +41,6 @@ for(String[] i : targetList) {
                         Object o = resultTable.getValueAt(rowIndex, col);
                         selectedReceiver[col]=o.toString();
                     }
-for(String[] i : targetList) {
-    System.out.println("targetList--- "+i[0]+"  "+i[1]+"  "+i[2]);
-}
-    System.out.println("selectedReceiver--- "+selectedReceiver[0]+"  "+selectedReceiver[1]+"  "+selectedReceiver[2]);
 
                     // Check if the targetList contains selected receiver
                     boolean selectedReceiverContained = false;
@@ -69,9 +59,6 @@ for(String[] i : targetList) {
                     } else {
                         outputText.append("The receiver with username: "+selectedReceiver[0]+" is already in the target list\n");
                     }
-for(String[] i : targetList) {
-    System.out.println("targetListEND--- "+i[0]+"  "+i[1]+"  "+i[2]);
-}
                 }
             }
         });
@@ -366,7 +353,7 @@ for(String[] i : targetList) {
         
         if(!targetList.isEmpty()){
             controller.bookDelivery(
-                    Integer.parseInt(jComboBox1.getSelectedItem().toString())/jComboBox1.getItemCount(),
+                    ((double)Integer.parseInt(jComboBox1.getSelectedItem().toString()))/((double)jComboBox1.getItemCount()),
                     targetUsernames,
                     this);
             DefaultTableModel model_3 = (DefaultTableModel) targetTable.getModel();

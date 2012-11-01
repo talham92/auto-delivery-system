@@ -13,14 +13,14 @@ import javax.swing.JOptionPane;
  *
  * @author mgamell
  */
-public class StatusPanel extends javax.swing.JPanel {
+public class SystemStatusView extends javax.swing.JPanel {
     private ClientControllerInterface controller;
-    private StatusPanel thisStatusPanel;
+    private SystemStatusView thisStatusPanel;
 
     /**
      * Creates new form StatusPanel
      */
-    public StatusPanel(ClientControllerInterface c) {
+    public SystemStatusView(ClientControllerInterface c) {
         thisStatusPanel = this;
         controller = c;
         initComponents();
@@ -44,7 +44,7 @@ public class StatusPanel extends javax.swing.JPanel {
                     try {
                         Thread.sleep(1000);
                     } catch (InterruptedException ex) {
-                        Logger.getLogger(StatusPanel.class.getName()).log(Level.SEVERE, null, ex);
+                        Logger.getLogger(SystemStatusView.class.getName()).log(Level.SEVERE, null, ex);
                     }
                 }
             }

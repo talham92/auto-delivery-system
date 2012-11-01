@@ -4,6 +4,7 @@
  */
 package ads.resources.datacontroller;
 
+import ads.resources.data.ADSUser;
 import ads.resources.data.DeliveredDelivery;
 import ads.resources.data.Delivery;
 import ads.resources.data.FloorMap;
@@ -57,4 +58,25 @@ public class DeliveryHistory implements Serializable {
             return null;
         }
     }
+
+    public static List<Delivery> getUserDeliveryList(ADSUser sender) {
+        EntityManager em = Persistance.getEntityManager();
+        
+        try {
+            List<Delivery> deliveries = em.createNamedQuery("Delivery.searchUserDeliveryList")
+            .setParameter("sender", sender)
+            .getResultList();
+            
+            return deliveries;
+        } catch(Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public static Delivery getDelivery(int deliveryId) {
+        EntityManager em = Persistance.getEntityManager();
+        return em.find(Delivery.class, deliveryId);
+    }
+
 }
