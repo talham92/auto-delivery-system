@@ -5,7 +5,6 @@
 package ads.presentation;
 
 import ads.logic.SystemStatus;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -13,6 +12,9 @@ import java.util.List;
  * @author mgamell
  */
 interface ClientControllerInterface {
+    public void stateNonLoggedIn();
+    public void stateNonLoggedIn(UserMainView viewToDispose);
+    public void stateNonLoggedIn(AdminMainView viewToDispose);
     public void login(String username, String password, LoginView login);
     public void wantsToRegister(LoginView login);
     public void register(String firstName, String lastName, String roomNumber, String email, String username, String password, String password1, RegisterView register);
