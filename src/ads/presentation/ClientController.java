@@ -98,7 +98,8 @@ public class ClientController implements ClientControllerInterface {
         }
     }
 
-    private void stateNonLoggedIn() {
+    @Override
+    public void stateNonLoggedIn() {
         // Change the state to non-logged in. We don't need to care about the
         // current state, because from every other state we can come to this 
         // state.
@@ -112,7 +113,22 @@ public class ClientController implements ClientControllerInterface {
             }
         });
     }
+
+    @Override
+    public void stateNonLoggedIn(UserMainView viewToDispose) {
+        stateNonLoggedIn();
+        viewToDispose.setVisible(false);
+        viewToDispose.dispose();
+    }
+
+    @Override
+    public void stateNonLoggedIn(AdminMainView viewToDispose) {
+        stateNonLoggedIn();
+        viewToDispose.setVisible(false);
+        viewToDispose.dispose();
+    }
     
+
     @Override
     public void register(String firstName, String lastName, String roomNumber, String email, String username, String password, String password1, RegisterView register) {
         // Check that we are in a correct state:
@@ -395,5 +411,5 @@ public class ClientController implements ClientControllerInterface {
                 JOptionPane.INFORMATION_MESSAGE);
         }
     }
-    
+
 }
