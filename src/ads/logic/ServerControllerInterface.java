@@ -5,8 +5,10 @@
 package ads.logic;
 
 import ads.resources.data.ADSUser;
+import ads.resources.data.Office;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -21,4 +23,11 @@ public interface ServerControllerInterface extends Remote {
     
     public Set<ADSUser> searchUser_NameOffice(String username, String password, String name, String office) throws RemoteException;
     public void bookDelivery(String username, String password, String urgency, List<String> targetListUsernames) throws RemoteException, NonBookedDeliveryException;
+
+    public void officeCreated(Office office)throws RemoteException;
+
+    public String clearOffices() throws RemoteException;
+    public void createLinksBtwOffices() throws RemoteException;
+
+    public ArrayList<String[]> getMapDrawingArray()throws RemoteException;
 }

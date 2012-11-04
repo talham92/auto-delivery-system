@@ -7,15 +7,20 @@ package ads.presentation;
 import ads.logic.NonBookedDeliveryException;
 import ads.logic.ServerControllerInterface;
 import ads.resources.data.ADSUser;
+import ads.resources.data.Office;
+import ads.resources.data.Persistance;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.StringTokenizer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.persistence.EntityManager;
 import javax.swing.JOptionPane;
 
 /**
@@ -31,6 +36,7 @@ public class ClientController implements ClientControllerInterface {
     public static final int STATE_VIEWING_DELIVERY_HISTORY = 6;
     public static final int STATE_ADMIN_MAIN = 7;
     public static final int STATE_ADMIN_CREATING_FLOOR_MAP = 8;
+    public static final int STATE_ADMIN_VIEW_DYNAMIC_MAP = 9;
     
     private static final int userNotCorrect=0;
     private static final int userCorrect_Admin=1;
@@ -101,7 +107,7 @@ public class ClientController implements ClientControllerInterface {
         // state.
         state = STATE_NON_LOGGED_IN;
 
-        // Create and display the form
+        // Create and display the orm
         java.awt.EventQueue.invokeLater(new Runnable() {
             @Override
             public void run() {
@@ -231,7 +237,8 @@ public class ClientController implements ClientControllerInterface {
                 stateBooking();
         }
     }
-    private void stateAdminMain(){
+    @Override
+    public void stateAdminMain(){
         state=STATE_ADMIN_MAIN;
         //Create the related form and display
         java.awt.EventQueue.invokeLater(new Runnable() {
@@ -251,6 +258,10 @@ public class ClientController implements ClientControllerInterface {
         stateAdminCreateFloorMap();
     }
     private void stateAdminCreateFloorMap(){
+        if(state != STATE_ADMIN_MAIN) {
+            Logger.getLogger(ClientController.class.getName()).log(Level.SEVERE, "create MAP error: state != STATE_ADMIN_MAIN");
+            System.exit(-1);
+        }
         state = STATE_ADMIN_CREATING_FLOOR_MAP; // set the state of the controller
         //
         // Create and display the form
@@ -322,5 +333,162 @@ public class ClientController implements ClientControllerInterface {
                 JOptionPane.ERROR_MESSAGE);
         }
     }
-    
+
+    @Override
+    public void createFloorMap(String text, AdminCreateFloorMapView adminCreateFloorMap) {
+        //Clear offices before creating a new map to avoid the conflicts and inconsistencies
+        clearOffices(adminCreateFloorMap);
+        //
+        String[] sTokens;
+        String[] eTokens;
+        String[] adjTokens;
+        String nodeName, preNodeName, preNodeDir, preNodeDist,
+                         nextNodeName, nextNodeDir, nextNodeDist,
+                         endLine, line, adjNodePart;
+        // Extracting the nodes and the relations and distances from the text
+        StringTokenizer st = new StringTokenizer(text);
+        String[] lineTokens=text.split("\\n");
+        for(int i=0; i<lineTokens.length; i++) // we are tracing the lines
+        {
+            line=lineTokens[i];
+            sTokens=line.split("/");
+            nodeName=sTokens[0];
+            endLine=sTokens[1];
+            if(i==0) //if the related node is 'start'
+            {
+                //Check whether the entered start line format is correct
+                if(!checkMapLineFormat("startLine", line))
+                    throw new RuntimeException();
+                preNodeName=null;
+                preNodeDir=null;
+                preNodeDist=null;
+                
+                adjTokens=endLine.split(",");
+                nextNodeName=adjTokens[0];
+                nextNodeDir=adjTokens[1];
+                nextNodeDist=adjTokens[2];
+            }
+            else if(i==lineTokens.length-1)//if the related node is 'end'
+            {
+                //Check whether the entered end line format is correct
+                if(!checkMapLineFormat("endLine", line))
+                    throw new RuntimeException();
+                adjTokens=endLine.split(",");
+                preNodeName=adjTokens[0];
+                preNodeDir=adjTokens[1];
+                preNodeDist=adjTokens[2];
+                
+                nextNodeName=null;
+                nextNodeDir=null;
+                nextNodeDist=null;
+            }
+            else //if the line is a middle line
+            {
+                //Check whether the entered mid line format is correct
+                if(!checkMapLineFormat("midLine", line))
+                    throw new RuntimeException();
+                
+                eTokens=endLine.split("--");
+                // for the previous node; first one in the end line
+                adjNodePart=eTokens[0];
+                adjTokens=adjNodePart.split(",");
+                
+                preNodeName=adjTokens[0];
+                preNodeDir=adjTokens[1];
+                preNodeDist=adjTokens[2];
+                // for the next node; second one in the end line
+                adjNodePart=eTokens[1];
+                adjTokens=adjNodePart.split(",");
+                nextNodeName=adjTokens[0];
+                nextNodeDir=adjTokens[1];
+                nextNodeDist=adjTokens[2];
+            }
+            //Create the corresponding office
+            // We have everything to create the offices in the database
+            //In this part only the addresses of the adjacent nodes will be assigned
+            //Next time there is another to-be-implementd function called to make the links btw the offices
+            try {
+                //Call related server function to persist the office object
+                server.officeCreated(new Office(nodeName, nextNodeName, preNodeName,
+                                    preNodeDir, preNodeDist, nextNodeDir, nextNodeDist));
+            } catch (RemoteException ex) {
+                Logger.getLogger(ClientController.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        //After creating the map, make the links btw the offices
+        createLinksBtwOffices();
+    }
+
+    @Override
+    public void clearOffices(AdminCreateFloorMapView v) {
+        try {
+            String r=server.clearOffices();
+            if(r.equals("preCreatedMapDeleted"))
+                v.getOutputText().append("There already created map and it is cleared\n");
+            else if(r.equals("noPreCreatedMap"))
+                v.getOutputText().append("There was no already created map and new map is successfully created\n");
+        } catch (RemoteException ex) {
+            Logger.getLogger(ClientController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    public boolean checkMapLineFormat(String whichLine, String line)
+    {   // Simple check it needs to be improced but may be later if we have enough time !!!
+        //Check the dist,dir regions 
+        //Check whether multiple offices with the same name is entered
+        String[] lineTokens;
+        String[] eTokens;
+        lineTokens=line.split("/");
+        eTokens=lineTokens[1].split("--");
+        if(lineTokens.length!=2)
+            return false;
+        else if((whichLine.equals("startLine") || whichLine.equals("endLine")) && eTokens.length!=1)
+            return false;
+        else if(whichLine.equals("midLine") && eTokens.length!=2)
+            return false;
+        else
+            return true;
+    }
+
+    @Override
+    public void createLinksBtwOffices() {
+        try {
+            server.createLinksBtwOffices();
+        } catch (RemoteException ex) {
+            Logger.getLogger(ClientController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    @Override
+    public ArrayList<String[]> getMapDrawingArray() {
+        try {
+            return server.getMapDrawingArray();
+        } catch (RemoteException ex) {
+            Logger.getLogger(ClientController.class.getName()).log(Level.SEVERE, null, ex);
+            return null;
+        }
+    }
+
+    @Override
+    public void wantsToLookAtDynamicViewOfMap(AdminMainView aThis) {
+        // set the admin main view invisible and dispose it
+        aThis.setVisible(false);
+        aThis.dispose();
+        
+        stateAdminViewDynamicMap();
+    }
+
+    private void stateAdminViewDynamicMap() {
+        if(state != STATE_ADMIN_MAIN) {
+            Logger.getLogger(ClientController.class.getName()).log(Level.SEVERE, "view dynamic MAP error: state != STATE_ADMIN_MAIN");
+            System.exit(-1);
+        }
+        state = STATE_ADMIN_VIEW_DYNAMIC_MAP;
+        // Create and display the form
+        java.awt.EventQueue.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                new AdminViewDynamicMap(controller).setVisible(true);
+            }
+        });
+    }
 }
