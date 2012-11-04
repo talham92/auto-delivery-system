@@ -4,6 +4,7 @@
  */
 package ads.presentation;
 
+import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,4 +20,12 @@ interface ClientControllerInterface {
     public List<String[]> searchUser_NameOffice(String name, String office);
     public void bookDelivery(String urgency, List<String> targetList, BookDeliveryView bookDeliveryView);
     public void wantsToCreateFloorMap(AdminMainView v);
+
+    public void createFloorMap(String text, AdminCreateFloorMapView v);
+    public void clearOffices(AdminCreateFloorMapView v);
+    public void createLinksBtwOffices();
+    public ArrayList<String[]> getMapDrawingArray();
+    public void stateAdminMain();
+
+    public void wantsToLookAtDynamicViewOfMap(AdminMainView aThis);
 }

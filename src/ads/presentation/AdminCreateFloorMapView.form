@@ -22,15 +22,42 @@
   <Layout>
     <DimensionLayout dim="0">
       <Group type="103" groupAlignment="0" attributes="0">
-          <Group type="102" alignment="0" attributes="0">
+          <Group type="102" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
-              <Group type="103" groupAlignment="1" max="-2" attributes="0">
+              <Group type="103" groupAlignment="0" attributes="0">
+                  <Group type="102" attributes="0">
+                      <Group type="103" groupAlignment="0" attributes="0">
+                          <Group type="103" alignment="0" groupAlignment="1" max="-2" attributes="0">
+                              <Component id="jScrollPane1" alignment="0" pref="256" max="32767" attributes="0"/>
+                              <Component id="jScrollPane3" alignment="0" max="32767" attributes="0"/>
+                          </Group>
+                          <Component id="jLabel2" alignment="0" min="-2" max="-2" attributes="0"/>
+                      </Group>
+                      <Group type="103" groupAlignment="0" attributes="0">
+                          <Group type="102" attributes="0">
+                              <EmptySpace type="separate" max="-2" attributes="0"/>
+                              <Group type="103" groupAlignment="0" attributes="0">
+                                  <Group type="102" attributes="0">
+                                      <Group type="103" groupAlignment="0" attributes="0">
+                                          <Component id="jLabel1" min="-2" max="-2" attributes="0"/>
+                                          <Component id="createMap" min="-2" max="-2" attributes="0"/>
+                                          <Component id="clearMap" min="-2" pref="89" max="-2" attributes="0"/>
+                                      </Group>
+                                      <EmptySpace min="0" pref="190" max="32767" attributes="0"/>
+                                  </Group>
+                                  <Component id="jScrollPane2" pref="279" max="32767" attributes="0"/>
+                              </Group>
+                          </Group>
+                          <Group type="102" alignment="1" attributes="0">
+                              <EmptySpace max="32767" attributes="0"/>
+                              <Component id="backButton" min="-2" max="-2" attributes="0"/>
+                              <EmptySpace min="-2" pref="112" max="-2" attributes="0"/>
+                          </Group>
+                      </Group>
+                  </Group>
                   <Component id="floorMapPanel" alignment="0" max="32767" attributes="0"/>
-                  <Component id="createMap" min="-2" max="-2" attributes="0"/>
-                  <Component id="jScrollPane3" alignment="0" pref="484" max="32767" attributes="0"/>
-                  <Component id="jScrollPane1" alignment="0" max="32767" attributes="0"/>
               </Group>
-              <EmptySpace pref="45" max="32767" attributes="0"/>
+              <EmptySpace max="-2" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -38,14 +65,32 @@
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" alignment="1" attributes="0">
               <EmptySpace min="-2" pref="20" max="-2" attributes="0"/>
-              <Component id="jScrollPane3" min="-2" max="-2" attributes="0"/>
-              <EmptySpace type="separate" max="-2" attributes="0"/>
-              <Component id="jScrollPane1" min="-2" max="-2" attributes="0"/>
-              <EmptySpace type="separate" max="-2" attributes="0"/>
-              <Component id="createMap" min="-2" max="-2" attributes="0"/>
-              <EmptySpace pref="170" max="32767" attributes="0"/>
-              <Component id="floorMapPanel" min="-2" max="-2" attributes="0"/>
-              <EmptySpace max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="0" attributes="0">
+                  <Group type="102" alignment="1" attributes="0">
+                      <Component id="jScrollPane3" min="-2" pref="116" max="-2" attributes="0"/>
+                      <EmptySpace min="-2" pref="9" max="-2" attributes="0"/>
+                      <Component id="jLabel2" min="-2" max="-2" attributes="0"/>
+                  </Group>
+                  <Group type="102" alignment="0" attributes="0">
+                      <Component id="jLabel1" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Component id="jScrollPane2" min="-2" pref="130" max="-2" attributes="0"/>
+                  </Group>
+              </Group>
+              <EmptySpace min="-2" max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="0" attributes="0">
+                  <Group type="102" attributes="0">
+                      <Component id="createMap" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Component id="clearMap" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace min="-2" pref="11" max="-2" attributes="0"/>
+                      <Component id="backButton" min="-2" max="-2" attributes="0"/>
+                  </Group>
+                  <Component id="jScrollPane1" min="-2" max="-2" attributes="0"/>
+              </Group>
+              <EmptySpace type="unrelated" max="-2" attributes="0"/>
+              <Component id="floorMapPanel" max="32767" attributes="0"/>
+              <EmptySpace min="-2" pref="8" max="-2" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -53,19 +98,18 @@
   <SubComponents>
     <Container class="javax.swing.JPanel" name="floorMapPanel">
       <AuxValues>
-        <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new javax.swing.JPanel(){&#xa;    @Override&#xa;    public void paintComponent(Graphics g)   {&#xa;        // Paint background&#xa;        super.paintComponent(g);&#xa;&#xa;        // Get the drawing area&#xa;        int dy = getSize ().height;&#xa;        int dx = getSize ().width;&#xa;        int mid_y = dy/2;&#xa;        int mid_x = dx/2;&#xa;        int rect_x = 3 * dx/4;&#xa;        int rect_y = 3 * dy/4;&#xa;&#xa;        // Set current drawing color&#xa;        g.setColor (Color.BLACK);&#xa;&#xa;        // Draw a rectangle centered at the mid-point&#xa;        g.drawRect (mid_x-rect_x/2, mid_y-rect_y/2,  rect_x, rect_y );&#xa;&#xa;        // Set a new drawing color&#xa;        g.setColor (Color.LIGHT_GRAY);&#xa;&#xa;        // Fill a rectangle centered at the mid-point. Put it&#xa;        // within the previous rectangle so that border shows.&#xa;        g.fillRect (mid_x-rect_x/2 + 10, mid_y-rect_y/2+10, rect_x-20, rect_y-20);&#xa;&#xa;        // Set a new drawing color&#xa;        g.setColor (Color.DARK_GRAY);&#xa;&#xa;        // Draw a circle around the mid-point&#xa;        g.drawOval (mid_x-rect_x/6, mid_y-rect_y/6, rect_x/3, rect_y/3);&#xa;&#xa;        // Fill an oval inside the circle&#xa;        g.fillOval (mid_x-rect_x/6+10, mid_y-rect_y/6+10, rect_x/3-20, rect_y/3-20);&#xa;    } // paintComponent&#xa;}"/>
-        <AuxValue name="JavaCodeGenerator_CreateCodePre" type="java.lang.String" value="floorMapPanel = new javax.swing.JPanel(){&#xa;    @Override&#xa;    public void paintComponent(Graphics g)   {&#xa;        // Paint background&#xa;        super.paintComponent(g);&#xa;&#xa;        // Get the drawing area&#xa;        int dy = getSize ().height;&#xa;        int dx = getSize ().width;&#xa;        int mid_y = dy/2;&#xa;        int mid_x = dx/2;&#xa;        int rect_x = 3 * dx/4;&#xa;        int rect_y = 3 * dy/4;&#xa;&#xa;        // Set current drawing color&#xa;        g.setColor (Color.BLACK);&#xa;&#xa;        // Draw a rectangle centered at the mid-point&#xa;        g.drawRect (mid_x-rect_x/2, mid_y-rect_y/2,  rect_x, rect_y );&#xa;&#xa;        // Set a new drawing color&#xa;        g.setColor (Color.LIGHT_GRAY);&#xa;&#xa;        // Fill a rectangle centered at the mid-point. Put it&#xa;        // within the previous rectangle so that border shows.&#xa;        g.fillRect (mid_x-rect_x/2 + 10, mid_y-rect_y/2+10, rect_x-20, rect_y-20);&#xa;&#xa;        // Set a new drawing color&#xa;        g.setColor (Color.DARK_GRAY);&#xa;&#xa;        // Draw a circle around the mid-point&#xa;        g.drawOval (mid_x-rect_x/6, mid_y-rect_y/6, rect_x/3, rect_y/3);&#xa;&#xa;        // Fill an oval inside the circle&#xa;        g.fillOval (mid_x-rect_x/6+10, mid_y-rect_y/6+10, rect_x/3-20, rect_y/3-20);&#xa;    } // paintComponent&#xa;};"/>
+        <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new javax.swing.JPanel(){&#xa;    @Override&#xa;    public void paintComponent(Graphics g)   {&#xa;        // Paint background&#xa;        super.paintComponent(g);&#xa;&#xa;        // Get the drawing area&#xa;        int xt=10;&#xa;        int yt=10;&#xa;        int x=10;&#xa;        int y=10;&#xa;        int ovalL=10;&#xa;        // Set current drawing color&#xa;        g.setColor (Color.BLACK);&#xa;        String[] ts;&#xa;        // Draw a circle around the mid-point&#xa;        for(int i=0;i&lt;drawingItems.size();i++)&#xa;        {&#xa;            ts=drawingItems.get(i);&#xa;            //unitSign for adapting drawing to the negative dists&#xa;            //g.fillOval(x, y, 2, 2);&#xa;            if(ts[0].equals(&quot;end&quot;))&#xa;            {&#xa;                g.drawOval(x-(ovalL/2), y-(ovalL/2), ovalL, ovalL);&#xa;                g.fillOval(x-(ovalL/2), y-(ovalL/2), ovalL, ovalL);&#xa;            }&#xa;            else&#xa;            {&#xa;                int unitSign=Integer.parseInt(ts[2])/Math.abs(Integer.parseInt(ts[2]));&#xa;                if(ts[0].equals(&quot;start&quot;))&#xa;                {&#xa;                    g.drawOval(x-(ovalL/2), y-(ovalL/2), ovalL, ovalL);&#xa;                    g.fillOval(x-(ovalL/4), y-(ovalL/4), ovalL/2, ovalL/2);&#xa;                }&#xa;                else&#xa;                {&#xa;                    g.drawOval(x-(ovalL/2), y-(ovalL/2), ovalL, ovalL);&#xa;                }&#xa;                if(ts[1].equals(&quot;x&quot;))&#xa;                {&#xa;                    xt=x + 10*Integer.parseInt(ts[2]);&#xa;                    yt=y;&#xa;                    g.drawLine(x+unitSign*ovalL/2, y, xt-unitSign*ovalL/2, yt);&#xa;                }&#xa;                else if(ts[1].equals(&quot;y&quot;))&#xa;                {&#xa;                    xt=x;&#xa;                    yt=y + 10*Integer.parseInt(ts[2]);&#xa;                    g.drawLine(x, y+ovalL/2, xt, yt-ovalL/2);&#xa;                }&#xa;                x=xt;&#xa;                y=yt;&#xa;            }&#xa;        }&#xa;    } // paintComponent&#xa;}"/>
       </AuxValues>
 
       <Layout>
         <DimensionLayout dim="0">
           <Group type="103" groupAlignment="0" attributes="0">
-              <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
+              <EmptySpace min="0" pref="553" max="32767" attributes="0"/>
           </Group>
         </DimensionLayout>
         <DimensionLayout dim="1">
           <Group type="103" groupAlignment="0" attributes="0">
-              <EmptySpace min="0" pref="174" max="32767" attributes="0"/>
+              <EmptySpace min="0" pref="239" max="32767" attributes="0"/>
           </Group>
         </DimensionLayout>
       </Layout>
@@ -102,9 +146,10 @@
       <SubComponents>
         <Component class="javax.swing.JTextArea" name="jTextArea2">
           <Properties>
+            <Property name="editable" type="boolean" value="false"/>
             <Property name="columns" type="int" value="20"/>
             <Property name="rows" type="int" value="5"/>
-            <Property name="text" type="java.lang.String" value="Sample Map Creation Code:&#xa;node1/adjNode,dir,dist|adjNode,dir,dist&#xa;node2/adjNode,dir,dist&#xa;node1/adjNode,dir,dist|adjNode,dir,dist|adjNode,dir,dist"/>
+            <Property name="text" type="java.lang.String" value="Sample Map Creation Code:&#xa;start/node1,x,10&#xa;node1/start,x,10--node2,y,7&#xa;node2/node1,y,7--node3,y,5&#xa;node3/node2,y,5--end,x,10&#xa;end/node3,x,10"/>
           </Properties>
           <AuxValues>
             <AuxValue name="JavaCodeGenerator_AddingCodePost" type="java.lang.String" value="jTextArea2.setEditable(false);"/>
@@ -112,5 +157,53 @@
         </Component>
       </SubComponents>
     </Container>
+    <Component class="javax.swing.JButton" name="clearMap">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Clear Map"/>
+      </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="clearMapActionPerformed"/>
+      </Events>
+    </Component>
+    <Container class="javax.swing.JScrollPane" name="jScrollPane2">
+      <AuxValues>
+        <AuxValue name="autoScrollPane" type="java.lang.Boolean" value="true"/>
+      </AuxValues>
+
+      <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>
+      <SubComponents>
+        <Component class="javax.swing.JTextArea" name="outputText">
+          <Properties>
+            <Property name="editable" type="boolean" value="false"/>
+            <Property name="columns" type="int" value="20"/>
+            <Property name="rows" type="int" value="5"/>
+          </Properties>
+        </Component>
+      </SubComponents>
+    </Container>
+    <Component class="javax.swing.JLabel" name="jLabel1">
+      <Properties>
+        <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+          <Font name="Tahoma" size="14" style="1"/>
+        </Property>
+        <Property name="text" type="java.lang.String" value="Output:"/>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JLabel" name="jLabel2">
+      <Properties>
+        <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+          <Font name="Tahoma" size="14" style="1"/>
+        </Property>
+        <Property name="text" type="java.lang.String" value="Enter map creation text here:"/>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JButton" name="backButton">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Back"/>
+      </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="backButtonActionPerformed"/>
+      </Events>
+    </Component>
   </SubComponents>
 </Form>
