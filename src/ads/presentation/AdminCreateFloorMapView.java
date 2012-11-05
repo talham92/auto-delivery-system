@@ -6,6 +6,8 @@ package ads.presentation;
 
 import java.awt.Color;
 import java.awt.Graphics;
+import java.util.ArrayList;
+import javax.swing.JTextArea;
 
 /**
  *
@@ -13,6 +15,7 @@ import java.awt.Graphics;
  */
 public class AdminCreateFloorMapView extends javax.swing.JFrame {
     private final ClientControllerInterface controller;
+    private ArrayList<String[]> drawingItems;
     /**
      * Creates new form AdminCreateFloorMapView
      */
@@ -22,11 +25,12 @@ public class AdminCreateFloorMapView extends javax.swing.JFrame {
         controller=null;
     }
     public AdminCreateFloorMapView(ClientControllerInterface c) {
+        drawingItems=new ArrayList<>();
+        
         initComponents();
         controller = c;
         
         floorMapPanel.setBackground(Color.WHITE);
-        drawFloorMap();
     }
 
     /**
@@ -45,71 +49,53 @@ public class AdminCreateFloorMapView extends javax.swing.JFrame {
                 super.paintComponent(g);
 
                 // Get the drawing area
-                int dy = getSize ().height;
-                int dx = getSize ().width;
-                int mid_y = dy/2;
-                int mid_x = dx/2;
-                int rect_x = 3 * dx/4;
-                int rect_y = 3 * dy/4;
-
+                int xt=10;
+                int yt=10;
+                int x=10;
+                int y=10;
+                int ovalL=10;
                 // Set current drawing color
                 g.setColor (Color.BLACK);
-
-                // Draw a rectangle centered at the mid-point
-                g.drawRect (mid_x-rect_x/2, mid_y-rect_y/2,  rect_x, rect_y );
-
-                // Set a new drawing color
-                g.setColor (Color.LIGHT_GRAY);
-
-                // Fill a rectangle centered at the mid-point. Put it
-                // within the previous rectangle so that border shows.
-                g.fillRect (mid_x-rect_x/2 + 10, mid_y-rect_y/2+10, rect_x-20, rect_y-20);
-
-                // Set a new drawing color
-                g.setColor (Color.DARK_GRAY);
-
+                String[] ts;
                 // Draw a circle around the mid-point
-                g.drawOval (mid_x-rect_x/6, mid_y-rect_y/6, rect_x/3, rect_y/3);
-
-                // Fill an oval inside the circle
-                g.fillOval (mid_x-rect_x/6+10, mid_y-rect_y/6+10, rect_x/3-20, rect_y/3-20);
-            } // paintComponent
-        };
-        floorMapPanel = new javax.swing.JPanel(){
-            @Override
-            public void paintComponent(Graphics g)   {
-                // Paint background
-                super.paintComponent(g);
-
-                // Get the drawing area
-                int dy = getSize ().height;
-                int dx = getSize ().width;
-                int mid_y = dy/2;
-                int mid_x = dx/2;
-                int rect_x = 3 * dx/4;
-                int rect_y = 3 * dy/4;
-
-                // Set current drawing color
-                g.setColor (Color.BLACK);
-
-                // Draw a rectangle centered at the mid-point
-                g.drawRect (mid_x-rect_x/2, mid_y-rect_y/2,  rect_x, rect_y );
-
-                // Set a new drawing color
-                g.setColor (Color.LIGHT_GRAY);
-
-                // Fill a rectangle centered at the mid-point. Put it
-                // within the previous rectangle so that border shows.
-                g.fillRect (mid_x-rect_x/2 + 10, mid_y-rect_y/2+10, rect_x-20, rect_y-20);
-
-                // Set a new drawing color
-                g.setColor (Color.DARK_GRAY);
-
-                // Draw a circle around the mid-point
-                g.drawOval (mid_x-rect_x/6, mid_y-rect_y/6, rect_x/3, rect_y/3);
-
-                // Fill an oval inside the circle
-                g.fillOval (mid_x-rect_x/6+10, mid_y-rect_y/6+10, rect_x/3-20, rect_y/3-20);
+                for(int i=0;i<drawingItems.size();i++)
+                {
+                    ts=drawingItems.get(i);
+                    //unitSign for adapting drawing to the negative dists
+                    //g.fillOval(x, y, 2, 2);
+                    if(ts[0].equals("end"))
+                    {
+                        g.drawOval(x-(ovalL/2), y-(ovalL/2), ovalL, ovalL);
+                        g.fillOval(x-(ovalL/2), y-(ovalL/2), ovalL, ovalL);
+                    }
+                    else
+                    {
+                        int unitSign=Integer.parseInt(ts[2])/Math.abs(Integer.parseInt(ts[2]));
+                        if(ts[0].equals("start"))
+                        {
+                            g.drawOval(x-(ovalL/2), y-(ovalL/2), ovalL, ovalL);
+                            g.fillOval(x-(ovalL/4), y-(ovalL/4), ovalL/2, ovalL/2);
+                        }
+                        else
+                        {
+                            g.drawOval(x-(ovalL/2), y-(ovalL/2), ovalL, ovalL);
+                        }
+                        if(ts[1].equals("x"))
+                        {
+                            xt=x + 10*Integer.parseInt(ts[2]);
+                            yt=y;
+                            g.drawLine(x+unitSign*ovalL/2, y, xt-unitSign*ovalL/2, yt);
+                        }
+                        else if(ts[1].equals("y"))
+                        {
+                            xt=x;
+                            yt=y + 10*Integer.parseInt(ts[2]);
+                            g.drawLine(x, y+ovalL/2, xt, yt-ovalL/2);
+                        }
+                        x=xt;
+                        y=yt;
+                    }
+                }
             } // paintComponent
         };
         createMap = new javax.swing.JButton();
@@ -117,6 +103,12 @@ public class AdminCreateFloorMapView extends javax.swing.JFrame {
         enterMapTA = new javax.swing.JTextArea();
         jScrollPane3 = new javax.swing.JScrollPane();
         jTextArea2 = new javax.swing.JTextArea();
+        clearMap = new javax.swing.JButton();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        outputText = new javax.swing.JTextArea();
+        jLabel1 = new javax.swing.JLabel();
+        jLabel2 = new javax.swing.JLabel();
+        backButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -124,11 +116,11 @@ public class AdminCreateFloorMapView extends javax.swing.JFrame {
         floorMapPanel.setLayout(floorMapPanelLayout);
         floorMapPanelLayout.setHorizontalGroup(
             floorMapPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
+            .addGap(0, 553, Short.MAX_VALUE)
         );
         floorMapPanelLayout.setVerticalGroup(
             floorMapPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 174, Short.MAX_VALUE)
+            .addGap(0, 239, Short.MAX_VALUE)
         );
 
         createMap.setText("Create Map");
@@ -142,11 +134,37 @@ public class AdminCreateFloorMapView extends javax.swing.JFrame {
         enterMapTA.setRows(5);
         jScrollPane1.setViewportView(enterMapTA);
 
+        jTextArea2.setEditable(false);
         jTextArea2.setColumns(20);
         jTextArea2.setRows(5);
-        jTextArea2.setText("Sample Map Creation Code:\nnode1/adjNode,dir,dist|adjNode,dir,dist\nnode2/adjNode,dir,dist\nnode1/adjNode,dir,dist|adjNode,dir,dist|adjNode,dir,dist");
+        jTextArea2.setText("Sample Map Creation Code:\nstart/node1,x,10\nnode1/start,x,10--node2,y,7\nnode2/node1,y,7--node3,y,5\nnode3/node2,y,5--end,x,10\nend/node3,x,10");
         jScrollPane3.setViewportView(jTextArea2);
         jTextArea2.setEditable(false);
+
+        clearMap.setText("Clear Map");
+        clearMap.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                clearMapActionPerformed(evt);
+            }
+        });
+
+        outputText.setEditable(false);
+        outputText.setColumns(20);
+        outputText.setRows(5);
+        jScrollPane2.setViewportView(outputText);
+
+        jLabel1.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+        jLabel1.setText("Output:");
+
+        jLabel2.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+        jLabel2.setText("Enter map creation text here:");
+
+        backButton.setText("Back");
+        backButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                backButtonActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -154,38 +172,118 @@ public class AdminCreateFloorMapView extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                    .addComponent(floorMapPanel, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(createMap)
-                    .addComponent(jScrollPane3, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 484, Short.MAX_VALUE)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.LEADING))
-                .addContainerGap(45, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 256, Short.MAX_VALUE)
+                                .addComponent(jScrollPane3, javax.swing.GroupLayout.Alignment.LEADING))
+                            .addComponent(jLabel2))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(18, 18, 18)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addComponent(jLabel1)
+                                            .addComponent(createMap)
+                                            .addComponent(clearMap, javax.swing.GroupLayout.PREFERRED_SIZE, 89, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                        .addGap(0, 190, Short.MAX_VALUE))
+                                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 279, Short.MAX_VALUE)))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(backButton)
+                                .addGap(112, 112, 112))))
+                    .addComponent(floorMapPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addGap(20, 20, 20)
-                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(createMap)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 170, Short.MAX_VALUE)
-                .addComponent(floorMapPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 116, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(9, 9, 9)
+                        .addComponent(jLabel2))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jLabel1)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(createMap)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(clearMap)
+                        .addGap(11, 11, 11)
+                        .addComponent(backButton))
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(floorMapPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGap(8, 8, 8))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
     private void createMapActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_createMapActionPerformed
-        String temp=enterMapTA.getText();
-        System.out.println(temp);
+        String text=enterMapTA.getText();
+        if(text.length()==0)
+        {
+            outputText.append("First enter text for map creation !\n\n");
+        }    
+        else
+        {
+            try{
+                controller.createFloorMap(text,this);
+                outputText.append("Map is successfully created.\n\n");
+            }
+            catch(Exception e)
+            {
+                outputText.append("Some problems with the Map creation syntax, please revise it !\n\n");
+            }
+        
+        }
+        //At last ready for drawing the map
+        drawAction();
     }//GEN-LAST:event_createMapActionPerformed
 
-    public void drawFloorMap(){
-        
+    private void clearMapActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_clearMapActionPerformed
+        //We need to clear the database of the offices
+        try{
+            controller.clearOffices(this);
+            drawingItems.clear();
+            floorMapPanel.repaint();
+            outputText.append("Map is cleared.\n\n");
+        }catch(Exception e)
+        {
+            outputText.append("Clear map operation could not be completed successfully.\n\n");
+        }
+    }//GEN-LAST:event_clearMapActionPerformed
+
+    private void backButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_backButtonActionPerformed
+        // set frame invisible
+        this.setVisible(false);
+        // free frame resources
+        this.dispose();
+        controller.stateAdminMain();
+    }//GEN-LAST:event_backButtonActionPerformed
+    public void drawAction()
+    {
+        drawingItems=controller.getMapDrawingArray();
+        for(int i=0;i<drawingItems.size();i++)
+        {
+            String[] ts=drawingItems.get(i);
+            System.out.println(ts[0]+" "+ts[1]+" "+ts[2]+" "+ts[3]+" "+ts[4]);
+        }
+        //Redraw the panel
+        floorMapPanel.repaint();
     }
+    public JTextArea getOutputText() {
+        return outputText;
+    }
+    
     //Temporary main
     public static void main(String[] arasdas)
     {
@@ -197,11 +295,18 @@ public class AdminCreateFloorMapView extends javax.swing.JFrame {
     }
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton backButton;
+    private javax.swing.JButton clearMap;
     private javax.swing.JButton createMap;
     private javax.swing.JTextArea enterMapTA;
     private javax.swing.JPanel floorMapPanel;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JTextArea jTextArea2;
+    private javax.swing.JTextArea outputText;
     // End of variables declaration//GEN-END:variables
+
 }

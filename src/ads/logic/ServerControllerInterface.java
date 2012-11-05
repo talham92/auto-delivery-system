@@ -6,8 +6,10 @@ package ads.logic;
 
 import ads.resources.data.ADSUser;
 import ads.resources.data.Delivery;
+import ads.resources.data.Office;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -26,4 +28,10 @@ public interface ServerControllerInterface extends Remote {
     public SystemStatus getSystemStatus(String username, String password) throws RemoteException;
     public List<Delivery> getUserDeliveryList(String username, String password) throws RemoteException;
     public List<String[]> getUserDeliveryDetails(String username, String password, int deliveryId) throws RemoteException;
+    public void officeCreated(Office office)throws RemoteException;
+
+    public String clearOffices() throws RemoteException;
+    public void createLinksBtwOffices() throws RemoteException;
+
+    public ArrayList<String[]> getMapDrawingArray()throws RemoteException;
 }

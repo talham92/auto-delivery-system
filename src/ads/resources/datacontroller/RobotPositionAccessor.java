@@ -4,7 +4,6 @@
  */
 package ads.resources.datacontroller;
 
-import ads.resources.data.FloorMap;
 import ads.resources.data.Office;
 import javax.persistence.EntityManager;
 
