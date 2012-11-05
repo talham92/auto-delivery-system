@@ -3,8 +3,9 @@
  * and open the template in the editor.
  */
 package ads.presentation;
-
 import ads.logic.SystemStatus;
+import java.rmi.RemoteException;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -27,4 +28,12 @@ interface ClientControllerInterface {
     public SystemStatus getSystemStatus() throws Exception ;
     public void wantsToTrackDeliveryStatus(UserMainView view, DeliveryStatusView deliveryStatusView);
     public void wantsToSeeDeliveryDetails(DeliveryStatusView deliveryStatusView, int deliveryId);
+
+    public void createFloorMap(String text, AdminCreateFloorMapView v);
+    public void clearOffices(AdminCreateFloorMapView v);
+    public void createLinksBtwOffices();
+    public ArrayList<String[]> getMapDrawingArray();
+    public void stateAdminMain();
+
+    public void wantsToLookAtDynamicViewOfMap(AdminMainView aThis);
 }

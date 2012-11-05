@@ -4,10 +4,10 @@
  */
 package ads.resources.datacontroller;
 
+import ads.resources.data.FloorMap;
 import ads.resources.data.ADSUser;
 import ads.resources.data.DeliveredDelivery;
 import ads.resources.data.Delivery;
-import ads.resources.data.FloorMap;
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.List;
