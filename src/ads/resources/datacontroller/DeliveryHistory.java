@@ -45,7 +45,9 @@ public class DeliveryHistory implements Serializable {
             System.out.println(pendingDeliveries);
 
             for(Delivery d : pendingDeliveries) {
-                double priority = FloorMap.getMaxNumOfHops()/FloorMap.calculateNumOfHops(RobotPositionAccessor.getRobotPosition(), d.getNextUser().getOffice()) + d.getPriority();
+                int distance = FloorMap.calculateNumOfHops(RobotPositionAccessor.getRobotPosition(), d.getNextUser().getOffice());
+                double distancePriority = distance == 0 ? 1 : 1/distance;
+                double priority = distancePriority + d.getPriority();
                 if(priority > maxPriority) {
                     mostPrioritaryDelivery = d;
                     maxPriority = priority;

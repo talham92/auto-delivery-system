@@ -63,11 +63,12 @@ public class ServerController implements ServerControllerInterface {
         EntityManager em = Persistance.getEntityManager();
         em.getTransaction().begin();
         // String preOfficeDir, String preOfficeDist, String nextOfficeDir, String nextOfficeDist
-        Office o1 = new Office("601", "0", "x", "0", "x", (Office)null, null);
-        Office o2 = new Office("602", "0", "x", "0", "x", null, o1);
-        Office o3 = new Office("603", "0", "x", "0", "x", null, o2);
-        Office o4 = new Office("604", "0", "x", "0", "x", null, o3);
-        Office o5 = new Office("605", "0", "x", "0", "x", null, o4);
+        // String officeAddress, String preOfficeDir, String preOfficeDist, String nextOfficeDir, String nextOfficeDist, Office nextOffice, Office preOffice
+        Office o1 = new Office("start", "y", "-12", "x", "10", (Office)null, null);
+        Office o2 = new Office("602", "x", "10", "y", "7", null, o1);
+        Office o3 = new Office("603", "y", "7", "y", "5", null, o2);
+        Office o4 = new Office("604", "y", "5", "x", "-10", null, o3);
+        Office o5 = new Office("end", "x", "-10", "y", "-12", null, o4);
         o1.setPreviousOffice(o5);
         o1.setNextOffice(o2);
         o2.setNextOffice(o3);

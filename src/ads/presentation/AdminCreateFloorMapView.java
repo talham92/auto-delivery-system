@@ -238,15 +238,16 @@ public class AdminCreateFloorMapView extends javax.swing.JFrame {
             try{
                 controller.createFloorMap(text,this);
                 outputText.append("Map is successfully created.\n\n");
+                //At last ready for drawing the map
+                drawAction();
             }
             catch(Exception e)
             {
                 outputText.append("Some problems with the Map creation syntax, please revise it !\n\n");
+                e.printStackTrace();
             }
         
         }
-        //At last ready for drawing the map
-        drawAction();
     }//GEN-LAST:event_createMapActionPerformed
 
     private void clearMapActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_clearMapActionPerformed
