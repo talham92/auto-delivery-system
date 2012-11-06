@@ -18,7 +18,7 @@ import java.util.Set;
  * @author mgamell
  */
 public interface ServerControllerInterface extends Remote {
-    public void officeCreated(Office office)throws RemoteException, ServerInitializedException;
+    public void createOffice(Office office)throws RemoteException, ServerInitializedException;
     public String clearOffices() throws RemoteException, ServerInitializedException;
     public void createLinksBtwOffices() throws RemoteException, ServerInitializedException;
 

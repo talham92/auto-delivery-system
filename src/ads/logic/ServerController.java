@@ -13,6 +13,7 @@ import ads.resources.data.DeliveryStep;
 import ads.resources.data.Office;
 import ads.resources.data.RobotPosition;
 import ads.resources.datacontroller.DeliveryHistory;
+import ads.resources.datacontroller.FloorMap;
 import ads.resources.datacontroller.Persistance;
 import ads.resources.datacontroller.RobotPositionAccessor;
 import ads.resources.datacontroller.UserController;
@@ -63,7 +64,7 @@ public class ServerController implements ServerControllerInterface {
     private ServerController() {
         state = STATE_SYSTEM_NON_INITIALIZED;
         Persistance.initPersistance();
-        addAdmin();
+        UserController.addAdmin();
     }
     
     /**
@@ -191,89 +192,17 @@ public class ServerController implements ServerControllerInterface {
     @Override
     public String register(String firstName, String lastName, String roomNumber, String email, String username, String password, String password1) throws ServerNonInitializedException  {
         checkSystemInitialized();
-        EntityManager em = Persistance.getEntityManager();
-        Office office;
-        // Check business rules
-        if (!EmailChecker.checkEmail(email)) return "The e-mail address is not correct";
-        // 1. A user with a repeated name.
-        if (!em.createNamedQuery("User.searchByName")
-                .setParameter("firstName", firstName)
-                .setParameter("lastName", lastName)
-                .getResultList()
-                .isEmpty())
-            return "A user with a name "+firstName+" "+lastName+" already exist";
-        // 2. A user with a repeated username
-        if (em.find(ADSUser.class, username)!=null)
-            return "A user with a username "+username+" already exist";
-
-        office = em.find(Office.class, roomNumber);
-
-        // 3. The office does not exist
-        if (office == null)
-            return "The room number does not exist";
-
-        // 4. The e-mail address syntax is not correct
-        if (!EmailChecker.checkEmail(email))
-            return "The e-mail address is not correct";
-        
-        // 5. The password does not match with the repeated password
-        if (!password.equals(password1)) return "The password does not match with the repeated password";
-
-        
-        // Everything is correct, create and persist the user
-        em.getTransaction().begin();
-        try {
-            ADSUser u = new ADSUser(firstName, lastName, office, email, username, password);
-            em.persist(u);
-            em.getTransaction().commit();
-            // Everything went well, return null
-            return null;
-        }
-        catch(Exception ex)
-        {
-            //em.getTransaction().rollback();
-            System.out.println(ex.toString());
-            ex.printStackTrace();
-            em.getTransaction().rollback();
-            // There was an error, retorn the appropiate error message
-            return "Unexpected error occurred when storing user information";
-        }
+        return UserController.register(firstName, lastName, roomNumber, email, username, password, password1);
     }
-
+//todo: check the system is working if the server is REMOTE from the client
+//todo: autocomplete when searching!!!
     @Override
     public Set<ADSUser> searchUser_NameOffice(String username, String password, String name, String office) throws ServerNonInitializedException  {
         checkSystemInitialized();
-        EntityManager em = Persistance.getEntityManager();
-
         if(this.checkLogin(username, password)==UserController.userNotCorrect) {
             return null;
         }
-        
-        Set<ADSUser> results = new HashSet<>(20);
-        try {
-            if(name != null && !name.equals("")) {
-                results.addAll(em.createNamedQuery("User.searchByPartialNameES")
-                .setParameter("name", name)
-                .getResultList());
-                results.addAll(em.createNamedQuery("User.searchByPartialNameSSES")
-                .setParameter("name", name)
-                .getResultList());
-                results.addAll(em.createNamedQuery("User.searchByPartialNameSES")
-                .setParameter("name", name)
-                .getResultList());
-                results.addAll(em.createNamedQuery("User.searchByPartialNameCFLSES")
-                .setParameter("name", name)
-                .getResultList());
-            }
-            if(office != null && !office.equals("")) {
-                results.addAll(em.createNamedQuery("User.searchByOffice")
-                .setParameter("office", office)
-                .getResultList());
-            }
-        } catch(Exception ex) {
-            ex.printStackTrace();
-        }
-        return results;
+        return UserController.searchUser_NameOffice(username, password, name, office);
     }
 
     @Override
@@ -294,15 +223,11 @@ public class ServerController implements ServerControllerInterface {
         }
         return new SystemStatus(RobotPositionAccessor.getRobotPosition().getOfficeAddress(), RobotPositionAccessor.isMoving());
     }
-    
+
     @Override
-    public void officeCreated(Office office) throws ServerInitializedException  {
+    public void createOffice(Office office) throws ServerInitializedException  {
         checkSystemNonInitialized();
-        //persist the office entity to the database
-        EntityManager em = Persistance.getEntityManager();
-        em.getTransaction().begin();
-        em.persist(office);  
-        em.getTransaction().commit();
+        FloorMap.createOffice(office);
     }
 
     @Override
@@ -322,97 +247,14 @@ public class ServerController implements ServerControllerInterface {
         //todo: put the following function as reachable by the user
         //todo: check admin login in all admin functions
         UserController.removeUsers();
-        String rresult;
-        EntityManager em = Persistance.getEntityManager();
-        Set<Office> results = new HashSet<>(20);
-        try {
-             results.addAll(em.createNamedQuery("Office.findAll").getResultList());
-        } catch(Exception ex) {
-            ex.printStackTrace();
-        }
-        //First check whether there is already a created map or not in the database
-        if(results.size()!=0)
-            rresult="preCreatedMapDeleted";
-        else
-            rresult="noPreCreatedMap";
-        em.getTransaction().begin();
-        Iterator itr=results.iterator();
-        while(itr.hasNext())
-        {
-            Office o=(Office) itr.next();
-            //Office o2=em.find(Office.class, o.getOfficeAddress());
-            em.remove(o);
-        }
-        em.getTransaction().commit();
-//        Office o=em.find(Office.class, "101");
-//        em.getTransaction().begin();
-//        em.remove(o);
-//        em.getTransaction().commit();
-        return rresult;
+        return FloorMap.clearOffices();
     }
+    
     @Override
     public void createLinksBtwOffices() throws ServerInitializedException 
     {
         checkSystemNonInitialized();
-        //Dummy vrs
-        String preOfficeAddress, nextOfficeAddress;
-        Set<Office> result = new HashSet<>(20);
-        
-        EntityManager em = Persistance.getEntityManager();
-        Set<Office> results = new HashSet<>(20);
-        try {
-             results.addAll(em.createNamedQuery("Office.findAll").getResultList());
-        } catch(Exception ex) {
-            ex.printStackTrace();
-        }
-        for(Office o : results) {
-            //Find and link the offices
-            //Link preOffice
-            preOfficeAddress=o.getPreOfficeAddress();
-            
-            if(preOfficeAddress!=null)//if the office is start this is the case
-            {
-                result.clear();
-                result.addAll(em.createNamedQuery("Office.findByOfficeAdress")
-                                  .setParameter("officeAddress", preOfficeAddress)
-                                  .getResultList()); //Assuming only one office with this name, this is assured in the map creation process
-                if(result.size()!=1) {
-//                    System.out.println("Some problem at finding pre office:"+preOfficeAddress+" result_size: "+result.size());
-//                    for(Office oy : result) {
-//                        System.out.println(oy.getOfficeAddress());
-//                    }
-                    throw new RuntimeException();
-                }
-                else
-                {
-                    Iterator itr=result.iterator();
-                    o.setPreOffice((Office) itr.next());
-                }
-            }
-            //Link nextOffice
-            nextOfficeAddress=o.getNextOfficeAddress();
-            if(nextOfficeAddress!=null)//if the office is end this is the case
-            {
-                result.clear();
-                result.addAll(em.createNamedQuery("Office.findByOfficeAdress")
-                            .setParameter("officeAddress", nextOfficeAddress)
-                            .getResultList()); //Assuming only one office with this name, this is assured in the map creation process
-            
-                if(result.size()!=1) {
-//                    System.out.println("Some problem at finding next office: "+nextOfficeAddress+"result_size: "+result.size());
-//                    for(Office oy : result) {
-//                        System.out.println(oy.getOfficeAddress());
-//                    }
-                    throw new RuntimeException();
-                }
-                else
-                {
-                    Iterator itr=result.iterator();
-                    o.setNextOffice((Office) itr.next());
-                }
-            }
-        }
-        //goFromStartToEnd();
+        FloorMap.createLinksBtwOffices();
     }
 
     @Override
@@ -438,42 +280,7 @@ public class ServerController implements ServerControllerInterface {
     @Override
     public ArrayList<String[]> getMapDrawingArray() throws RemoteException, ServerNonInitializedException  {
         checkSystemInitialized();
-        ArrayList<String[]> r=new ArrayList<>();
-        
-        EntityManager em = Persistance.getEntityManager();
-        Set<Office> results = new HashSet<>(20);
-        results.addAll(em.createNamedQuery("Office.findByOfficeAdress")
-                            .setParameter("officeAddress", "start")
-                            .getResultList());
-        
-        Iterator itr=results.iterator();
-        Office so=(Office) itr.next();
-        
-        while(true){
-            String[] ts=new String[5];
-            ts[0]=so.getOfficeAddress();
-            ts[1]=so.getNextOfficeDir();
-            ts[2]=so.getNextOfficeDist();
-            ts[3]=so.getPreOfficeDir();
-            ts[4]=so.getPreOfficeDist();
-            r.add(ts);
-            
-            if(so.getOfficeAddress().equals("end")) {
-                break;
-            }
-            so=so.getNextOffice();
-        }
-
-        return r;
-    }
-
-    private void addAdmin() {
-        EntityManager em = Persistance.getEntityManager();
-        em.getTransaction().begin();
-        ADSUser u = new ADSUser("Admin", "istrator", null, "a@a.c", "admin", "admin");
-        u.setAdmin(true);
-        em.persist(u);
-        em.getTransaction().commit();
+        return FloorMap.getMapDrawingArray();
     }
 
 }

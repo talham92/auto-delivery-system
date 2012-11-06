@@ -35,7 +35,6 @@ import javax.persistence.Transient;
 })
 public class Office implements Serializable {
     private static final long serialVersionUID = 8L;
-    // TODO: MARC: MEHMET! I KNOW I SHOULD TOUCH THIS CLASS, BUT WE SHOULD HAVE A NUMERIC ID, AND ID=0 MUST BE COMPULSORY REPRESENTING POINT 0.
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
