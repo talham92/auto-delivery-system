@@ -5,6 +5,10 @@
 package ads.resources.datacontroller;
 
 import ads.resources.data.ADSUser;
+import ads.resources.data.Office;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
 import javax.persistence.EntityManager;
 
 /**
@@ -49,6 +53,26 @@ public class UserController {
             return em.find(ADSUser.class, username);
         } catch(Exception ex) {
             return null;
+        }
+    }
+    
+    public static void removeUsers() {
+        EntityManager em = Persistance.getEntityManager();
+        Set<ADSUser> results = new HashSet<>(20);
+        try {
+            results.addAll(em.createNamedQuery("User.findAll").getResultList());
+            em.getTransaction().begin();
+            for(ADSUser o : results) {
+                if(o.isAdmin()) {
+                    o.setOffice(null);
+                    em.persist(o);
+                } else {
+                    em.remove(o);
+                }
+            }
+            em.getTransaction().commit();
+        } catch(Exception ex) {
+            ex.printStackTrace();
         }
     }
 }

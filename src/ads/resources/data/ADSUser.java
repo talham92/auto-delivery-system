@@ -18,6 +18,10 @@ import javax.persistence.OneToOne;
 @Entity
 @NamedQueries({
     @NamedQuery(
+        name="User.findAll",
+        query="SELECT c FROM ADSUser c"
+    ),
+    @NamedQuery(
         name="User.searchByName",
         query="SELECT c FROM ADSUser c WHERE c.firstName LIKE :firstName AND c.lastName LIKE :lastName"
     ),
@@ -51,7 +55,7 @@ public class ADSUser implements Serializable {
     private static final long serialVersionUID = 1L;
     private String firstName;
     private String lastName;
-    @ManyToOne(fetch=FetchType.LAZY, cascade=CascadeType.ALL)
+    @ManyToOne(fetch=FetchType.LAZY)
 //    @JoinColumn(nullable=false)
     private Office office;
     private String email;

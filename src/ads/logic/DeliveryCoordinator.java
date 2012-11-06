@@ -12,7 +12,7 @@ import ads.resources.data.BookedDelivery;
 import ads.resources.data.Delivery;
 import ads.resources.datacontroller.DeliveryHistory;
 import ads.resources.data.DeliveryStep;
-import ads.resources.data.FloorMap;
+import ads.resources.datacontroller.FloorMap;
 import ads.resources.datacontroller.Persistance;
 import ads.resources.datacontroller.RobotPositionAccessor;
 import ads.resources.datacontroller.SectionedBox;
@@ -93,17 +93,17 @@ public class DeliveryCoordinator {
         public void run() {
             Logger log = Logger.getLogger(DeliveryWaiterThread.class.getName());
             while(!finish) {
-                log.log(Level.INFO, "begin loop");
+//                log.log(Level.INFO, "begin loop");
                 // Check if there are pending deliveries
                 if(!DeliveryHistory.hasPendingDeliveries()) {
-                log.log(Level.INFO, " no pending deliveries");
                     // There are no pending deliveries. Check the robot position
-                    if(RobotPositionAccessor.getRobotPosition().getId()==FloorMap.getIdPoint0()) {
+                    if(RobotPositionAccessor.getRobotPosition().equals(FloorMap.getStartPoint())) {
                         // The robot is in the point 0, just Wait a delay and retry.
                         try {
                             Thread.sleep(500);
                         } catch (InterruptedException ex) {}
                     } else {
+                        log.log(Level.INFO, " no pending deliveries");
                         log.log(Level.INFO, "  robot in point !=0... id={0}", RobotPositionAccessor.getRobotPosition().getId());
                         // The robot is not in the point 0, continue moving.
                         // Move the robot to the next point

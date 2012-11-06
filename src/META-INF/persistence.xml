@@ -13,9 +13,9 @@
     <class>ads.resources.data.Office</class>
     <class>ads.resources.data.BookedDelivery</class>
     <class>ads.resources.data.DeliveredDelivery</class>
-    <class>ads.resources.data.FloorMap</class>
     <class>ads.resources.datacontroller.DeliveryHistory</class>
     <class>ads.resources.data.RobotPosition</class>
+    <class>ads.resources.datacontroller.FloorMap</class>
     <properties>
       <property name="javax.persistence.jdbc.url" value="jdbc:mysql://localhost:3306/ads?zeroDateTimeBehavior=convertToNull"/>
       <property name="javax.persistence.jdbc.password" value="adspassword"/>

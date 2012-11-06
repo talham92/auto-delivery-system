@@ -39,17 +39,31 @@ public class ServerController implements ServerControllerInterface {
     private static ServerController singleton = new ServerController();
     private DeliveryCoordinator delCoordinator;
 
+    private static final int STATE_SYSTEM_NON_INITIALIZED = 0;
+    private static final int STATE_SYSTEM_INITIALIZED = 1;
+    private int state;
+
+    private void checkSystemInitialized() throws ServerNonInitializedException {
+        if(state != STATE_SYSTEM_INITIALIZED) {
+            throw new ServerNonInitializedException("Server is not initialized!");
+        }
+    }
+    
+    private void checkSystemNonInitialized() throws ServerInitializedException {
+        if(state != STATE_SYSTEM_NON_INITIALIZED) {
+            throw new ServerInitializedException("Server is initialized!");
+        }
+    }
+
+    //todo: eliminate everything that calls entitymanager and move the code to datacontroller package
     public static ServerController getInstance() {
         return singleton;
     }
-    private Office Office;
 
     private ServerController() {
+        state = STATE_SYSTEM_NON_INITIALIZED;
         Persistance.initPersistance();
-        insertTestingDataSet();
-        ServerCommunicator.init();
-//        RobotPositionAccessor.init();
-        delCoordinator = DeliveryCoordinator.getInstance();
+        addAdmin();
     }
     
     /**
@@ -57,54 +71,6 @@ public class ServerController implements ServerControllerInterface {
      */
     public static void main(String[] args) {
         initRMI();
-    }
-
-    private void insertTestingDataSet() {
-        EntityManager em = Persistance.getEntityManager();
-        em.getTransaction().begin();
-        // String preOfficeDir, String preOfficeDist, String nextOfficeDir, String nextOfficeDist
-        // String officeAddress, String preOfficeDir, String preOfficeDist, String nextOfficeDir, String nextOfficeDist, Office nextOffice, Office preOffice
-        Office o1 = new Office("start", "y", "-12", "x", "10", (Office)null, null);
-        Office o2 = new Office("602", "x", "10", "y", "7", null, o1);
-        Office o3 = new Office("603", "y", "7", "y", "5", null, o2);
-        Office o4 = new Office("604", "y", "5", "x", "-10", null, o3);
-        Office o5 = new Office("end", "x", "-10", "y", "-12", null, o4);
-        o1.setPreviousOffice(o5);
-        o1.setNextOffice(o2);
-        o2.setNextOffice(o3);
-        o3.setNextOffice(o4);
-        o4.setNextOffice(o5);
-        o5.setNextOffice(o1);
-
-        em.persist(o1);
-        em.persist(o2);
-        em.persist(o3);
-        em.persist(o4);
-        em.persist(o5);
-
-        RobotPosition r = new RobotPosition(o1, false);
-        em.persist(r);
-        
-        ADSUser u = new ADSUser("Admin", "istrator", o1, "a@a.c", "admin", "admin");
-        u.setAdmin(true);
-        em.persist(u);
-        //Add some additional users for test purposes
-        u = new ADSUser("mehmet", "aktas", o2, "mfa@gmail.com", "mfa", "1111");
-        em.persist(u);
-        u = new ADSUser("marc", "gamell", o5, "marcgamell@gmail.com", "mgamell", "a");
-        em.persist(u);
-        u = new ADSUser("ali", "veli", o4, "aliveli@hotmail.com", "aliveli", "2222");
-        em.persist(u);
-        
-        Box b;
-        b = new Box();
-        em.persist(b);
-        b = new Box();
-        em.persist(b);
-        b = new Box();
-        em.persist(b);
-        
-        em.getTransaction().commit();
     }
 
     private static void initRMI() {
@@ -142,6 +108,72 @@ public class ServerController implements ServerControllerInterface {
     }
 
     @Override
+    public void initializeWithTestingData() throws ServerInitializedException {
+        checkSystemNonInitialized();
+        Persistance.deleteAllPersistanceRecords();
+        insertTestingDataSet();
+        ServerCommunicator.init();
+        RobotPositionAccessor.init();
+        delCoordinator = DeliveryCoordinator.getInstance();
+        state = STATE_SYSTEM_INITIALIZED;
+    }
+    
+    @Override
+    public void initializeSystem() throws ServerInitializedException {
+        checkSystemNonInitialized();
+        // todo: check that we have offices
+        ServerCommunicator.init();
+        RobotPositionAccessor.init();
+        delCoordinator = DeliveryCoordinator.getInstance();
+        state = STATE_SYSTEM_INITIALIZED;
+    }
+    
+    private void insertTestingDataSet() {
+        EntityManager em = Persistance.getEntityManager();
+        em.getTransaction().begin();
+        // String preOfficeDir, String preOfficeDist, String nextOfficeDir, String nextOfficeDist
+        // String officeAddress, String preOfficeDir, String preOfficeDist, String nextOfficeDir, String nextOfficeDist, Office nextOffice, Office preOffice
+        Office o1 = new Office("start", "y", "-12", "x", "10", (Office)null, null);
+        Office o2 = new Office("602", "x", "10", "y", "7", null, o1);
+        Office o3 = new Office("603", "y", "7", "y", "5", null, o2);
+        Office o4 = new Office("604", "y", "5", "x", "-10", null, o3);
+        Office o5 = new Office("end", "x", "-10", "y", "-12", null, o4);
+        o1.setPreviousOffice(o5);
+        o1.setNextOffice(o2);
+        o2.setNextOffice(o3);
+        o3.setNextOffice(o4);
+        o4.setNextOffice(o5);
+        o5.setNextOffice(o1);
+
+        em.persist(o1);
+        em.persist(o2);
+        em.persist(o3);
+        em.persist(o4);
+        em.persist(o5);
+        
+        ADSUser u = new ADSUser("Admin", "istrator", o1, "a@a.c", "admin", "admin");
+        u.setAdmin(true);
+        em.persist(u);
+        //Add some additional users for test purposes
+        u = new ADSUser("mehmet", "aktas", o2, "mfa@gmail.com", "mfa", "1111");
+        em.persist(u);
+        u = new ADSUser("marc", "gamell", o5, "marcgamell@gmail.com", "mgamell", "a");
+        em.persist(u);
+        u = new ADSUser("ali", "veli", o4, "aliveli@hotmail.com", "aliveli", "2222");
+        em.persist(u);
+        
+        Box b;
+        b = new Box();
+        em.persist(b);
+        b = new Box();
+        em.persist(b);
+        b = new Box();
+        em.persist(b);
+        
+        em.getTransaction().commit();
+    }
+
+    @Override
     public void stopServer(String username, String password) {
         deinitRMI();
         Persistance.deinitPersistance();
@@ -149,12 +181,16 @@ public class ServerController implements ServerControllerInterface {
     }
 
     @Override
-    public int checkLogin(String username, String password) {
-        return UserController.checkLogin(username, password);
+    public int checkLogin(String username, String password) throws ServerNonInitializedException  {
+        int login = UserController.checkLogin(username, password);
+        if(login != UserController.userCorrect_Admin)
+            checkSystemInitialized();
+        return login;
     }
-   
+    
     @Override
-    public String register(String firstName, String lastName, String roomNumber, String email, String username, String password, String password1) {
+    public String register(String firstName, String lastName, String roomNumber, String email, String username, String password, String password1) throws ServerNonInitializedException  {
+        checkSystemInitialized();
         EntityManager em = Persistance.getEntityManager();
         Office office;
         // Check business rules
@@ -205,7 +241,8 @@ public class ServerController implements ServerControllerInterface {
     }
 
     @Override
-    public Set<ADSUser> searchUser_NameOffice(String username, String password, String name, String office) {
+    public Set<ADSUser> searchUser_NameOffice(String username, String password, String name, String office) throws ServerNonInitializedException  {
+        checkSystemInitialized();
         EntityManager em = Persistance.getEntityManager();
 
         if(this.checkLogin(username, password)==UserController.userNotCorrect) {
@@ -240,7 +277,8 @@ public class ServerController implements ServerControllerInterface {
     }
 
     @Override
-    public void bookDelivery(String username, String password, double urgency, List<String> targetListUsernames) throws RemoteException, NonBookedDeliveryException{
+    public void bookDelivery(String username, String password, double urgency, List<String> targetListUsernames) throws RemoteException, NonBookedDeliveryException, ServerNonInitializedException {
+        checkSystemInitialized();
         if(this.checkLogin(username, password)==UserController.userNotCorrect) {
             return;
         }
@@ -249,14 +287,17 @@ public class ServerController implements ServerControllerInterface {
     }
 
     @Override
-    public SystemStatus getSystemStatus(String username, String password) throws RemoteException {
+    public SystemStatus getSystemStatus(String username, String password) throws RemoteException, ServerNonInitializedException  {
+        checkSystemInitialized();
         if(this.checkLogin(username, password)!=UserController.userCorrect_Admin) {
             throw new RemoteException("You are not the administrator!");
         }
         return new SystemStatus(RobotPositionAccessor.getRobotPosition().getOfficeAddress(), RobotPositionAccessor.isMoving());
     }
     
-    public void officeCreated(Office office) {
+    @Override
+    public void officeCreated(Office office) throws ServerInitializedException  {
+        checkSystemNonInitialized();
         //persist the office entity to the database
         EntityManager em = Persistance.getEntityManager();
         em.getTransaction().begin();
@@ -265,7 +306,8 @@ public class ServerController implements ServerControllerInterface {
     }
 
     @Override
-    public List<Delivery> getUserDeliveryList(String username, String password) throws RemoteException {
+    public List<Delivery> getUserDeliveryList(String username, String password) throws RemoteException, ServerNonInitializedException  {
+        checkSystemInitialized();
         if(this.checkLogin(username, password)==UserController.userNotCorrect) {
             throw new RemoteException("You don't have enough permission!");
         }
@@ -273,7 +315,13 @@ public class ServerController implements ServerControllerInterface {
         return DeliveryHistory.getUserDeliveryList(sender);
     }
     
-    public String clearOffices() {
+    @Override
+    public String clearOffices() throws ServerInitializedException  {
+        checkSystemNonInitialized();
+        //todo: check if there are users... if true, throw exception... if false, clearOffices
+        //todo: put the following function as reachable by the user
+        //todo: check admin login in all admin functions
+        UserController.removeUsers();
         String rresult;
         EntityManager em = Persistance.getEntityManager();
         Set<Office> results = new HashSet<>(20);
@@ -287,15 +335,15 @@ public class ServerController implements ServerControllerInterface {
             rresult="preCreatedMapDeleted";
         else
             rresult="noPreCreatedMap";
+        em.getTransaction().begin();
         Iterator itr=results.iterator();
         while(itr.hasNext())
         {
             Office o=(Office) itr.next();
             //Office o2=em.find(Office.class, o.getOfficeAddress());
-            em.getTransaction().begin();
             em.remove(o);
-            em.getTransaction().commit();
         }
+        em.getTransaction().commit();
 //        Office o=em.find(Office.class, "101");
 //        em.getTransaction().begin();
 //        em.remove(o);
@@ -303,8 +351,9 @@ public class ServerController implements ServerControllerInterface {
         return rresult;
     }
     @Override
-    public void createLinksBtwOffices()
+    public void createLinksBtwOffices() throws ServerInitializedException 
     {
+        checkSystemNonInitialized();
         //Dummy vrs
         String preOfficeAddress, nextOfficeAddress;
         Set<Office> result = new HashSet<>(20);
@@ -365,25 +414,10 @@ public class ServerController implements ServerControllerInterface {
         }
         //goFromStartToEnd();
     }
-    public void goFromStartToEnd()
-    {
-        EntityManager em = Persistance.getEntityManager();
-        Set<Office> results = new HashSet<>(20);
-        results.addAll(em.createNamedQuery("Office.findByOfficeAdress")
-                            .setParameter("officeAddress", "start")
-                            .getResultList());
-        
-        Iterator itr=results.iterator();
-        Office so=(Office) itr.next();
-        System.out.println(so.getOfficeAddress());
-        so =so.getNextOffice();
-        System.out.println(so.getOfficeAddress());
-        so =so.getNextOffice();
-        System.out.println(so.getOfficeAddress());
-    }
 
     @Override
-    public List<String[]> getUserDeliveryDetails(String username, String password, int deliveryId) throws RemoteException {
+    public List<String[]> getUserDeliveryDetails(String username, String password, int deliveryId) throws RemoteException, ServerNonInitializedException  {
+        checkSystemInitialized();
         if(this.checkLogin(username, password)==UserController.userNotCorrect) {
             throw new RemoteException("You don't have enough permission!");
         }
@@ -401,8 +435,9 @@ public class ServerController implements ServerControllerInterface {
         return r;
     }
     
-    
-    public ArrayList<String[]> getMapDrawingArray() throws RemoteException {
+    @Override
+    public ArrayList<String[]> getMapDrawingArray() throws RemoteException, ServerNonInitializedException  {
+        checkSystemInitialized();
         ArrayList<String[]> r=new ArrayList<>();
         
         EntityManager em = Persistance.getEntityManager();
@@ -430,6 +465,15 @@ public class ServerController implements ServerControllerInterface {
         }
 
         return r;
+    }
+
+    private void addAdmin() {
+        EntityManager em = Persistance.getEntityManager();
+        em.getTransaction().begin();
+        ADSUser u = new ADSUser("Admin", "istrator", null, "a@a.c", "admin", "admin");
+        u.setAdmin(true);
+        em.persist(u);
+        em.getTransaction().commit();
     }
 
 }

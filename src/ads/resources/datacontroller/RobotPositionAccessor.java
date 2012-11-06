@@ -32,13 +32,13 @@ public class RobotPositionAccessor {
         throw new Exception("Don't try to instantiate me");
     }
 
-//    public static void init() {
-//        EntityManager em = Persistance.getEntityManager();
-//        ads.resources.data.RobotPosition r = new ads.resources.data.RobotPosition(FloorMap.getPoint0(), false);
-//        em.getTransaction().begin();
-//        em.persist(r);
-//        em.getTransaction().commit();
-//    }
+    public static void init() {
+        EntityManager em = Persistance.getEntityManager();
+        ads.resources.data.RobotPosition r = new ads.resources.data.RobotPosition(FloorMap.getStartPoint(), false);
+        em.getTransaction().begin();
+        em.persist(r);
+        em.getTransaction().commit();
+    }
 
     public static Office getRobotPosition() {
         EntityManager em = Persistance.getEntityManager();

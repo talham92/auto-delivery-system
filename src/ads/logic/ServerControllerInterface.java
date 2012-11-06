@@ -18,20 +18,25 @@ import java.util.Set;
  * @author mgamell
  */
 public interface ServerControllerInterface extends Remote {
-    public int checkLogin(String username, String password) throws RemoteException;
-    public void stopServer(String username, String password) throws RemoteException;
-    public String register(String firstName, String lastName, String roomNumber, String email, String username, String password, String password1) throws RemoteException;
+    public void officeCreated(Office office)throws RemoteException, ServerInitializedException;
+    public String clearOffices() throws RemoteException, ServerInitializedException;
+    public void createLinksBtwOffices() throws RemoteException, ServerInitializedException;
+
     
-    public Set<ADSUser> searchUser_NameOffice(String username, String password, String name, String office) throws RemoteException;
-    public void bookDelivery(String username, String password, double urgency, List<String> targetListUsernames) throws RemoteException, NonBookedDeliveryException;
+    public void initializeWithTestingData() throws RemoteException, ServerInitializedException;
+    public void initializeSystem() throws RemoteException, ServerInitializedException;
+    
+    
+    public int checkLogin(String username, String password) throws RemoteException, ServerNonInitializedException;
+    public void stopServer(String username, String password) throws RemoteException, ServerNonInitializedException;
+    public String register(String firstName, String lastName, String roomNumber, String email, String username, String password, String password1) throws RemoteException, ServerNonInitializedException;
+    
+    public Set<ADSUser> searchUser_NameOffice(String username, String password, String name, String office) throws RemoteException, ServerNonInitializedException;
+    public void bookDelivery(String username, String password, double urgency, List<String> targetListUsernames) throws RemoteException, NonBookedDeliveryException, ServerNonInitializedException;
 
-    public SystemStatus getSystemStatus(String username, String password) throws RemoteException;
-    public List<Delivery> getUserDeliveryList(String username, String password) throws RemoteException;
-    public List<String[]> getUserDeliveryDetails(String username, String password, int deliveryId) throws RemoteException;
-    public void officeCreated(Office office)throws RemoteException;
+    public SystemStatus getSystemStatus(String username, String password) throws RemoteException, ServerNonInitializedException;
+    public List<Delivery> getUserDeliveryList(String username, String password) throws RemoteException, ServerNonInitializedException;
+    public List<String[]> getUserDeliveryDetails(String username, String password, int deliveryId) throws RemoteException, ServerNonInitializedException;
 
-    public String clearOffices() throws RemoteException;
-    public void createLinksBtwOffices() throws RemoteException;
-
-    public ArrayList<String[]> getMapDrawingArray()throws RemoteException;
+    public ArrayList<String[]> getMapDrawingArray()throws RemoteException, ServerNonInitializedException;
 }
