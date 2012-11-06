@@ -53,16 +53,25 @@
                   <Group type="102" attributes="0">
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="jLabel1" alignment="0" min="-2" max="-2" attributes="0"/>
-                          <Component id="jLabel2" alignment="0" min="-2" max="-2" attributes="0"/>
-                      </Group>
-                      <EmptySpace max="-2" attributes="0"/>
-                      <Group type="103" groupAlignment="0" attributes="0">
+                          <Component id="dynamicFloorMap" max="32767" attributes="0"/>
                           <Group type="102" attributes="0">
-                              <Component id="isMoving" min="-2" max="-2" attributes="0"/>
-                              <EmptySpace min="0" pref="255" max="32767" attributes="0"/>
+                              <Group type="103" groupAlignment="0" attributes="0">
+                                  <Component id="jLabel1" alignment="0" min="-2" max="-2" attributes="0"/>
+                                  <Component id="jLabel2" alignment="0" min="-2" max="-2" attributes="0"/>
+                              </Group>
+                              <EmptySpace max="-2" attributes="0"/>
+                              <Group type="103" groupAlignment="0" attributes="0">
+                                  <Group type="102" attributes="0">
+                                      <Component id="isMoving" min="-2" max="-2" attributes="0"/>
+                                      <EmptySpace min="0" pref="255" max="32767" attributes="0"/>
+                                  </Group>
+                                  <Component id="position" max="32767" attributes="0"/>
+                              </Group>
                           </Group>
-                          <Component id="position" max="32767" attributes="0"/>
+                          <Group type="102" alignment="0" attributes="0">
+                              <Component id="jLabel3" min="-2" max="-2" attributes="0"/>
+                              <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
+                          </Group>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
                   </Group>
@@ -81,7 +90,11 @@
                           <Component id="jLabel2" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="isMoving" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
-                      <EmptySpace pref="259" max="32767" attributes="0"/>
+                      <EmptySpace pref="83" max="32767" attributes="0"/>
+                      <Component id="jLabel3" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Component id="dynamicFloorMap" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace max="-2" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
@@ -100,6 +113,29 @@
               </Properties>
             </Component>
             <Component class="javax.swing.JCheckBox" name="isMoving">
+            </Component>
+            <Container class="javax.swing.JPanel" name="dynamicFloorMap">
+              <AuxValues>
+                <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new javax.swing.JPanel(){&#xa;    @Override&#xa;    public void paintComponent(Graphics g)   {&#xa;        // Paint background&#xa;        super.paintComponent(g);&#xa;&#xa;        // Get the drawing area&#xa;        int xt=10;&#xa;        int yt=10;&#xa;        int x=10;&#xa;        int y=10;&#xa;        int ovalL=10;&#xa;        // Set current drawing color&#xa;        g.setColor (Color.BLACK);&#xa;        String[] ts;&#xa;        // Draw a circle around the mid-point&#xa;        for(int i=0;i&lt;officeDrawingItems.size();i++)&#xa;        {&#xa;            ts=officeDrawingItems.get(i);&#xa;            if(ts[0].equals(robotPosition))&#xa;            g.setColor (Color.RED);&#xa;            else&#xa;            g.setColor (Color.BLACK);&#xa;&#xa;            //unitSign for adapting drawing to the negative dists&#xa;            //g.fillOval(x, y, 2, 2);&#xa;            if(ts[0].equals(&quot;end&quot;))&#xa;            {&#xa;                g.drawOval(x-(ovalL/2), y-(ovalL/2), ovalL, ovalL);&#xa;                g.fillOval(x-(ovalL/2), y-(ovalL/2), ovalL, ovalL);&#xa;            }&#xa;            else&#xa;            {&#xa;                int unitSign=Integer.parseInt(ts[2])/Math.abs(Integer.parseInt(ts[2]));&#xa;                if(ts[0].equals(&quot;start&quot;))&#xa;                {&#xa;                    g.drawOval(x-(ovalL/2), y-(ovalL/2), ovalL, ovalL);&#xa;                    g.fillOval(x-(ovalL/4), y-(ovalL/4), ovalL/2, ovalL/2);&#xa;                }&#xa;                else&#xa;                {&#xa;                    g.drawOval(x-(ovalL/2), y-(ovalL/2), ovalL, ovalL);&#xa;                }&#xa;                g.setColor (Color.BLACK);&#xa;                if(ts[1].equals(&quot;x&quot;))&#xa;                {&#xa;                    xt=x + 10*Integer.parseInt(ts[2]);&#xa;                    yt=y;&#xa;                    g.drawLine(x+unitSign*ovalL/2, y, xt-unitSign*ovalL/2, yt);&#xa;                }&#xa;                else if(ts[1].equals(&quot;y&quot;))&#xa;                {&#xa;                    xt=x;&#xa;                    yt=y + 10*Integer.parseInt(ts[2]);&#xa;                    g.drawLine(x, y+ovalL/2, xt, yt-ovalL/2);&#xa;                }&#xa;                x=xt;&#xa;                y=yt;&#xa;            }&#xa;        }&#xa;    }&#xa;}"/>
+              </AuxValues>
+
+              <Layout>
+                <DimensionLayout dim="0">
+                  <Group type="103" groupAlignment="0" attributes="0">
+                      <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
+                  </Group>
+                </DimensionLayout>
+                <DimensionLayout dim="1">
+                  <Group type="103" groupAlignment="0" attributes="0">
+                      <EmptySpace min="0" pref="145" max="32767" attributes="0"/>
+                  </Group>
+                </DimensionLayout>
+              </Layout>
+            </Container>
+            <Component class="javax.swing.JLabel" name="jLabel3">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Floor plant"/>
+              </Properties>
             </Component>
           </SubComponents>
         </Container>

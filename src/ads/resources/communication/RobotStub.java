@@ -28,7 +28,7 @@ public class RobotStub extends javax.swing.JFrame {
         logText("action: sleep 1;\n");
         
         try {
-            Thread.sleep(1000);
+            Thread.sleep(3000);
         } catch (InterruptedException ex) {
             Logger.getLogger(RobotStub.class.getName()).log(Level.SEVERE, null, ex);
         }
