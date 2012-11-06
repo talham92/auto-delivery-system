@@ -5,6 +5,9 @@
 package ads.presentation;
 
 import ads.logic.SystemStatus;
+import java.awt.Color;
+import java.awt.Graphics;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
@@ -16,7 +19,9 @@ import javax.swing.JOptionPane;
 public class SystemStatusView extends javax.swing.JPanel {
     private ClientControllerInterface controller;
     private SystemStatusView thisStatusPanel;
-
+    private ArrayList<String[]> officeDrawingItems;
+    private String robotPosition;
+    
     /**
      * Creates new form StatusPanel
      */
@@ -35,6 +40,7 @@ public class SystemStatusView extends javax.swing.JPanel {
                         if(status != null) {
                             position.setText(status.getPosition());
                             isMoving.setSelected(status.isMoving());
+                            drawAction(status.getPosition());
                         }
                     } catch (Exception ex) {
                         ex.printStackTrace();
@@ -68,6 +74,69 @@ public class SystemStatusView extends javax.swing.JPanel {
         position = new javax.swing.JTextField();
         jLabel2 = new javax.swing.JLabel();
         isMoving = new javax.swing.JCheckBox();
+        dynamicFloorMap = new javax.swing.JPanel(){
+            @Override
+            public void paintComponent(Graphics g)   {
+                // Paint background
+                super.paintComponent(g);
+
+                // Get the drawing area
+                int xt=10;
+                int yt=10;
+                int x=10;
+                int y=10;
+                int ovalL=10;
+                // Set current drawing color
+                g.setColor (Color.BLACK);
+                String[] ts;
+                // Draw a circle around the mid-point
+                for(int i=0;i<officeDrawingItems.size();i++)
+                {
+                    ts=officeDrawingItems.get(i);
+                    if(ts[0].equals(robotPosition))
+                    g.setColor (Color.RED);
+                    else
+                    g.setColor (Color.BLACK);
+
+                    //unitSign for adapting drawing to the negative dists
+                    //g.fillOval(x, y, 2, 2);
+                    if(ts[0].equals("end"))
+                    {
+                        g.drawOval(x-(ovalL/2), y-(ovalL/2), ovalL, ovalL);
+                        g.fillOval(x-(ovalL/2), y-(ovalL/2), ovalL, ovalL);
+                    }
+                    else
+                    {
+                        int unitSign=Integer.parseInt(ts[2])/Math.abs(Integer.parseInt(ts[2]));
+                        if(ts[0].equals("start"))
+                        {
+                            g.drawOval(x-(ovalL/2), y-(ovalL/2), ovalL, ovalL);
+                            g.fillOval(x-(ovalL/4), y-(ovalL/4), ovalL/2, ovalL/2);
+                        }
+                        else
+                        {
+                            g.drawOval(x-(ovalL/2), y-(ovalL/2), ovalL, ovalL);
+                        }
+                        g.setColor (Color.BLACK);
+                        if(ts[1].equals("x"))
+                        {
+                            xt=x + 10*Integer.parseInt(ts[2]);
+                            yt=y;
+                            g.drawLine(x+unitSign*ovalL/2, y, xt-unitSign*ovalL/2, yt);
+                        }
+                        else if(ts[1].equals("y"))
+                        {
+                            xt=x;
+                            yt=y + 10*Integer.parseInt(ts[2]);
+                            g.drawLine(x, y+ovalL/2, xt, yt-ovalL/2);
+                        }
+                        x=xt;
+                        y=yt;
+                    }
+                }
+            }
+        };
+        jLabel3 = new javax.swing.JLabel();
         jPanel2 = new javax.swing.JPanel();
         jLabel4 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
@@ -77,6 +146,19 @@ public class SystemStatusView extends javax.swing.JPanel {
 
         jLabel2.setText("Is Moving?");
 
+        javax.swing.GroupLayout dynamicFloorMapLayout = new javax.swing.GroupLayout(dynamicFloorMap);
+        dynamicFloorMap.setLayout(dynamicFloorMapLayout);
+        dynamicFloorMapLayout.setHorizontalGroup(
+            dynamicFloorMapLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 0, Short.MAX_VALUE)
+        );
+        dynamicFloorMapLayout.setVerticalGroup(
+            dynamicFloorMapLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 145, Short.MAX_VALUE)
+        );
+
+        jLabel3.setText("Floor plant");
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -84,14 +166,20 @@ public class SystemStatusView extends javax.swing.JPanel {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel1)
-                    .addComponent(jLabel2))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(dynamicFloorMap, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(isMoving)
-                        .addGap(0, 255, Short.MAX_VALUE))
-                    .addComponent(position))
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel1)
+                            .addComponent(jLabel2))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addComponent(isMoving)
+                                .addGap(0, 255, Short.MAX_VALUE))
+                            .addComponent(position)))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(jLabel3)
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
@@ -105,7 +193,11 @@ public class SystemStatusView extends javax.swing.JPanel {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
                     .addComponent(isMoving))
-                .addContainerGap(259, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 83, Short.MAX_VALUE)
+                .addComponent(jLabel3)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(dynamicFloorMap, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
 
         jTabbedPane1.addTab("RobotStatus", jPanel1);
@@ -168,10 +260,28 @@ public class SystemStatusView extends javax.swing.JPanel {
         );
     }// </editor-fold>//GEN-END:initComponents
 
+    
+    public void drawAction(String position)
+    {
+        officeDrawingItems=controller.getMapDrawingArray();
+        for(int i=0;i<officeDrawingItems.size();i++)
+        {
+            String[] ts=officeDrawingItems.get(i);
+            System.out.println(ts[0]+" "+ts[1]+" "+ts[2]+" "+ts[3]+" "+ts[4]);
+        }
+        //Redraw the panel
+        robotPosition = position;
+        dynamicFloorMap.repaint();
+        //Untill now only the offices are drawn also robot should also be drawn
+        
+    }
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JPanel dynamicFloorMap;
     private javax.swing.JCheckBox isMoving;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
