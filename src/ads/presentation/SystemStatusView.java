@@ -32,8 +32,10 @@ public class SystemStatusView extends javax.swing.JPanel {
 //                        System.out.println("updating");
                         SystemStatus status = controller.getSystemStatus();
 //                        System.out.println(" received "+status.getPosition()+" "+status.isMoving());
-                        position.setText(status.getPosition());
-                        isMoving.setSelected(status.isMoving());
+                        if(status != null) {
+                            position.setText(status.getPosition());
+                            isMoving.setSelected(status.isMoving());
+                        }
                     } catch (Exception ex) {
                         ex.printStackTrace();
                         JOptionPane.showMessageDialog(thisStatusPanel,

@@ -6,6 +6,8 @@ package ads.presentation;
 
 import ads.logic.NonBookedDeliveryException;
 import ads.logic.ServerControllerInterface;
+import ads.logic.ServerInitializedException;
+import ads.logic.ServerNonInitializedException;
 import ads.logic.SystemStatus;
 import ads.resources.data.ADSUser;
 import ads.resources.data.Delivery;
@@ -131,7 +133,14 @@ public class ClientController implements ClientControllerInterface {
         viewToDispose.setVisible(false);
         viewToDispose.dispose();
     }
-    
+
+    @Override
+    public void stateNonLoggedIn(RegisterView viewToDispose) {
+        stateNonLoggedIn();
+        viewToDispose.setVisible(false);
+        viewToDispose.dispose();
+    }
+
 
     @Override
     public void register(String firstName, String lastName, String roomNumber, String email, String username, String password, String password1, RegisterView register) {
@@ -148,6 +157,8 @@ public class ClientController implements ClientControllerInterface {
             // If no error encountered, error will be null.
         } catch (RemoteException ex) {
             Logger.getLogger(ClientController.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ServerNonInitializedException ex) {
+            error = ex.getMessage();
         }
         
         if (error == null) {
@@ -225,6 +236,11 @@ public class ClientController implements ClientControllerInterface {
         } catch (RemoteException ex) {
             Logger.getLogger(ClientController.class.getName()).log(Level.SEVERE, null, ex);
             System.exit(-1);
+        } catch (ServerNonInitializedException ex) {
+            JOptionPane.showMessageDialog(l,
+                ex.getMessage(),
+                "Login error",
+                JOptionPane.ERROR_MESSAGE);
         }
 
         // Check the server answer
@@ -287,6 +303,9 @@ public class ClientController implements ClientControllerInterface {
         } catch (RemoteException ex) {
             Logger.getLogger(ClientController.class.getName()).log(Level.SEVERE, null, ex);
             result = null;
+        } catch (ServerNonInitializedException ex) {
+            Logger.getLogger(ClientController.class.getName()).log(Level.SEVERE, null, ex);
+            result = null;
         }
 
         List<String[]> resultString = new ArrayList<>(result.size());
@@ -322,12 +341,21 @@ public class ClientController implements ClientControllerInterface {
                 "Unknown error while booking deliveries",
                 "Error",
                 JOptionPane.ERROR_MESSAGE);
+        } catch (ServerNonInitializedException ex) {
+            JOptionPane.showMessageDialog(bookDeliveryView,
+                ex.getMessage(),
+                "Error",
+                JOptionPane.ERROR_MESSAGE);
         }
     }
 
     @Override
     public SystemStatus getSystemStatus() throws Exception {
-        return server.getSystemStatus(this.username, this.password);
+        try {
+            return server.getSystemStatus(this.username, this.password);
+        } catch (ServerNonInitializedException ex) {
+            return null;
+        }
     }
 
     @Override
@@ -344,9 +372,14 @@ public class ClientController implements ClientControllerInterface {
                 "Error",
                 JOptionPane.ERROR_MESSAGE);
             System.exit(-1);
+        } catch (ServerNonInitializedException ex) {
+            JOptionPane.showMessageDialog(deliveryStatusView,
+                ex.getMessage(),
+                "Error",
+                JOptionPane.ERROR_MESSAGE);
         }
         deliveryStatusView.reset();
-        if(result != null) {
+        if(result != null || !result.isEmpty()) {
             for(Delivery d : result) {
                 deliveryStatusView.addDelivery(d.getId(), d.getTimestampField(), d.getSender().getUsername(), d.getReceiver().getUsername(), d.getPriority());
             }
@@ -374,6 +407,12 @@ public class ClientController implements ClientControllerInterface {
                 "Error",
                 JOptionPane.ERROR_MESSAGE);
             System.exit(-1);
+        } catch (ServerNonInitializedException ex) {
+            Logger.getLogger(ClientController.class.getName()).log(Level.SEVERE, null, ex);
+            JOptionPane.showMessageDialog(deliveryStatusView,
+                "Unknown error while retrieving delivery details "+ex.getMessage(),
+                "Error",
+                JOptionPane.ERROR_MESSAGE);
         }
         if(result != null) {
             for(String[] s : result) {
@@ -466,6 +505,8 @@ public class ClientController implements ClientControllerInterface {
                                     preNodeDir, preNodeDist, nextNodeDir, nextNodeDist));
             } catch (RemoteException ex) {
                 Logger.getLogger(ClientController.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (ServerInitializedException ex) {
+                Logger.getLogger(ClientController.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
         //After creating the map, make the links btw the offices
@@ -475,12 +516,15 @@ public class ClientController implements ClientControllerInterface {
     @Override
     public void clearOffices(AdminCreateFloorMapView v) {
         try {
-            String r=server.clearOffices();
+            String r;
+            r = server.clearOffices();
             if(r.equals("preCreatedMapDeleted"))
                 v.getOutputText().append("There already created map and it is cleared\n");
             else if(r.equals("noPreCreatedMap"))
                 v.getOutputText().append("There was no already created map and new map is successfully created\n");
         } catch (RemoteException ex) {
+            Logger.getLogger(ClientController.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ServerInitializedException ex) {
             Logger.getLogger(ClientController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
@@ -505,8 +549,10 @@ public class ClientController implements ClientControllerInterface {
     @Override
     public void createLinksBtwOffices() {
         try {
-            server.createLinksBtwOffices();
+                server.createLinksBtwOffices();
         } catch (RemoteException ex) {
+            Logger.getLogger(ClientController.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ServerInitializedException ex) {
             Logger.getLogger(ClientController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
@@ -516,6 +562,9 @@ public class ClientController implements ClientControllerInterface {
         try {
             return server.getMapDrawingArray();
         } catch (RemoteException ex) {
+            Logger.getLogger(ClientController.class.getName()).log(Level.SEVERE, null, ex);
+            return null;
+        } catch (ServerNonInitializedException ex) {
             Logger.getLogger(ClientController.class.getName()).log(Level.SEVERE, null, ex);
             return null;
         }
@@ -584,4 +633,39 @@ public class ClientController implements ClientControllerInterface {
             }
         });
     }
+
+    @Override
+    public void initializeWithTestingData() {
+        try {
+            server.initializeWithTestingData();
+        } catch (RemoteException ex) {
+            JOptionPane.showMessageDialog(null,
+                ex.getMessage(),
+                "Error",
+                JOptionPane.ERROR_MESSAGE);
+        } catch (ServerInitializedException ex) {
+            JOptionPane.showMessageDialog(null,
+                ex.getMessage(),
+                "Error",
+                JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    @Override
+    public void initializeSystem() {
+        try {
+            server.initializeSystem();
+        } catch (RemoteException ex) {
+            JOptionPane.showMessageDialog(null,
+                ex.getMessage(),
+                "Error",
+                JOptionPane.ERROR_MESSAGE);
+        } catch (ServerInitializedException ex) {
+            JOptionPane.showMessageDialog(null,
+                ex.getMessage(),
+                "Error",
+                JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
 }

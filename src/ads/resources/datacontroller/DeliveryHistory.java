@@ -4,7 +4,6 @@
  */
 package ads.resources.datacontroller;
 
-import ads.resources.data.FloorMap;
 import ads.resources.data.ADSUser;
 import ads.resources.data.DeliveredDelivery;
 import ads.resources.data.Delivery;

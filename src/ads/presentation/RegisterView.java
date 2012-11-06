@@ -43,6 +43,7 @@ public class RegisterView extends javax.swing.JFrame {
         jLabel7 = new javax.swing.JLabel();
         password1 = new javax.swing.JPasswordField();
         registerButton = new javax.swing.JButton();
+        logout = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -109,39 +110,49 @@ public class RegisterView extends javax.swing.JFrame {
             }
         });
 
+        logout.setText("Back");
+        logout.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                logoutActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel5)
-                            .addComponent(jLabel6)
-                            .addComponent(jLabel7))
-                        .addGap(18, 18, 18)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(password1, javax.swing.GroupLayout.DEFAULT_SIZE, 103, Short.MAX_VALUE)
-                            .addComponent(username)
-                            .addComponent(password)))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel3)
-                            .addComponent(jLabel4)
-                            .addComponent(jLabel2)
-                            .addComponent(jLabel1))
-                        .addGap(52, 52, 52)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(lastName)
-                            .addComponent(email)
-                            .addComponent(room)
-                            .addComponent(firstName))))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(registerButton)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel5)
+                                    .addComponent(jLabel6)
+                                    .addComponent(jLabel7))
+                                .addGap(18, 18, 18)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(password1, javax.swing.GroupLayout.DEFAULT_SIZE, 103, Short.MAX_VALUE)
+                                    .addComponent(username)
+                                    .addComponent(password)))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel3)
+                                    .addComponent(jLabel4)
+                                    .addComponent(jLabel2)
+                                    .addComponent(jLabel1))
+                                .addGap(52, 52, 52)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(lastName)
+                                    .addComponent(email)
+                                    .addComponent(room)
+                                    .addComponent(firstName))))
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addComponent(logout)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(registerButton)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -176,7 +187,9 @@ public class RegisterView extends javax.swing.JFrame {
                     .addComponent(jLabel7)
                     .addComponent(password1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(registerButton)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(registerButton)
+                    .addComponent(logout))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -195,6 +208,10 @@ public class RegisterView extends javax.swing.JFrame {
                 this);
     }//GEN-LAST:event_registerButtonActionPerformed
 
+    private void logoutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_logoutActionPerformed
+        controller.stateNonLoggedIn(this);
+    }//GEN-LAST:event_logoutActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTextField email;
     private javax.swing.JTextField firstName;
@@ -206,6 +223,7 @@ public class RegisterView extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
     private javax.swing.JTextField lastName;
+    private javax.swing.JButton logout;
     private javax.swing.JPasswordField password;
     private javax.swing.JPasswordField password1;
     private javax.swing.JButton registerButton;

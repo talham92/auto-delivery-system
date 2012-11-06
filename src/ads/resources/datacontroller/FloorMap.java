@@ -2,8 +2,9 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package ads.resources.data;
+package ads.resources.datacontroller;
 
+import ads.resources.data.Office;
 import ads.resources.data.Office;
 import ads.resources.datacontroller.Persistance;
 import ads.resources.datacontroller.Persistance;
@@ -24,9 +25,12 @@ public class FloorMap {
         return giveLengthBtwStartEnd();
     }
 
-    public static int getIdPoint0() {
-        //todo
-        return 1;
+    public static Office getStartPoint() {
+        EntityManager em = Persistance.getEntityManager();
+        Office o = (Office) em.createNamedQuery("Office.findByOfficeAdress")
+                            .setParameter("officeAddress", "start")
+                            .getSingleResult();
+        return o;
     }
 
     public static int giveDistanceFromCurrentToDestination(Office current, Office dest)
