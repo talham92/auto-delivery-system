@@ -501,7 +501,7 @@ public class ClientController implements ClientControllerInterface {
             //Next time there is another to-be-implementd function called to make the links btw the offices
             try {
                 //Call related server function to persist the office object
-                server.officeCreated(new Office(nodeName, nextNodeName, preNodeName,
+                server.createOffice(new Office(nodeName, nextNodeName, preNodeName,
                                     preNodeDir, preNodeDist, nextNodeDir, nextNodeDist));
             } catch (RemoteException ex) {
                 Logger.getLogger(ClientController.class.getName()).log(Level.SEVERE, null, ex);
