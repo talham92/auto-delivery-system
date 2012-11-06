@@ -109,7 +109,7 @@ public class ClientController implements ClientControllerInterface {
         // state.
         state = STATE_NON_LOGGED_IN;
 
-        // Create and display the orm
+        // Create and display the form
         java.awt.EventQueue.invokeLater(new Runnable() {
             @Override
             public void run() {
@@ -118,7 +118,21 @@ public class ClientController implements ClientControllerInterface {
         });
     }
 
+    @Override
+    public void stateNonLoggedIn(UserMainView viewToDispose) {
+        stateNonLoggedIn();
+        viewToDispose.setVisible(false);
+        viewToDispose.dispose();
+    }
+
+    @Override
+    public void stateNonLoggedIn(AdminMainView viewToDispose) {
+        stateNonLoggedIn();
+        viewToDispose.setVisible(false);
+        viewToDispose.dispose();
+    }
     
+
     @Override
     public void register(String firstName, String lastName, String roomNumber, String email, String username, String password, String password1, RegisterView register) {
         // Check that we are in a correct state:
@@ -155,7 +169,7 @@ public class ClientController implements ClientControllerInterface {
             // 2. free frame resources
             register.dispose();
             // 3. turn to state booking
-            stateBooking();
+            wantsToBookDelivery();
         } else {
             // Show an error indicating that the username or the password
             // are incorrect
@@ -237,61 +251,35 @@ public class ClientController implements ClientControllerInterface {
             if(loginCorrect==userCorrect_Admin)
                 stateAdminMain();
             else if(loginCorrect==userCorrect_NotAdmin)
-                stateBooking();
+                wantsToBookDelivery();
         }
     }
-    @Override
-    public void stateAdminMain(){
-        state=STATE_ADMIN_MAIN;
-        //Create the related form and display
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                new AdminMainView(controller).setVisible(true);
-            }
-        });
-    }
+
     
     @Override
-    public void wantsToCreateFloorMap(AdminMainView v){
-        // set the admin main view invisible and dispose it
-        v.setVisible(false);
-        v.dispose();
-        
-        stateAdminCreateFloorMap();
-    }
-    private void stateAdminCreateFloorMap(){
-        if(state != STATE_ADMIN_MAIN) {
-            Logger.getLogger(ClientController.class.getName()).log(Level.SEVERE, "create MAP error: state != STATE_ADMIN_MAIN");
-            System.exit(-1);
+    public void wantsToBookDelivery() {
+        if(state == STATE_NON_LOGGED_IN || state == STATE_REGISTERING) {
+            // Create and display the form
+            java.awt.EventQueue.invokeLater(new Runnable() {
+                @Override
+                public void run() {
+//                  new BookDeliveryView(controller).setVisible(true);
+                    new UserMainView(controller).setVisible(true);
+                }
+            });
         }
-        state = STATE_ADMIN_CREATING_FLOOR_MAP; // set the state of the controller
-        //
-        // Create and display the form
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                new AdminCreateFloorMapView(controller).setVisible(true);
-            }
-        });
-    }        
-    private void stateBooking() {
-        // Change the state to Booking. Does not need to check the coming state,
-        // as this state is accessible by every other.
-        state = STATE_BOOKING;
 
-        // Create and display the form
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                new BookDeliveryView(controller).setVisible(true);
-            }
-        });
+        // Change the state to Booking.
+        state = STATE_BOOKING;
     }
     
     @Override
     public List<String[]> searchUser_NameOffice(String name, String office)
     {
+        if(state != STATE_BOOKING) {
+            Logger.getLogger(ClientController.class.getName()).log(Level.SEVERE, "register error: state != STATE_BOOKING");
+            System.exit(-1);
+        }
         Set<ADSUser> result;
         try {
             //This method returns the receiver Name and Address by using name and office of the user
@@ -310,6 +298,96 @@ public class ClientController implements ClientControllerInterface {
     }
     
     @Override
+    public void bookDelivery(double urgency, List<String> targetList, BookDeliveryView bookDeliveryView)
+    {
+        if(state != STATE_BOOKING) {
+            Logger.getLogger(ClientController.class.getName()).log(Level.SEVERE, "register error: state != STATE_BOOKING");
+            System.exit(-1);
+        }
+        // Try to call the related function of the server
+        try {
+            server.bookDelivery(this.username, this.password, urgency, targetList);
+            // If no error encountered, error will be null.
+            JOptionPane.showMessageDialog(bookDeliveryView,
+                "Deliveries are sucessfully booked",
+                "Success",
+                JOptionPane.INFORMATION_MESSAGE);
+        } catch (NonBookedDeliveryException ex) {
+            JOptionPane.showMessageDialog(bookDeliveryView,
+                "Error while booking deliveries: "+ex.getMessage(),
+                "Error",
+                JOptionPane.ERROR_MESSAGE);
+        } catch (RemoteException ex) {
+            JOptionPane.showMessageDialog(bookDeliveryView,
+                "Unknown error while booking deliveries",
+                "Error",
+                JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    @Override
+    public SystemStatus getSystemStatus() throws Exception {
+        return server.getSystemStatus(this.username, this.password);
+    }
+
+    @Override
+    public void wantsToTrackDeliveryStatus(UserMainView view, DeliveryStatusView deliveryStatusView) {
+        state = STATE_VIEWING_DELIVERY_HISTORY;
+
+        List<Delivery> result = null;
+        try {
+            //This method returns the receiver Name and Address by using name and office of the user
+            result = server.getUserDeliveryList(this.username, this.password);
+        } catch (RemoteException ex) {
+            JOptionPane.showMessageDialog(deliveryStatusView,
+                "Unknown error while retrieving delivery list "+ex.getMessage(),
+                "Error",
+                JOptionPane.ERROR_MESSAGE);
+            System.exit(-1);
+        }
+        deliveryStatusView.reset();
+        if(result != null) {
+            for(Delivery d : result) {
+                deliveryStatusView.addDelivery(d.getId(), d.getTimestampField(), d.getSender().getUsername(), d.getReceiver().getUsername(), d.getPriority());
+            }
+        } else {
+            JOptionPane.showMessageDialog(deliveryStatusView,
+                "You haven't book any delivery yet.",
+                "No deliveries",
+                JOptionPane.INFORMATION_MESSAGE);
+        }
+    }
+
+    @Override
+    public void wantsToSeeDeliveryDetails(DeliveryStatusView deliveryStatusView, int deliveryId) {
+        state = STATE_VIEWING_DELIVERY_HISTORY_DETAIL;
+
+        List<String[]> result = null;
+        deliveryStatusView.resetDeliveryDetailsTable();
+        deliveryStatusView.showDeliveryDetails(deliveryId);
+        try {
+            //This method returns the receiver Name and Address by using name and office of the user
+            result = server.getUserDeliveryDetails(this.username, this.password, deliveryId);
+        } catch (RemoteException ex) {
+            JOptionPane.showMessageDialog(deliveryStatusView,
+                "Unknown error while retrieving delivery details "+ex.getMessage(),
+                "Error",
+                JOptionPane.ERROR_MESSAGE);
+            System.exit(-1);
+        }
+        if(result != null) {
+            for(String[] s : result) {
+                deliveryStatusView.addDeliveryDetail(s);
+            }
+        } else {
+            JOptionPane.showMessageDialog(deliveryStatusView,
+                "The delivery have no details!",
+                "No details",
+                JOptionPane.INFORMATION_MESSAGE);
+        }
+    }
+
+        @Override
     public void createFloorMap(String text, AdminCreateFloorMapView adminCreateFloorMap) {
         //Clear offices before creating a new map to avoid the conflicts and inconsistencies
         clearOffices(adminCreateFloorMap);
@@ -467,125 +545,43 @@ public class ClientController implements ClientControllerInterface {
         });
     }
     
+        private void stateAdminCreateFloorMap(){
+        if(state != STATE_ADMIN_MAIN) {
+            Logger.getLogger(ClientController.class.getName()).log(Level.SEVERE, "create MAP error: state != STATE_ADMIN_MAIN");
+            System.exit(-1);
+        }
+        state = STATE_ADMIN_CREATING_FLOOR_MAP; // set the state of the controller
+        //
+        // Create and display the form
+        java.awt.EventQueue.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                new AdminCreateFloorMapView(controller).setVisible(true);
+            }
+        });
+    }  
+        
+        
+            
     @Override
-    public void stateNonLoggedIn(UserMainView viewToDispose) {
-        stateNonLoggedIn();
-        viewToDispose.setVisible(false);
-        viewToDispose.dispose();
-    }
-
-    @Override
-    public void stateNonLoggedIn(AdminMainView viewToDispose) {
-        stateNonLoggedIn();
-        viewToDispose.setVisible(false);
-        viewToDispose.dispose();
+    public void wantsToCreateFloorMap(AdminMainView v){
+        // set the admin main view invisible and dispose it
+        v.setVisible(false);
+        v.dispose();
+        
+        stateAdminCreateFloorMap();
     }
     
-    @Override
-    public void wantsToBookDelivery() {
-        if(state == STATE_NON_LOGGED_IN || state == STATE_REGISTERING) {
-            // Create and display the form
-            java.awt.EventQueue.invokeLater(new Runnable() {
-                @Override
-                public void run() {
-//                  new BookDeliveryView(controller).setVisible(true);
-                    new UserMainView(controller).setVisible(true);
-                }
-            });
-        }
-
-        // Change the state to Booking.
-        state = STATE_BOOKING;
-    }
-   
-    @Override
-    public void bookDelivery(double urgency, List<String> targetList, BookDeliveryView bookDeliveryView)
-    {
-        if(state != STATE_BOOKING) {
-            Logger.getLogger(ClientController.class.getName()).log(Level.SEVERE, "register error: state != STATE_BOOKING");
-            System.exit(-1);
-        }
-        // Try to call the related function of the server
-        try {
-            server.bookDelivery(this.username, this.password, urgency, targetList);
-            // If no error encountered, error will be null.
-            JOptionPane.showMessageDialog(bookDeliveryView,
-                "Deliveries are sucessfully booked",
-                "Success",
-                JOptionPane.INFORMATION_MESSAGE);
-        } catch (NonBookedDeliveryException ex) {
-            JOptionPane.showMessageDialog(bookDeliveryView,
-                "Error while booking deliveries: "+ex.getMessage(),
-                "Error",
-                JOptionPane.ERROR_MESSAGE);
-        } catch (RemoteException ex) {
-            JOptionPane.showMessageDialog(bookDeliveryView,
-                "Unknown error while booking deliveries",
-                "Error",
-                JOptionPane.ERROR_MESSAGE);
-        }
-    }
-
-    @Override
-    public SystemStatus getSystemStatus() throws Exception {
-        return server.getSystemStatus(this.username, this.password);
-    }
-
-    @Override
-    public void wantsToTrackDeliveryStatus(UserMainView view, DeliveryStatusView deliveryStatusView) {
-        state = STATE_VIEWING_DELIVERY_HISTORY;
-
-        List<Delivery> result = null;
-        try {
-            //This method returns the receiver Name and Address by using name and office of the user
-            result = server.getUserDeliveryList(this.username, this.password);
-        } catch (RemoteException ex) {
-            JOptionPane.showMessageDialog(deliveryStatusView,
-                "Unknown error while retrieving delivery list "+ex.getMessage(),
-                "Error",
-                JOptionPane.ERROR_MESSAGE);
-            System.exit(-1);
-        }
-        deliveryStatusView.reset();
-        if(result != null) {
-            for(Delivery d : result) {
-                deliveryStatusView.addDelivery(d.getId(), d.getTimestampField(), d.getSender().getUsername(), d.getReceiver().getUsername(), d.getPriority());
+    
+        @Override
+    public void stateAdminMain(){
+        state=STATE_ADMIN_MAIN;
+        //Create the related form and display
+        java.awt.EventQueue.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                new AdminMainView(controller).setVisible(true);
             }
-        } else {
-            JOptionPane.showMessageDialog(deliveryStatusView,
-                "You haven't book any delivery yet.",
-                "No deliveries",
-                JOptionPane.INFORMATION_MESSAGE);
-        }
+        });
     }
-
-    @Override
-    public void wantsToSeeDeliveryDetails(DeliveryStatusView deliveryStatusView, int deliveryId) {
-        state = STATE_VIEWING_DELIVERY_HISTORY_DETAIL;
-
-        List<String[]> result = null;
-        deliveryStatusView.resetDeliveryDetailsTable();
-        deliveryStatusView.showDeliveryDetails(deliveryId);
-        try {
-            //This method returns the receiver Name and Address by using name and office of the user
-            result = server.getUserDeliveryDetails(this.username, this.password, deliveryId);
-        } catch (RemoteException ex) {
-            JOptionPane.showMessageDialog(deliveryStatusView,
-                "Unknown error while retrieving delivery details "+ex.getMessage(),
-                "Error",
-                JOptionPane.ERROR_MESSAGE);
-            System.exit(-1);
-        }
-        if(result != null) {
-            for(String[] s : result) {
-                deliveryStatusView.addDeliveryDetail(s);
-            }
-        } else {
-            JOptionPane.showMessageDialog(deliveryStatusView,
-                "The delivery have no details!",
-                "No details",
-                JOptionPane.INFORMATION_MESSAGE);
-        }
-    }
-
 }

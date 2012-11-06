@@ -25,6 +25,7 @@ public class FloorMap {
     }
 
     public static int getIdPoint0() {
+        //todo
         return 1;
     }
 
@@ -34,10 +35,11 @@ public class FloorMap {
         Office temp=current;
         while(!temp.equals(dest))
         {
-            totalDist+=Integer.parseInt(temp.getNextOfficeDist());
+            System.out.println("    partial totalDist = " +totalDist + "  currentOffice = "+temp.getOfficeAddress());
+            totalDist += Math.abs(Integer.parseInt(temp.getNextOfficeDist()));
             temp=temp.getNextOffice();
         }
-        
+        System.out.println("totalDist = " +totalDist + "  currentOffice = "+temp.getOfficeAddress());
         return totalDist;
     }
 
