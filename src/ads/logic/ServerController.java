@@ -202,7 +202,7 @@ public class ServerController implements ServerControllerInterface {
         if(this.checkLogin(username, password)==UserController.userNotCorrect) {
             return null;
         }
-        return UserController.searchUser_NameOffice(username, password, name, office);
+        return UserController.searchUser_NameOffice(name, office);
     }
 
     @Override
@@ -217,11 +217,27 @@ public class ServerController implements ServerControllerInterface {
 
     @Override
     public SystemStatus getSystemStatus(String username, String password) throws RemoteException, ServerNonInitializedException  {
-        checkSystemInitialized();
         if(this.checkLogin(username, password)!=UserController.userCorrect_Admin) {
             throw new RemoteException("You are not the administrator!");
         }
-        return new SystemStatus(RobotPositionAccessor.getRobotPosition().getOfficeAddress(), RobotPositionAccessor.isMoving());
+        
+        if(state == ServerController.STATE_SYSTEM_INITIALIZED) {
+            Office position = RobotPositionAccessor.getRobotPosition();
+            Set<ADSUser> users = UserController.searchUser_NameOffice(null, position.getOfficeAddress());
+            String names = "";
+            for(ADSUser u : users) {
+                names += u.getFirstName() + " " + u.getLastName() + ", ";
+            }
+            if(!names.isEmpty()) {
+                names = names.substring(0, names.length()-2);
+            }
+            return new SystemStatus(position.getOfficeAddress(), RobotPositionAccessor.isMoving(), true, names);
+        } else if(state == ServerController.STATE_SYSTEM_NON_INITIALIZED) {
+            return new SystemStatus("", false, false, "");
+        } else {
+            throw new RemoteException("server state is different than STATE_SYSTEM_INITIALIZED and STATE_SYSTEM_NON_INITIALIZED");
+        }
+
     }
 
     @Override
@@ -238,6 +254,15 @@ public class ServerController implements ServerControllerInterface {
         }
         ADSUser sender = UserController.findUser(username);
         return DeliveryHistory.getUserDeliveryList(sender);
+    }
+    
+    @Override
+    public List<Delivery> getDeliveryList(String username, String password) throws RemoteException, ServerNonInitializedException  {
+        checkSystemInitialized();
+        if(this.checkLogin(username, password)!=UserController.userCorrect_Admin) {
+            throw new RemoteException("You don't have enough permission!");
+        }
+        return DeliveryHistory.getDeliveryList();
     }
     
     @Override
@@ -258,14 +283,15 @@ public class ServerController implements ServerControllerInterface {
     }
 
     @Override
-    public List<String[]> getUserDeliveryDetails(String username, String password, int deliveryId) throws RemoteException, ServerNonInitializedException  {
+    public List<String[]> getDeliveryDetails(String username, String password, int deliveryId) throws RemoteException, ServerNonInitializedException  {
         checkSystemInitialized();
-        if(this.checkLogin(username, password)==UserController.userNotCorrect) {
+        int login = this.checkLogin(username, password);
+        if(login==UserController.userNotCorrect) {
             throw new RemoteException("You don't have enough permission!");
         }
         ADSUser sender = UserController.findUser(username);
         Delivery delivery = DeliveryHistory.getDelivery(deliveryId);
-        if(!delivery.getSender().equals(sender)) {
+        if(!delivery.getSender().equals(sender) && login!=UserController.userCorrect_Admin) {
             throw new RemoteException("You don't have enough permission!");
         }
         List<DeliveryStep> deliveryStates = delivery.getStateList();
@@ -278,8 +304,8 @@ public class ServerController implements ServerControllerInterface {
     }
     
     @Override
-    public ArrayList<String[]> getMapDrawingArray() throws RemoteException, ServerNonInitializedException  {
-        checkSystemInitialized();
+    public ArrayList<String[]> getMapDrawingArray() throws RemoteException {
+        //checkSystemInitialized();
         return FloorMap.getMapDrawingArray();
     }
 

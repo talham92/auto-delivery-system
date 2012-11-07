@@ -29,16 +29,17 @@ import javax.swing.JOptionPane;
  * @author mgamell
  */
 public class ClientController implements ClientControllerInterface {
-    public static final int STATE_NON_LOGGED_IN = 1;
-    public static final int STATE_REGISTERING = 2;
-    public static final int STATE_BOOKING = 3;
-    public static final int STATE_EDITING = 4;
-    public static final int STATE_SHOWING_HELP = 5;
-    public static final int STATE_VIEWING_DELIVERY_HISTORY = 6;
-    public static final int STATE_ADMIN_MAIN = 7;
-    public static final int STATE_ADMIN_CREATING_FLOOR_MAP = 8;
-    public static final int STATE_ADMIN_VIEW_DYNAMIC_MAP = 10;
-    public static final int STATE_VIEWING_DELIVERY_HISTORY_DETAIL = 9;
+    private static final int STATE_NON_LOGGED_IN = 1;
+    private static final int STATE_REGISTERING = 2;
+    private static final int STATE_BOOKING = 3;
+    private static final int STATE_EDITING = 4;
+    private static final int STATE_SHOWING_HELP = 5;
+    private static final int STATE_VIEWING_DELIVERY_HISTORY = 6;
+    private static final int STATE_ADMIN_MAIN = 7;
+    private static final int STATE_ADMIN_CREATING_FLOOR_MAP = 8;
+    private static final int STATE_VIEWING_DELIVERY_HISTORY_DETAIL = 9;
+    private static final int STATE_ADMIN_VIEWING_DELIVERY_HISTORY = 10;
+    private static final int STATE_ADMIN_VIEWING_DELIVERY_HISTORY_DETAIL = 11;
 
     private static final int userNotCorrect=0;
     private static final int userCorrect_Admin=1;
@@ -350,10 +351,12 @@ public class ClientController implements ClientControllerInterface {
     }
 
     @Override
-    public SystemStatus getSystemStatus() throws Exception {
+    public SystemStatus getSystemStatus() {
         try {
             return server.getSystemStatus(this.username, this.password);
         } catch (ServerNonInitializedException ex) {
+            return null;
+        } catch (RemoteException ex) {
             return null;
         }
     }
@@ -393,14 +396,21 @@ public class ClientController implements ClientControllerInterface {
 
     @Override
     public void wantsToSeeDeliveryDetails(DeliveryStatusView deliveryStatusView, int deliveryId) {
-        state = STATE_VIEWING_DELIVERY_HISTORY_DETAIL;
+        if(state == STATE_VIEWING_DELIVERY_HISTORY || state == STATE_VIEWING_DELIVERY_HISTORY_DETAIL) {
+            state = STATE_VIEWING_DELIVERY_HISTORY_DETAIL;
+        } else if(state == STATE_ADMIN_VIEWING_DELIVERY_HISTORY || state == STATE_ADMIN_VIEWING_DELIVERY_HISTORY_DETAIL) {
+            state = STATE_ADMIN_VIEWING_DELIVERY_HISTORY_DETAIL;
+        } else {
+            Logger.getLogger(ClientController.class.getName()).log(Level.SEVERE, "State incorrect!! wantsToSeeDeliveryDetails");
+            System.exit(-1);
+        }
 
         List<String[]> result = null;
         deliveryStatusView.resetDeliveryDetailsTable();
         deliveryStatusView.showDeliveryDetails(deliveryId);
         try {
             //This method returns the receiver Name and Address by using name and office of the user
-            result = server.getUserDeliveryDetails(this.username, this.password, deliveryId);
+            result = server.getDeliveryDetails(this.username, this.password, deliveryId);
         } catch (RemoteException ex) {
             JOptionPane.showMessageDialog(deliveryStatusView,
                 "Unknown error while retrieving delivery details "+ex.getMessage(),
@@ -426,7 +436,40 @@ public class ClientController implements ClientControllerInterface {
         }
     }
 
-        @Override
+    @Override
+    public void wantsToTrackDeliveryStatusAdmin(SystemStatusView view, DeliveryStatusView deliveryStatusView) {
+        state = STATE_ADMIN_VIEWING_DELIVERY_HISTORY;
+
+        List<Delivery> result = null;
+        try {
+            //This method returns the receiver Name and Address by using name and office of the user
+            result = server.getDeliveryList(this.username, this.password);
+        } catch (RemoteException ex) {
+            JOptionPane.showMessageDialog(deliveryStatusView,
+                "Unknown error while retrieving delivery list "+ex.getMessage(),
+                "Error",
+                JOptionPane.ERROR_MESSAGE);
+            System.exit(-1);
+        } catch (ServerNonInitializedException ex) {
+            JOptionPane.showMessageDialog(deliveryStatusView,
+                ex.getMessage(),
+                "Error",
+                JOptionPane.ERROR_MESSAGE);
+        }
+        deliveryStatusView.reset();
+        if(result != null || !result.isEmpty()) {
+            for(Delivery d : result) {
+                deliveryStatusView.addDelivery(d.getId(), d.getTimestampField(), d.getSender().getUsername(), d.getReceiver().getUsername(), d.getPriority());
+            }
+        } else {
+            JOptionPane.showMessageDialog(deliveryStatusView,
+                "There are no deliveries yet.",
+                "No deliveries",
+                JOptionPane.INFORMATION_MESSAGE);
+        }
+    }
+
+    @Override
     public void createFloorMap(String text, AdminCreateFloorMapView adminCreateFloorMap) {
         //Clear offices before creating a new map to avoid the conflicts and inconsistencies
         clearOffices(adminCreateFloorMap);
@@ -564,37 +607,34 @@ public class ClientController implements ClientControllerInterface {
         } catch (RemoteException ex) {
             Logger.getLogger(ClientController.class.getName()).log(Level.SEVERE, null, ex);
             return null;
-        } catch (ServerNonInitializedException ex) {
-            Logger.getLogger(ClientController.class.getName()).log(Level.SEVERE, null, ex);
-            return null;
         }
     }
+//
+//    @Override
+//    public void wantsToLookAtDynamicViewOfMap(AdminMainView aThis) {
+//        // set the admin main view invisible and dispose it
+//        aThis.setVisible(false);
+//        aThis.dispose();
+//        
+//        stateAdminViewDynamicMap();
+//    }
 
-    @Override
-    public void wantsToLookAtDynamicViewOfMap(AdminMainView aThis) {
-        // set the admin main view invisible and dispose it
-        aThis.setVisible(false);
-        aThis.dispose();
-        
-        stateAdminViewDynamicMap();
-    }
-
-    private void stateAdminViewDynamicMap() {
-        if(state != STATE_ADMIN_MAIN) {
-            Logger.getLogger(ClientController.class.getName()).log(Level.SEVERE, "view dynamic MAP error: state != STATE_ADMIN_MAIN");
-            System.exit(-1);
-        }
-        state = STATE_ADMIN_VIEW_DYNAMIC_MAP;
-        // Create and display the form
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                new AdminViewDynamicMap(controller).setVisible(true);
-            }
-        });
-    }
+//    private void stateAdminViewDynamicMap() {
+//        if(state != STATE_ADMIN_MAIN) {
+//            Logger.getLogger(ClientController.class.getName()).log(Level.SEVERE, "view dynamic MAP error: state != STATE_ADMIN_MAIN");
+//            System.exit(-1);
+//        }
+//        state = STATE_ADMIN_VIEW_DYNAMIC_MAP;
+//        // Create and display the form
+//        java.awt.EventQueue.invokeLater(new Runnable() {
+//            @Override
+//            public void run() {
+//                new AdminViewDynamicMap(controller).setVisible(true);
+//            }
+//        });
+//    }
     
-        private void stateAdminCreateFloorMap(){
+    private void stateAdminCreateFloorMap(){
         if(state != STATE_ADMIN_MAIN) {
             Logger.getLogger(ClientController.class.getName()).log(Level.SEVERE, "create MAP error: state != STATE_ADMIN_MAIN");
             System.exit(-1);
@@ -609,9 +649,7 @@ public class ClientController implements ClientControllerInterface {
             }
         });
     }  
-        
-        
-            
+
     @Override
     public void wantsToCreateFloorMap(AdminMainView v){
         // set the admin main view invisible and dispose it
@@ -621,8 +659,7 @@ public class ClientController implements ClientControllerInterface {
         stateAdminCreateFloorMap();
     }
     
-    
-        @Override
+    @Override
     public void stateAdminMain(){
         state=STATE_ADMIN_MAIN;
         //Create the related form and display
@@ -635,7 +672,7 @@ public class ClientController implements ClientControllerInterface {
     }
 
     @Override
-    public void initializeWithTestingData() {
+    public void initializeWithTestingData(AdminMainView view) {
         try {
             server.initializeWithTestingData();
         } catch (RemoteException ex) {
@@ -649,10 +686,17 @@ public class ClientController implements ClientControllerInterface {
                 "Error",
                 JOptionPane.ERROR_MESSAGE);
         }
+        
+        if(getSystemStatus().isServerInitialized()) {
+            view.setInitializedAppearance();
+        } else {
+            view.setNonInitializedAppearance();
+        }
+
     }
 
     @Override
-    public void initializeSystem() {
+    public void initializeSystem(AdminMainView view) {
         try {
             server.initializeSystem();
         } catch (RemoteException ex) {
@@ -665,6 +709,12 @@ public class ClientController implements ClientControllerInterface {
                 ex.getMessage(),
                 "Error",
                 JOptionPane.ERROR_MESSAGE);
+        }
+        
+        if(getSystemStatus().isServerInitialized()) {
+            view.setInitializedAppearance();
+        } else {
+            view.setNonInitializedAppearance();
         }
     }
 

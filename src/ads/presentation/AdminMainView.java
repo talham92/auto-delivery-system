@@ -4,6 +4,12 @@
  */
 package ads.presentation;
 
+import java.awt.Color;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+
 /**
  *
  * @author MFA
@@ -17,6 +23,12 @@ public class AdminMainView extends javax.swing.JFrame {
     public AdminMainView(ClientControllerInterface c) {
         controller = c;
         initComponents();
+
+        if(controller.getSystemStatus().isServerInitialized()) {
+            setInitializedAppearance();
+        } else {
+            setNonInitializedAppearance();
+        }
     }
 
     /**
@@ -36,8 +48,8 @@ public class AdminMainView extends javax.swing.JFrame {
         jPanel4 = new javax.swing.JPanel();
         jButton1 = new javax.swing.JButton();
         initialize = new javax.swing.JButton();
-        jPanel1 = new javax.swing.JPanel();
-        jButton2 = new javax.swing.JButton();
+        logout = new javax.swing.JButton();
+        serverStatus = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -55,14 +67,14 @@ public class AdminMainView extends javax.swing.JFrame {
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(initTestingData)
-                .addContainerGap(185, Short.MAX_VALUE))
+                .addContainerGap(360, Short.MAX_VALUE))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(initTestingData)
-                .addContainerGap(83, Short.MAX_VALUE))
+                .addContainerGap(313, Short.MAX_VALUE))
         );
 
         jTabbedPane2.addTab("with pre-entered data", jPanel3);
@@ -90,7 +102,7 @@ public class AdminMainView extends javax.swing.JFrame {
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jButton1)
                     .addComponent(initialize))
-                .addContainerGap(151, Short.MAX_VALUE))
+                .addContainerGap(326, Short.MAX_VALUE))
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -99,7 +111,7 @@ public class AdminMainView extends javax.swing.JFrame {
                 .addComponent(jButton1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(initialize)
-                .addContainerGap(54, Short.MAX_VALUE))
+                .addContainerGap(284, Short.MAX_VALUE))
         );
 
         jTabbedPane2.addTab("manually", jPanel4);
@@ -121,27 +133,16 @@ public class AdminMainView extends javax.swing.JFrame {
                 .addContainerGap())
         );
 
-        jTabbedPane1.addTab("Initialize", jPanel2);
+        jTabbedPane1.addTab("Initialize Server", jPanel2);
 
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 375, Short.MAX_VALUE)
-        );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 167, Short.MAX_VALUE)
-        );
-
-        jTabbedPane1.addTab("tab1", jPanel1);
-
-        jButton2.setText("Dynamic View of Map");
-        jButton2.addActionListener(new java.awt.event.ActionListener() {
+        logout.setText("Logout");
+        logout.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton2ActionPerformed(evt);
+                logoutActionPerformed(evt);
             }
         });
+
+        serverStatus.setText("serverstatus");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -151,17 +152,19 @@ public class AdminMainView extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jTabbedPane1)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(195, 195, 195)
-                        .addComponent(jButton2)
-                        .addGap(0, 0, Short.MAX_VALUE)))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addComponent(serverStatus)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(logout)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGap(65, 65, 65)
-                .addComponent(jButton2)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(logout)
+                    .addComponent(serverStatus))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jTabbedPane1)
                 .addContainerGap())
@@ -176,31 +179,45 @@ public class AdminMainView extends javax.swing.JFrame {
         controller.wantsToCreateFloorMap(this);
     }//GEN-LAST:event_jButton1ActionPerformed
 
-    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        controller.wantsToLookAtDynamicViewOfMap(this);
-    }//GEN-LAST:event_jButton2ActionPerformed
-
     private void initTestingDataActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_initTestingDataActionPerformed
-        controller.initializeWithTestingData();
+        controller.initializeWithTestingData(this);
     }//GEN-LAST:event_initTestingDataActionPerformed
 
     private void initializeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_initializeActionPerformed
-        controller.initializeSystem();
-
+        controller.initializeSystem(this);
     }//GEN-LAST:event_initializeActionPerformed
 
-    
-   
+    private void logoutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_logoutActionPerformed
+        controller.stateNonLoggedIn(this);
+    }//GEN-LAST:event_logoutActionPerformed
+
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton initTestingData;
     private javax.swing.JButton initialize;
     private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
-    private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JTabbedPane jTabbedPane2;
+    private javax.swing.JButton logout;
+    private javax.swing.JLabel serverStatus;
     // End of variables declaration//GEN-END:variables
+
+    public void setNonInitializedAppearance() {
+        serverStatus.setForeground(Color.RED);
+        serverStatus.setText("Server non initialized");
+        jTabbedPane1.setEnabledAt(jTabbedPane1.indexOfTab("Status"), false);
+        jTabbedPane1.setEnabledAt(jTabbedPane1.indexOfTab("Initialize Server"), true);
+        jTabbedPane1.setSelectedIndex(jTabbedPane1.indexOfTab("Initialize Server"));
+    }
+
+    public void setInitializedAppearance() {
+        serverStatus.setForeground(Color.decode("#347235"));
+        serverStatus.setText("Server initialized");
+        jTabbedPane1.setEnabledAt(jTabbedPane1.indexOfTab("Initialize Server"), false);
+        jTabbedPane1.setEnabledAt(jTabbedPane1.indexOfTab("Status"), true);
+        jTabbedPane1.setSelectedIndex(jTabbedPane1.indexOfTab("Status"));
+    }
 }

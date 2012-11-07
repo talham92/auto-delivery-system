@@ -11,24 +11,29 @@ import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
-
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+//TODO: remove all System.out.println and put logger.debug, instead!
 /**
  *
  * @author mgamell
  */
 public class SystemStatusView extends javax.swing.JPanel {
     private ClientControllerInterface controller;
-    private SystemStatusView thisStatusPanel;
+    private SystemStatusView thisView;
+    private DeliveryStatusView deliveryStatusView;
     private ArrayList<String[]> officeDrawingItems;
     private String robotPosition;
-    
+
     /**
      * Creates new form StatusPanel
      */
     public SystemStatusView(ClientControllerInterface c) {
-        thisStatusPanel = this;
+        thisView = this;
         controller = c;
+        officeDrawingItems=new ArrayList();
         initComponents();
+        jTabbedPane1.add("Deliveries", deliveryStatusView = new DeliveryStatusView(c));
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -37,14 +42,15 @@ public class SystemStatusView extends javax.swing.JPanel {
 //                        System.out.println("updating");
                         SystemStatus status = controller.getSystemStatus();
 //                        System.out.println(" received "+status.getPosition()+" "+status.isMoving());
-                        if(status != null) {
-                            position.setText(status.getPosition());
-                            isMoving.setSelected(status.isMoving());
-                            drawAction(status.getPosition());
+                        if(status != null && status.isServerInitialized()) {
+                            position.setText(status.getRobotPosition());
+                            isMoving.setSelected(status.isRobotIsMoving());
+                            usersInPosition.setText(status.getUsersInPosition());
+                            drawAction(status.getRobotPosition());
                         }
                     } catch (Exception ex) {
                         ex.printStackTrace();
-                        JOptionPane.showMessageDialog(thisStatusPanel,
+                        JOptionPane.showMessageDialog(thisView,
                             ex.getMessage(),
                             "Error",
                             JOptionPane.ERROR_MESSAGE);
@@ -57,6 +63,22 @@ public class SystemStatusView extends javax.swing.JPanel {
                 }
             }
         }).start();
+        
+        jTabbedPane1.addChangeListener(new ChangeListener() {
+            @Override
+            public void stateChanged(ChangeEvent e) {
+                switch(jTabbedPane1.getTitleAt(jTabbedPane1.getSelectedIndex())) {
+                    case "Robot Status":
+                        break;
+                    case "Deliveries":
+                        controller.wantsToTrackDeliveryStatusAdmin(thisView, deliveryStatusView);
+                        break;
+                    default:
+                        System.out.println("Error! choose tab title: "+jTabbedPane1.getTitleAt(jTabbedPane1.getSelectedIndex()));
+                        System.exit(-1);
+                }
+            }
+        });
     }
 
     /**
@@ -70,7 +92,6 @@ public class SystemStatusView extends javax.swing.JPanel {
 
         jTabbedPane1 = new javax.swing.JTabbedPane();
         jPanel1 = new javax.swing.JPanel();
-        jLabel1 = new javax.swing.JLabel();
         position = new javax.swing.JTextField();
         jLabel2 = new javax.swing.JLabel();
         isMoving = new javax.swing.JCheckBox();
@@ -137,14 +158,15 @@ public class SystemStatusView extends javax.swing.JPanel {
             }
         };
         jLabel3 = new javax.swing.JLabel();
-        jPanel2 = new javax.swing.JPanel();
-        jLabel4 = new javax.swing.JLabel();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        jLabel5 = new javax.swing.JLabel();
+        usersInPosition = new javax.swing.JTextField();
 
-        jLabel1.setText("Last Known Position");
+        position.setEnabled(false);
 
+        jLabel2.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         jLabel2.setText("Is Moving?");
+
+        isMoving.setEnabled(false);
 
         javax.swing.GroupLayout dynamicFloorMapLayout = new javax.swing.GroupLayout(dynamicFloorMap);
         dynamicFloorMap.setLayout(dynamicFloorMapLayout);
@@ -154,10 +176,15 @@ public class SystemStatusView extends javax.swing.JPanel {
         );
         dynamicFloorMapLayout.setVerticalGroup(
             dynamicFloorMapLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 145, Short.MAX_VALUE)
+            .addGap(0, 218, Short.MAX_VALUE)
         );
 
-        jLabel3.setText("Floor plant");
+        jLabel3.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        jLabel3.setText("Position in map");
+
+        jLabel5.setText("Users in position");
+
+        usersInPosition.setEnabled(false);
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -168,18 +195,19 @@ public class SystemStatusView extends javax.swing.JPanel {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(dynamicFloorMap, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(jLabel3)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(position))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel1)
+                            .addComponent(jLabel5)
                             .addComponent(jLabel2))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addComponent(isMoving)
-                                .addGap(0, 255, Short.MAX_VALUE))
-                            .addComponent(position)))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jLabel3)
-                        .addGap(0, 0, Short.MAX_VALUE)))
+                                .addGap(0, 356, Short.MAX_VALUE))
+                            .addComponent(usersInPosition))))
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
@@ -187,60 +215,22 @@ public class SystemStatusView extends javax.swing.JPanel {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel1)
+                    .addComponent(jLabel3)
                     .addComponent(position, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(dynamicFloorMap, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGap(18, 18, 18)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel2, javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(isMoving, javax.swing.GroupLayout.Alignment.TRAILING))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel2)
-                    .addComponent(isMoving))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 83, Short.MAX_VALUE)
-                .addComponent(jLabel3)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(dynamicFloorMap, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(usersInPosition, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel5))
                 .addContainerGap())
         );
 
-        jTabbedPane1.addTab("RobotStatus", jPanel1);
-
-        jLabel4.setText("Pending Deliveries");
-
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
-            },
-            new String [] {
-                "Title 1", "Title 2", "Title 3", "Title 4"
-            }
-        ));
-        jScrollPane1.setViewportView(jTable1);
-
-        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
-        jPanel2.setLayout(jPanel2Layout);
-        jPanel2Layout.setHorizontalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 375, Short.MAX_VALUE)
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addComponent(jLabel4)
-                        .addGap(0, 0, Short.MAX_VALUE)))
-                .addContainerGap())
-        );
-        jPanel2Layout.setVerticalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jLabel4)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 275, Short.MAX_VALUE)
-                .addContainerGap())
-        );
-
-        jTabbedPane1.addTab("ServerStatus", jPanel2);
+        jTabbedPane1.addTab("Robot Status", jPanel1);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -276,18 +266,19 @@ public class SystemStatusView extends javax.swing.JPanel {
         
     }
 
+    public DeliveryStatusView getDeliveryStatusView() {
+        return deliveryStatusView;
+    }
+    
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel dynamicFloorMap;
     private javax.swing.JCheckBox isMoving;
-    private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
-    private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
     private javax.swing.JPanel jPanel1;
-    private javax.swing.JPanel jPanel2;
-    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTabbedPane jTabbedPane1;
-    private javax.swing.JTable jTable1;
     private javax.swing.JTextField position;
+    private javax.swing.JTextField usersInPosition;
     // End of variables declaration//GEN-END:variables
 }

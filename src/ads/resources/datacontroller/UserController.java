@@ -130,7 +130,7 @@ public class UserController {
     }
 
     
-    public static Set<ADSUser> searchUser_NameOffice(String username, String password, String name, String office) {
+    public static Set<ADSUser> searchUser_NameOffice(String name, String office) {
         EntityManager em = Persistance.getEntityManager();
 
         Set<ADSUser> results = new HashSet<>(20);
