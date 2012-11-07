@@ -80,7 +80,69 @@ public class SystemStatusView extends javax.swing.JPanel {
             }
         });
     }
+    
+    private void paintMap(Graphics g)
+    {
+        // Get the drawing area
+        int xt=10;
+        int yt=10;
+        int ovalL=10;
+        double reducerX = calculateReducerX();
+        double reducerY = calculateReducerY();
+        int x=10+(int) (calculateStartX()*reducerX);
+        int y=10+(int) (calculateStartY()*reducerY);
+        
+        
+        // Set current drawing color
+        g.setColor (Color.BLACK);
+        String[] ts;
+        // Draw a circle around the mid-point
+        for(int i=0;i<officeDrawingItems.size();i++)
+        {
+            ts=officeDrawingItems.get(i);
+            if(ts[0].equals(robotPosition)) {
+                g.setColor (Color.RED);
+            } else {
+                g.setColor (Color.BLACK);
+            }
 
+            //unitSign for adapting drawing to the negative dists
+            //g.fillOval(x, y, 2, 2);
+            if(ts[0].equals("end"))
+            {
+                g.drawOval(x-(ovalL/2), y-(ovalL/2), ovalL, ovalL);
+                g.fillOval(x-(ovalL/2), y-(ovalL/2), ovalL, ovalL);
+            }
+            else
+            {
+                int unitSign=Integer.parseInt(ts[2])/Math.abs(Integer.parseInt(ts[2]));
+                if(ts[0].equals("start"))
+                {
+                    g.drawOval(x-(ovalL/2), y-(ovalL/2), ovalL, ovalL);
+                    g.fillOval(x-(ovalL/4), y-(ovalL/4), ovalL/2, ovalL/2);
+                }
+                else
+                {
+                    g.drawOval(x-(ovalL/2), y-(ovalL/2), ovalL, ovalL);
+                }
+                g.setColor (Color.BLACK);
+                if(ts[1].equals("x"))
+                {
+                    xt=x + (int) (reducerX*Integer.parseInt(ts[2]));
+                    yt=y;
+                    g.drawLine(x+unitSign*ovalL/2, y, xt-unitSign*ovalL/2, yt);
+                }
+                else if(ts[1].equals("y"))
+                {
+                    xt=x;
+                    yt=y + (int) (reducerY*Integer.parseInt(ts[2]));
+                    g.drawLine(x, y+ovalL/2, xt, yt-ovalL/2);
+                }
+                x=xt;
+                y=yt;
+            }
+        }
+    }
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -100,61 +162,7 @@ public class SystemStatusView extends javax.swing.JPanel {
             public void paintComponent(Graphics g)   {
                 // Paint background
                 super.paintComponent(g);
-
-                // Get the drawing area
-                int xt=10;
-                int yt=10;
-                int x=10;
-                int y=10;
-                int ovalL=10;
-                // Set current drawing color
-                g.setColor (Color.BLACK);
-                String[] ts;
-                // Draw a circle around the mid-point
-                for(int i=0;i<officeDrawingItems.size();i++)
-                {
-                    ts=officeDrawingItems.get(i);
-                    if(ts[0].equals(robotPosition))
-                    g.setColor (Color.RED);
-                    else
-                    g.setColor (Color.BLACK);
-
-                    //unitSign for adapting drawing to the negative dists
-                    //g.fillOval(x, y, 2, 2);
-                    if(ts[0].equals("end"))
-                    {
-                        g.drawOval(x-(ovalL/2), y-(ovalL/2), ovalL, ovalL);
-                        g.fillOval(x-(ovalL/2), y-(ovalL/2), ovalL, ovalL);
-                    }
-                    else
-                    {
-                        int unitSign=Integer.parseInt(ts[2])/Math.abs(Integer.parseInt(ts[2]));
-                        if(ts[0].equals("start"))
-                        {
-                            g.drawOval(x-(ovalL/2), y-(ovalL/2), ovalL, ovalL);
-                            g.fillOval(x-(ovalL/4), y-(ovalL/4), ovalL/2, ovalL/2);
-                        }
-                        else
-                        {
-                            g.drawOval(x-(ovalL/2), y-(ovalL/2), ovalL, ovalL);
-                        }
-                        g.setColor (Color.BLACK);
-                        if(ts[1].equals("x"))
-                        {
-                            xt=x + 10*Integer.parseInt(ts[2]);
-                            yt=y;
-                            g.drawLine(x+unitSign*ovalL/2, y, xt-unitSign*ovalL/2, yt);
-                        }
-                        else if(ts[1].equals("y"))
-                        {
-                            xt=x;
-                            yt=y + 10*Integer.parseInt(ts[2]);
-                            g.drawLine(x, y+ovalL/2, xt, yt-ovalL/2);
-                        }
-                        x=xt;
-                        y=yt;
-                    }
-                }
+                paintMap(g);
             }
         };
         jLabel3 = new javax.swing.JLabel();
@@ -281,4 +289,127 @@ public class SystemStatusView extends javax.swing.JPanel {
     private javax.swing.JTextField position;
     private javax.swing.JTextField usersInPosition;
     // End of variables declaration//GEN-END:variables
+
+    private double calculateReducerX() {
+        int maxX = 0;
+        int minX = 0;
+        int x=0;
+        String[] ts;
+        // Draw a circle around the mid-point
+        for(int i=0;i<officeDrawingItems.size();i++)
+        {
+            ts=officeDrawingItems.get(i);
+
+            if(ts[0].equals("end"))
+            {
+            }
+            else
+            {
+                if(ts[1].equals("x"))
+                {
+                    x = x + Integer.parseInt(ts[2]);
+                    if(x > maxX) {
+                        maxX = x;
+                    }
+                    if(x < minX) {
+                        minX = x;
+                    }
+                }
+            }
+        }
+        return (dynamicFloorMap.getWidth()-20)/(maxX-minX);
+    }
+
+    private double calculateReducerY() {
+        int maxY = 0;
+        int minY = 0;
+        int y=0;
+        String[] ts;
+        // Draw a circle around the mid-point
+        for(int i=0;i<officeDrawingItems.size();i++)
+        {
+            ts=officeDrawingItems.get(i);
+
+            if(ts[0].equals("end"))
+            {
+            }
+            else
+            {
+                if(ts[1].equals("y"))
+                {
+                    y = y + Integer.parseInt(ts[2]);
+                    if(y > maxY) {
+                        maxY = y;
+                    }
+                    if(y < minY) {
+                        minY = y;
+                    }
+                }
+            }
+        }
+        return (dynamicFloorMap.getHeight()-20)/(maxY-minY);
+    }
+
+
+    private int calculateStartX() {
+        int maxX = 0;
+        int minX = 0;
+        int x=0;
+        String[] ts;
+        // Draw a circle around the mid-point
+        for(int i=0;i<officeDrawingItems.size();i++)
+        {
+            ts=officeDrawingItems.get(i);
+
+            if(ts[0].equals("end"))
+            {
+            }
+            else
+            {
+                if(ts[1].equals("x"))
+                {
+                    x = x + Integer.parseInt(ts[2]);
+                    if(x > maxX) {
+                        maxX = x;
+                    }
+                    if(x < minX) {
+                        minX = x;
+                    }
+                }
+            }
+        }
+//        System.err.println(-minX);
+        return -minX;
+    }
+
+    private int calculateStartY() {
+        int maxY = 0;
+        int minY = 0;
+        int y=0;
+        String[] ts;
+        // Draw a circle around the mid-point
+        for(int i=0;i<officeDrawingItems.size();i++)
+        {
+            ts=officeDrawingItems.get(i);
+
+            if(ts[0].equals("end"))
+            {
+            }
+            else
+            {
+                if(ts[1].equals("y"))
+                {
+                    y = y + Integer.parseInt(ts[2]);
+                    if(y > maxY) {
+                        maxY = y;
+                    }
+                    if(y < minY) {
+                        minY = y;
+                    }
+                }
+            }
+        }
+//        System.err.println(-minY);
+        return -minY;
+    }
 }
