@@ -34,6 +34,10 @@ import javax.persistence.NamedQuery;
     @NamedQuery(
         name="Delivery.searchUserDeliveryList",
         query="SELECT s FROM Delivery s WHERE s.sender = :sender ORDER BY s.timestampField DESC"
+    ),
+    @NamedQuery(
+        name="Delivery.searchAllDeliveryList",
+        query="SELECT s FROM Delivery s"
     )
 })
 public abstract class DeliveryStep implements Serializable {

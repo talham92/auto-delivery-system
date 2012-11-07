@@ -13,28 +13,49 @@ import java.io.Serializable;
 public class SystemStatus implements Serializable {
     private static final long serialVersionUID = 752647222340717L;
     
-    private String position;
-    private boolean moving;
+    private String robotPosition;
+    private boolean robotIsMoving;
+    private boolean serverInitialized;
+    private String usersInPosition;
 
-    public SystemStatus(String position, boolean moving) {
-        this.position = position;
-        this.moving = moving;
+    public SystemStatus(String robotPosition, boolean robotIsMoving, boolean serverInitialized, String usersInPosition) {
+        this.robotPosition = robotPosition;
+        this.robotIsMoving = robotIsMoving;
+        this.serverInitialized = serverInitialized;
+        this.usersInPosition = usersInPosition;
     }
 
-    public String getPosition() {
-        return position;
+
+    public String getRobotPosition() {
+        return robotPosition;
     }
 
-    public void setPosition(String position) {
-        this.position = position;
+    public void setRobotPosition(String robotPosition) {
+        this.robotPosition = robotPosition;
     }
 
-    public boolean isMoving() {
-        return moving;
+    public boolean isRobotIsMoving() {
+        return robotIsMoving;
     }
 
-    public void setMoving(boolean moving) {
-        this.moving = moving;
+    public void setRobotIsMoving(boolean robotIsMoving) {
+        this.robotIsMoving = robotIsMoving;
     }
-   
+
+    public boolean isServerInitialized() {
+        return serverInitialized;
+    }
+
+    public void setServerInitialized(boolean serverInitialized) {
+        this.serverInitialized = serverInitialized;
+    }
+
+    public String getUsersInPosition() {
+        return usersInPosition;
+    }
+
+    public void setUsersInPosition(String usersInPosition) {
+        this.usersInPosition = usersInPosition;
+    }
+
 }

@@ -36,7 +36,8 @@ public interface ServerControllerInterface extends Remote {
 
     public SystemStatus getSystemStatus(String username, String password) throws RemoteException, ServerNonInitializedException;
     public List<Delivery> getUserDeliveryList(String username, String password) throws RemoteException, ServerNonInitializedException;
-    public List<String[]> getUserDeliveryDetails(String username, String password, int deliveryId) throws RemoteException, ServerNonInitializedException;
+    public List<Delivery> getDeliveryList(String username, String password) throws RemoteException, ServerNonInitializedException;
+    public List<String[]> getDeliveryDetails(String username, String password, int deliveryId) throws RemoteException, ServerNonInitializedException;
 
-    public ArrayList<String[]> getMapDrawingArray()throws RemoteException, ServerNonInitializedException;
+    public ArrayList<String[]> getMapDrawingArray() throws RemoteException;
 }

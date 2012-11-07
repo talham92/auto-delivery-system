@@ -26,9 +26,10 @@ interface ClientControllerInterface {
     public void bookDelivery(double urgency, List<String> targetList, BookDeliveryView bookDeliveryView);
     public void wantsToCreateFloorMap(AdminMainView v);
 
-    public SystemStatus getSystemStatus() throws Exception ;
+    public SystemStatus getSystemStatus();
     public void wantsToTrackDeliveryStatus(UserMainView view, DeliveryStatusView deliveryStatusView);
     public void wantsToSeeDeliveryDetails(DeliveryStatusView deliveryStatusView, int deliveryId);
+    public void wantsToTrackDeliveryStatusAdmin(SystemStatusView view, DeliveryStatusView deliveryStatusView);
 
     public void createFloorMap(String text, AdminCreateFloorMapView v);
     public void clearOffices(AdminCreateFloorMapView v);
@@ -36,9 +37,9 @@ interface ClientControllerInterface {
     public ArrayList<String[]> getMapDrawingArray();
     public void stateAdminMain();
 
-    public void wantsToLookAtDynamicViewOfMap(AdminMainView aThis);
+//    public void wantsToLookAtDynamicViewOfMap(AdminMainView aThis);
 
-    public void initializeWithTestingData();
+    public void initializeWithTestingData(AdminMainView view);
 
-    public void initializeSystem();
+    public void initializeSystem(AdminMainView view);
 }

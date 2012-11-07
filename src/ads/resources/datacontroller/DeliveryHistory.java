@@ -75,6 +75,20 @@ public class DeliveryHistory implements Serializable {
         }
     }
 
+    public static List<Delivery> getDeliveryList() {
+        EntityManager em = Persistance.getEntityManager();
+        
+        try {
+            List<Delivery> deliveries = em.createNamedQuery("Delivery.searchAllDeliveryList")
+            .getResultList();
+            
+            return deliveries;
+        } catch(Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
     public static Delivery getDelivery(int deliveryId) {
         EntityManager em = Persistance.getEntityManager();
         return em.find(Delivery.class, deliveryId);
