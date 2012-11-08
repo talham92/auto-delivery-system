@@ -74,8 +74,6 @@ public class FloorMap {
         return giveDistanceFromCurrentToDestination(startN, endN);
     }
     
-    //todo: fix imports in the whole project
-    
     public static void createOffice(Office office) {
         //persist the office entity to the database
         EntityManager em = Persistance.getEntityManager();

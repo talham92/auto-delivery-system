@@ -32,6 +32,10 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.persistence.EntityManager;
 
+//todo: fix imports in the whole project
+//todo: check the system is working if the server is REMOTE from the client
+//todo: autocomplete when searching!!!
+
 /**
  *
  * @author mgamell
@@ -56,7 +60,6 @@ public class ServerController implements ServerControllerInterface {
         }
     }
 
-    //todo: eliminate everything that calls entitymanager and move the code to datacontroller package
     public static ServerController getInstance() {
         return singleton;
     }
@@ -316,8 +319,6 @@ public class ServerController implements ServerControllerInterface {
         checkSystemInitialized();
         return UserController.register(firstName, lastName, roomNumber, email, username, password, password1);
     }
-//todo: check the system is working if the server is REMOTE from the client
-//todo: autocomplete when searching!!!
     @Override
     public Set<ADSUser> searchUser_NameOffice(String username, String password, String name, String office) throws ServerNonInitializedException  {
         checkSystemInitialized();
