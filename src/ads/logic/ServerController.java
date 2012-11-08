@@ -80,12 +80,21 @@ public class ServerController implements ServerControllerInterface {
             ServerControllerInterface stub = (ServerControllerInterface) UnicastRemoteObject.exportObject(obj, 0);
 
             // Bind the remote object's stub in the registry
-            Registry registry = LocateRegistry.getRegistry();
+            Registry registry = LocateRegistry.getRegistry("spring.rutgers.edu");
             try {
                 registry.unbind("ServerControllerInterface");
-            } catch (NotBoundException ex) {}
+            } catch (Exception ex) {}
 
-            registry.bind("ServerControllerInterface", stub);
+            try {
+                registry.bind("ServerControllerInterface", stub);
+            } catch (Exception ex) {
+                // check local registry
+                registry = LocateRegistry.getRegistry();
+                try {
+                    registry.unbind("ServerControllerInterface");
+                } catch (NotBoundException ex1) {}
+                registry.bind("ServerControllerInterface", stub);
+            }
             System.out.println("Server ready");
         } catch (Exception e) {
             System.err.println("Server exception: " + e.toString());
@@ -174,7 +183,7 @@ public class ServerController implements ServerControllerInterface {
         em.getTransaction().commit();
     }
 
-private void insertBigTestingDataSet(){
+    private void insertBigTestingDataSet() {
         EntityManager em = Persistance.getEntityManager();
         em.getTransaction().begin();
         // Creating map datas

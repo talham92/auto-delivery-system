@@ -77,8 +77,8 @@ public class ClientController implements ClientControllerInterface {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        String host = (args.length < 1) ? null : args[0];
-        ClientController c = new ClientController(host);
+        //String host = (args.length < 1) ? null : args[0];
+        new ClientController("spring.rutgers.edu");
     }
 
     private ClientController(String host) {
@@ -100,8 +100,21 @@ public class ClientController implements ClientControllerInterface {
             Registry registry = LocateRegistry.getRegistry(host);
             server = (ServerControllerInterface) registry.lookup("ServerControllerInterface");
         } catch (RemoteException | NotBoundException e) {
-            Logger.getLogger(ClientController.class.getName()).log(Level.SEVERE, "initServerConnection", e);
-            System.exit(-1);
+            JOptionPane.showMessageDialog(null,
+                "Unable to connect to remote server. Press OK to try to with local server",
+                "Register error",
+                JOptionPane.ERROR_MESSAGE);
+            // try local repository
+            try {
+                Registry registry = LocateRegistry.getRegistry();
+                server = (ServerControllerInterface) registry.lookup("ServerControllerInterface");
+            } catch (RemoteException | NotBoundException e1) {
+                JOptionPane.showMessageDialog(null,
+                    "Unable to connect to local server. Exiting...",
+                    "Register error",
+                    JOptionPane.ERROR_MESSAGE);
+                System.exit(-1);
+            }
         }
     }
 

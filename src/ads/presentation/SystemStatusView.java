@@ -317,7 +317,11 @@ public class SystemStatusView extends javax.swing.JPanel {
                 }
             }
         }
-        return (dynamicFloorMap.getWidth()-20)/(maxX-minX);
+        if(maxX-minX != 0) {
+            return (dynamicFloorMap.getWidth()-20)/(maxX-minX);
+        } else {
+            return 10;
+        }
     }
 
     private double calculateReducerY() {
@@ -347,7 +351,11 @@ public class SystemStatusView extends javax.swing.JPanel {
                 }
             }
         }
-        return (dynamicFloorMap.getHeight()-20)/(maxY-minY);
+        if(maxY-minY != 0) {
+            return (dynamicFloorMap.getHeight()-20)/(maxY-minY);
+        } else {
+            return 10;
+        }
     }
 
 
