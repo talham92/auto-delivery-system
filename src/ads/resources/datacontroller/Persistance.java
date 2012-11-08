@@ -24,7 +24,7 @@ import javax.persistence.metamodel.EntityType;
  */
 public class Persistance {
     private static EntityManagerFactory emf;
-    private static EntityManager em = null;
+//    private static EntityManager em = null;
 
     private Persistance() throws Exception {
         throw new Exception("Don't try to instantiate Persistance");
@@ -32,10 +32,11 @@ public class Persistance {
 
     public static void initPersistance() {
         emf = Persistence.createEntityManagerFactory("adsPU");
-        em = emf.createEntityManager();
+//        em = emf.createEntityManager();
     }
 
     public static void deleteAllPersistanceRecords() {
+        EntityManager em = Persistance.getEntityManager();
         try {
             for (Class c : ClassesPackagesFinder.getClasses("ads.resources.data")) {
                 final String className = c.getName();
@@ -61,15 +62,15 @@ public class Persistance {
     }
     
     public static void deinitPersistance() {
-        em.close();
+//        em.close();
         emf.close();
     }
 
     public static EntityManager getEntityManager() {
-        if(em == null) {
+        if(emf == null) {
             throw new RuntimeException("getEntityManager called before initPersistance");
         }
-        return em;
+        return emf.createEntityManager();
     }
     
     

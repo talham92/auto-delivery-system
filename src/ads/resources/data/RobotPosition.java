@@ -20,7 +20,7 @@ public class RobotPosition implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
     private Long id;
-    @OneToOne(fetch=FetchType.EAGER, cascade=CascadeType.ALL)
+    @OneToOne(fetch=FetchType.EAGER, cascade=CascadeType.MERGE)
     private Office lastKnownPosition;
     private boolean isMoving;
 
