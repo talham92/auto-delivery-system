@@ -6,6 +6,7 @@ package ads;
 
 import ads.logic.ServerController;
 import ads.presentation.ClientController;
+import adsrobotstub.RobotStub;
 
 /**
  *
@@ -20,6 +21,8 @@ public class Ads {
         if(args.length > 1) {
             if(args[1].equals("server")) {
                 ServerController.main(args);
+            } else if(args[1].equals("stub")) {
+                RobotStub.main(args);
             } else {
                 ClientController.main(args);
             }
