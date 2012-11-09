@@ -269,7 +269,7 @@ public class RobotStub extends javax.swing.JFrame {
             Registry registry = LocateRegistry.getRegistry(host);
             server = (ServerControllerInterface) registry.lookup("ServerControllerInterface");
             robotStubServer = (RobotStubInterface) registry.lookup("RobotStubInterface");
-        } catch (RemoteException | NotBoundException e) {
+        } catch (Exception e) {
             JOptionPane.showMessageDialog(null,
                 "Unable to connect to remote server. Press OK to try to with local server",
                 "Register error",
@@ -279,7 +279,7 @@ public class RobotStub extends javax.swing.JFrame {
                 Registry registry = LocateRegistry.getRegistry();
                 server = (ServerControllerInterface) registry.lookup("ServerControllerInterface");
                 robotStubServer = (RobotStubInterface) registry.lookup("RobotStubInterface");
-            } catch (RemoteException | NotBoundException e1) {
+            } catch (Exception e1) {
                 JOptionPane.showMessageDialog(null,
                     "Unable to connect to local server. Exiting...",
                     "Register error",

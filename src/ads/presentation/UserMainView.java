@@ -34,20 +34,19 @@ public class UserMainView extends javax.swing.JFrame {
         jTabbedPane1.addChangeListener(new ChangeListener() {
             @Override
             public void stateChanged(ChangeEvent e) {
-                switch(jTabbedPane1.getTitleAt(jTabbedPane1.getSelectedIndex())) {
-                    case "Book Delivery": // bookDelivery
-                        controller.wantsToBookDelivery();
-                        break;
-                    case "Track Status": // SystemStatusView
-                        controller.wantsToTrackDeliveryStatus(thisView, deliveryStatusView);
-                        break;
-                    default:
-                        logger.finest("Error! choose tab title: "+jTabbedPane1.getTitleAt(jTabbedPane1.getSelectedIndex()));
-                        JOptionPane.showMessageDialog(thisView,
-                            "Error! choose tab title: "+jTabbedPane1.getTitleAt(jTabbedPane1.getSelectedIndex()),
-                            "Fatal Error",
-                            JOptionPane.ERROR_MESSAGE);
-                        System.exit(-1);
+                String title = jTabbedPane1.getTitleAt(jTabbedPane1.getSelectedIndex());
+                
+                if(title.equals("Book Delivery")) {
+                    controller.wantsToBookDelivery();
+                } else if(title.equals("Track Status")) {
+                    controller.wantsToTrackDeliveryStatus(thisView, deliveryStatusView);
+                } else {
+                    logger.finest("Error! choose tab title: "+jTabbedPane1.getTitleAt(jTabbedPane1.getSelectedIndex()));
+                    JOptionPane.showMessageDialog(thisView,
+                        "Error! choose tab title: "+jTabbedPane1.getTitleAt(jTabbedPane1.getSelectedIndex()),
+                        "Fatal Error",
+                        JOptionPane.ERROR_MESSAGE);
+                    System.exit(-1);
                 }
             }
         });

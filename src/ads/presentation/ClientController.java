@@ -99,7 +99,7 @@ public class ClientController implements ClientControllerInterface {
         try {
             Registry registry = LocateRegistry.getRegistry(host);
             server = (ServerControllerInterface) registry.lookup("ServerControllerInterface");
-        } catch (RemoteException | NotBoundException e) {
+        } catch (Exception e) {
             JOptionPane.showMessageDialog(null,
                 "Unable to connect to remote server. Press OK to try to with local server",
                 "Register error",
@@ -108,7 +108,7 @@ public class ClientController implements ClientControllerInterface {
             try {
                 Registry registry = LocateRegistry.getRegistry();
                 server = (ServerControllerInterface) registry.lookup("ServerControllerInterface");
-            } catch (RemoteException | NotBoundException e1) {
+            } catch (Exception e1) {
                 JOptionPane.showMessageDialog(null,
                     "Unable to connect to local server. Exiting...",
                     "Register error",
@@ -322,7 +322,7 @@ public class ClientController implements ClientControllerInterface {
             result = null;
         }
 
-        List<String[]> resultString = new ArrayList<>(result.size());
+        List<String[]> resultString = new ArrayList(result.size());
         for(ADSUser u : result) {
             resultString.add(new String[] {u.getUsername(), u.getFirstName()+" "+u.getLastName(), u.getOffice().getOfficeAddress()});
         }

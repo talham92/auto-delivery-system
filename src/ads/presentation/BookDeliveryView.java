@@ -26,7 +26,7 @@ public class BookDeliveryView extends javax.swing.JPanel {
      */
     public BookDeliveryView(ClientControllerInterface c) {
         initComponents();
-        targetList=new HashSet<>();
+        targetList=new HashSet();
         resultTable.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -292,7 +292,7 @@ public class BookDeliveryView extends javax.swing.JPanel {
     }//GEN-LAST:event_searchButtonActionPerformed
 
     private void confirmAllButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_confirmAllButtonActionPerformed
-        List<String> targetUsernames = new ArrayList<>(targetList.size());
+        List<String> targetUsernames = new ArrayList(targetList.size());
 
         for(String[] target : targetList) {
             targetUsernames.add(target[0]);
