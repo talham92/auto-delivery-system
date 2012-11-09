@@ -36,7 +36,11 @@ public class SectionedBox {
         if(box.getDelivery() != null) {
             throw new RuntimeException("Box.searchEmpty returned a box nonempty!");
         }
+        em.getTransaction().begin();
         box.setDelivery(delivery);
+        em.getTransaction().commit();
+//System.out.println("ALLOCATED BOX: "+);
+//Thread.sleep(10000);
         return box.getId();
     }
 
@@ -48,7 +52,9 @@ public class SectionedBox {
         if(!box.getDelivery().equals(delivery)) {
             throw new RuntimeException("Box.searchDelivery returned a box incorrect!");
         }
+        em.getTransaction().begin();
         box.setDelivery(null);
+        em.getTransaction().commit();
         return box.getId();
     }
 

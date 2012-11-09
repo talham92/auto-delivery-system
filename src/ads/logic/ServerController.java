@@ -68,6 +68,7 @@ public class ServerController implements ServerControllerInterface {
         state = STATE_SYSTEM_NON_INITIALIZED;
         Persistance.initPersistance();
         UserController.addAdmin();
+        ServerCommunicator.init();
     }
     
     /**
@@ -125,7 +126,6 @@ public class ServerController implements ServerControllerInterface {
         checkSystemNonInitialized();
         Persistance.deleteAllPersistanceRecords();
         insertBigTestingDataSet();
-        ServerCommunicator.init();
         RobotPositionAccessor.init();
         delCoordinator = DeliveryCoordinator.getInstance();
         state = STATE_SYSTEM_INITIALIZED;
@@ -135,7 +135,6 @@ public class ServerController implements ServerControllerInterface {
     public void initializeSystem() throws ServerInitializedException {
         checkSystemNonInitialized();
         // todo: check that we have offices
-        ServerCommunicator.init();
         RobotPositionAccessor.init();
         delCoordinator = DeliveryCoordinator.getInstance();
         state = STATE_SYSTEM_INITIALIZED;

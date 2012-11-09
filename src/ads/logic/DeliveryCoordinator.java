@@ -138,7 +138,7 @@ public class DeliveryCoordinator {
                         for(int i=0 ; i<3 ; i++) {
                             String password;
                             try {
-                                password = ServerCommunicator.waitForPassword(10);
+                                password = ServerCommunicator.waitForPassword(10, delivery.getNextUser().getUsername());
                             } catch(TimeoutException e) {
                                 break;
                             }
