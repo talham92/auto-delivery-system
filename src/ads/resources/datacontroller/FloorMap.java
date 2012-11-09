@@ -82,7 +82,7 @@ public class FloorMap {
         //persist the office entity to the database
         EntityManager em = Persistance.getEntityManager();
         em.getTransaction().begin();
-        em.persist(office);  
+        em.merge(office);  
         em.getTransaction().commit();
     }
     

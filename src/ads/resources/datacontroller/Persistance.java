@@ -18,6 +18,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import javax.persistence.Query;
+import org.eclipse.persistence.exceptions.DatabaseException;
 
 /**
  *
@@ -37,8 +38,11 @@ public class Persistance {
         prop.put("javax.persistence.jdbc.url", "jdbc:mysql://sansor:3306/ads?zeroDateTimeBehavior=convertToNull");
         try {
             emf = Persistence.createEntityManagerFactory("adsPU", prop);
+            emf.createEntityManager();
         } catch (Exception e) {
-            emf = Persistence.createEntityManagerFactory("adsPU");
+            prop = new HashMap();
+            prop.put("javax.persistence.jdbc.url", "jdbc:mysql://localhost:3306/ads?zeroDateTimeBehavior=convertToNull");
+            emf = Persistence.createEntityManagerFactory("adsPU", prop);
         }
 //        em = emf.createEntityManager();
     }

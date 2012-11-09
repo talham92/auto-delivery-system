@@ -41,21 +41,12 @@ public class ServerCommunicator implements RobotStubInterface {
             RobotStubInterface stub = (RobotStubInterface) UnicastRemoteObject.exportObject(obj, 0);
 
             // Bind the remote object's stub in the registry
-            Registry registry = LocateRegistry.getRegistry("spring.rutgers.edu");
+            Registry registry = LocateRegistry.getRegistry();
             try {
                 registry.unbind("RobotStubInterface");
             } catch (Exception ex) {}
 
-            try {
-                registry.bind("RobotStubInterface", stub);
-            } catch (Exception ex) {
-                // check local registry
-                registry = LocateRegistry.getRegistry();
-                try {
-                    registry.unbind("RobotStubInterface");
-                } catch (NotBoundException ex1) {}
-                registry.bind("RobotStubInterface", stub);
-            }
+            registry.bind("RobotStubInterface", stub);
         } catch (Exception e) {
             logger.severe("Server exception: " + e.toString());
             e.printStackTrace();

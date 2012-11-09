@@ -24,7 +24,7 @@ public class RobotPositionAccessor {
         ads.resources.data.RobotPosition r = em.find(ads.resources.data.RobotPosition.class, 1L);
         r.setIsMoving(isMoving);
         em.getTransaction().begin();
-        em.persist(r);
+        em.merge(r);
         em.getTransaction().commit();
     }
 
@@ -36,7 +36,7 @@ public class RobotPositionAccessor {
         EntityManager em = Persistance.getEntityManager();
         ads.resources.data.RobotPosition r = new ads.resources.data.RobotPosition(FloorMap.getStartPoint(), false);
         em.getTransaction().begin();
-        em.persist(r);
+        em.merge(r);
         em.getTransaction().commit();
     }
 
@@ -51,7 +51,7 @@ public class RobotPositionAccessor {
         ads.resources.data.RobotPosition r = em.find(ads.resources.data.RobotPosition.class, 1L);
         r.setLastKnownPosition(r.getLastKnownPosition().getNextOffice());
         em.getTransaction().begin();
-        em.persist(r);
+        em.merge(r);
         em.getTransaction().commit();
     }
 }

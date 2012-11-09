@@ -97,20 +97,16 @@ public class ClientController implements ClientControllerInterface {
 
     private void initServerConnection(String host) {
         try {
-            Registry registry = LocateRegistry.getRegistry(host);
+            Registry registry = LocateRegistry.getRegistry();
             server = (ServerControllerInterface) registry.lookup("ServerControllerInterface");
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(null,
-                "Unable to connect to remote server. Press OK to try to with local server",
-                "Register error",
-                JOptionPane.ERROR_MESSAGE);
-            // try local repository
+            // try remote repository
             try {
-                Registry registry = LocateRegistry.getRegistry();
+                Registry registry = LocateRegistry.getRegistry(host);
                 server = (ServerControllerInterface) registry.lookup("ServerControllerInterface");
             } catch (Exception e1) {
                 JOptionPane.showMessageDialog(null,
-                    "Unable to connect to local server. Exiting...",
+                    "Unable to connect to server (nor local or remote). Exiting...",
                     "Register error",
                     JOptionPane.ERROR_MESSAGE);
                 System.exit(-1);
