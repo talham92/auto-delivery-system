@@ -7,9 +7,11 @@ package ads.resources.datacontroller;
 import ads.resources.data.ADSUser;
 import ads.resources.data.DeliveredDelivery;
 import ads.resources.data.Delivery;
+import adsrobotstub.RobotStub;
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.List;
+import java.util.logging.Logger;
 import javax.persistence.EntityManager;
 
 /**
@@ -17,6 +19,7 @@ import javax.persistence.EntityManager;
  * @author mgamell
  */
 public class DeliveryHistory implements Serializable {
+    private static Logger logger = Logger.getLogger(DeliveryHistory.class.getName());
 
     private DeliveryHistory() throws Exception {
         throw new Exception("Don't try to instantiate me");
@@ -41,7 +44,7 @@ public class DeliveryHistory implements Serializable {
             Delivery mostPrioritaryDelivery = null;
             double maxPriority = -1;
             
-            System.out.println(pendingDeliveries);
+            logger.finest(pendingDeliveries.toString());
 
             for(Delivery d : pendingDeliveries) {
                 int distance = FloorMap.calculateNumOfHops(RobotPositionAccessor.getRobotPosition(), d.getNextUser().getOffice());

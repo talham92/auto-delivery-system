@@ -10,11 +10,13 @@ import ads.resources.data.Office;
 import ads.resources.data.Office;
 import ads.resources.datacontroller.Persistance;
 import ads.resources.datacontroller.Persistance;
+import adsrobotstub.RobotStub;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
+import java.util.logging.Logger;
 import javax.persistence.EntityManager;
 
 /**
@@ -22,6 +24,8 @@ import javax.persistence.EntityManager;
  * @author mgamell
  */
 public class FloorMap {
+    private static Logger logger = Logger.getLogger(FloorMap.class.getName());
+
     public static int calculateNumOfHops(Office origin, Office destination) {
         return giveDistanceFromCurrentToDestination(origin, destination);
     }
@@ -43,11 +47,11 @@ public class FloorMap {
         Office temp=current;
         while(!temp.equals(dest))
         {
-            System.out.println("    partial totalDist = " +totalDist + "  currentOffice = "+temp.getOfficeAddress());
+            logger.finest("    partial totalDist = " +totalDist + "  currentOffice = "+temp.getOfficeAddress());
             totalDist += Math.abs(Integer.parseInt(temp.getNextOfficeDist()));
             temp=temp.getNextOffice();
         }
-        System.out.println("totalDist = " +totalDist + "  currentOffice = "+temp.getOfficeAddress());
+        logger.finest("totalDist = " +totalDist + "  currentOffice = "+temp.getOfficeAddress());
         return totalDist;
     }
 

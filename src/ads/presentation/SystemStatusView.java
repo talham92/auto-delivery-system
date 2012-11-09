@@ -5,6 +5,7 @@
 package ads.presentation;
 
 import ads.logic.SystemStatus;
+import adsrobotstub.RobotStub;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.util.ArrayList;
@@ -19,6 +20,7 @@ import javax.swing.event.ChangeListener;
  * @author mgamell
  */
 public class SystemStatusView extends javax.swing.JPanel {
+    private static Logger logger = Logger.getLogger(SystemStatusView.class.getName());
     private ClientControllerInterface controller;
     private SystemStatusView thisView;
     private DeliveryStatusView deliveryStatusView;
@@ -74,7 +76,11 @@ public class SystemStatusView extends javax.swing.JPanel {
                         controller.wantsToTrackDeliveryStatusAdmin(thisView, deliveryStatusView);
                         break;
                     default:
-                        System.out.println("Error! choose tab title: "+jTabbedPane1.getTitleAt(jTabbedPane1.getSelectedIndex()));
+                        logger.finest("Error! choose tab title: "+jTabbedPane1.getTitleAt(jTabbedPane1.getSelectedIndex()));
+                        JOptionPane.showMessageDialog(thisView,
+                            "Error! choose tab title: "+jTabbedPane1.getTitleAt(jTabbedPane1.getSelectedIndex()),
+                            "Fatal Error",
+                            JOptionPane.ERROR_MESSAGE);
                         System.exit(-1);
                 }
             }
@@ -265,7 +271,7 @@ public class SystemStatusView extends javax.swing.JPanel {
         for(int i=0;i<officeDrawingItems.size();i++)
         {
             String[] ts=officeDrawingItems.get(i);
-            System.out.println(ts[0]+" "+ts[1]+" "+ts[2]+" "+ts[3]+" "+ts[4]);
+            logger.finest(ts[0]+" "+ts[1]+" "+ts[2]+" "+ts[3]+" "+ts[4]);
         }
         //Redraw the panel
         robotPosition = position;

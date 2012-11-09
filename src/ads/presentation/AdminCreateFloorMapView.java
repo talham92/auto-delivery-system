@@ -4,9 +4,11 @@
  */
 package ads.presentation;
 
+import adsrobotstub.RobotStub;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.util.ArrayList;
+import java.util.logging.Logger;
 import javax.swing.JTextArea;
 
 /**
@@ -14,6 +16,7 @@ import javax.swing.JTextArea;
  * @author MFA
  */
 public class AdminCreateFloorMapView extends javax.swing.JFrame {
+    private static Logger logger = Logger.getLogger(AdminCreateFloorMapView.class.getName());
     private final ClientControllerInterface controller;
     private ArrayList<String[]> drawingItems;
     /**
@@ -276,7 +279,7 @@ public class AdminCreateFloorMapView extends javax.swing.JFrame {
         for(int i=0;i<drawingItems.size();i++)
         {
             String[] ts=drawingItems.get(i);
-            System.out.println(ts[0]+" "+ts[1]+" "+ts[2]+" "+ts[3]+" "+ts[4]);
+            logger.finest(ts[0]+" "+ts[1]+" "+ts[2]+" "+ts[3]+" "+ts[4]);
         }
         //Redraw the panel
         floorMapPanel.repaint();
