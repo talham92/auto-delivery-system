@@ -82,49 +82,63 @@ public class UserController {
     public static String register(String firstName, String lastName, String roomNumber, String email, String username, String password, String password1) {
         EntityManager em = Persistance.getEntityManager();
         Office office;
-        // Check business rules
-        if (!EmailChecker.checkEmail(email)) return "The e-mail address is not correct";
-        // 1. A user with a repeated name.
-        if (!em.createNamedQuery("User.searchByName")
-                .setParameter("firstName", firstName)
-                .setParameter("lastName", lastName)
-                .getResultList()
-                .isEmpty())
-            return "A user with a name "+firstName+" "+lastName+" already exist";
-        // 2. A user with a repeated username
-        if (em.find(ADSUser.class, username)!=null)
-            return "A user with a username "+username+" already exist";
-
-        office = em.find(Office.class, roomNumber);
-
-        // 3. The office does not exist
-        if (office == null)
-            return "The room number does not exist";
-
-        // 4. The e-mail address syntax is not correct
-        if (!EmailChecker.checkEmail(email))
-            return "The e-mail address is not correct";
-        
-        // 5. The password does not match with the repeated password
-        if (!password.equals(password1)) return "The password does not match with the repeated password";
-
-        
-        // Everything is correct, create and persist the user
-        em.getTransaction().begin();
         try {
-            ADSUser u = new ADSUser(firstName, lastName, office, email, username, password);
-            em.merge(u);
-            em.getTransaction().commit();
-            // Everything went well, return null
-            return null;
-        }
-        catch(Exception ex)
-        {
-            //em.getTransaction().rollback();
+            // Check business rules
+            if (!EmailChecker.checkEmail(email)) return "The e-mail address is not correct";
+            // 1. A user with a repeated name.
+            if (!em.createNamedQuery("User.searchByName")
+                    .setParameter("firstName", firstName)
+                    .setParameter("lastName", lastName)
+                    .getResultList()
+                    .isEmpty())
+                return "A user with a name "+firstName+" "+lastName+" already exist";
+            // 2. A user with a repeated username
+            if (em.find(ADSUser.class, username)!=null)
+                return "A user with a username "+username+" already exist";
+
+            try {
+                office = (Office) em.createNamedQuery("Office.findByOfficeAdress")
+                        .setParameter("officeAddress", roomNumber)
+                        .setMaxResults(1)
+                        .getSingleResult();
+            } catch(Exception ex) {
+                // 3. The office does not exist
+                return "The room number does not exist (1)";
+            }
+            
+            // 3. The office does not exist
+            if (office == null)
+                return "The room number does not exist (2)";
+
+            // 4. The e-mail address syntax is not correct
+            if (!EmailChecker.checkEmail(email))
+                return "The e-mail address is not correct";
+
+            // 5. The password does not match with the repeated password
+            if (!password.equals(password1)) return "The password does not match with the repeated password";
+
+
+            // Everything is correct, create and persist the user
+            em.getTransaction().begin();
+            try {
+                ADSUser u = new ADSUser(firstName, lastName, office, email, username, password);
+                em.merge(u);
+                em.getTransaction().commit();
+                // Everything went well, return null
+                return null;
+            }
+            catch(Exception ex)
+            {
+                //em.getTransaction().rollback();
+                logger.severe(ex.getMessage());
+                em.getTransaction().rollback();
+                // There was an error, retorn the appropiate error message
+                return "Unexpected error occurred when storing user information";
+            }
+        } catch(Exception ex) {
             logger.severe(ex.getMessage());
-            em.getTransaction().rollback();
             // There was an error, retorn the appropiate error message
-            return "Unexpected error occurred when storing user information";
+            return "Unexpected error occurred when storing user information: "+ex.toString();
         }
     }
 
