@@ -70,9 +70,9 @@ public class ClientController implements ClientControllerInterface {
             java.util.logging.Logger.getLogger(LoginView.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
     }
- 
+
     private ServerControllerInterface server;
-    
+
     /**
      * @param args the command line arguments
      */
