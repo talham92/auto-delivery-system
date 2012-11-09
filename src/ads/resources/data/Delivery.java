@@ -123,7 +123,7 @@ public class Delivery implements Serializable {
             em.getTransaction().rollback();
             throw new RuntimeException("This delivery is in an unidentified state!");
         }
-        em.persist(newState);
+        em.merge(newState);
         em.getTransaction().commit();
     }
 

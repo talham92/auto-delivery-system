@@ -67,7 +67,7 @@ public class UserController {
             for(ADSUser o : results) {
                 if(o.isAdmin()) {
                     o.setOffice(null);
-                    em.persist(o);
+                    em.merge(o);
                 } else {
                     em.remove(o);
                 }
@@ -113,7 +113,7 @@ public class UserController {
         em.getTransaction().begin();
         try {
             ADSUser u = new ADSUser(firstName, lastName, office, email, username, password);
-            em.persist(u);
+            em.merge(u);
             em.getTransaction().commit();
             // Everything went well, return null
             return null;
@@ -164,7 +164,7 @@ public class UserController {
         em.getTransaction().begin();
         ADSUser u = new ADSUser("Admin", "istrator", null, "a@a.c", "admin", "admin");
         u.setAdmin(true);
-        em.persist(u);
+        em.merge(u);
         em.getTransaction().commit();
     }
 

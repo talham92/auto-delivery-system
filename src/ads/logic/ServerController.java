@@ -84,21 +84,12 @@ public class ServerController implements ServerControllerInterface {
             ServerControllerInterface stub = (ServerControllerInterface) UnicastRemoteObject.exportObject(obj, 0);
 
             // Bind the remote object's stub in the registry
-            Registry registry = LocateRegistry.getRegistry("spring.rutgers.edu");
+            Registry registry = LocateRegistry.getRegistry();
             try {
                 registry.unbind("ServerControllerInterface");
             } catch (Exception ex) {}
 
-            try {
-                registry.bind("ServerControllerInterface", stub);
-            } catch (Exception ex) {
-                // check local registry
-                registry = LocateRegistry.getRegistry();
-                try {
-                    registry.unbind("ServerControllerInterface");
-                } catch (NotBoundException ex1) {}
-                registry.bind("ServerControllerInterface", stub);
-            }
+            registry.bind("ServerControllerInterface", stub);
             System.out.println("Server ready");
         } catch (Exception e) {
             System.err.println("Server exception: " + e.toString());
@@ -157,30 +148,30 @@ public class ServerController implements ServerControllerInterface {
         o4.setNextOffice(o5);
         o5.setNextOffice(o1);
 
-        em.persist(o1);
-        em.persist(o2);
-        em.persist(o3);
-        em.persist(o4);
-        em.persist(o5);
+        em.merge(o1);
+        em.merge(o2);
+        em.merge(o3);
+        em.merge(o4);
+        em.merge(o5);
         
         ADSUser u = new ADSUser("Admin", "istrator", o1, "a@a.c", "admin", "admin");
         u.setAdmin(true);
-        em.persist(u);
+        em.merge(u);
         //Add some additional users for test purposes
         u = new ADSUser("mehmet", "aktas", o2, "mfa@gmail.com", "mfa", "1111");
-        em.persist(u);
+        em.merge(u);
         u = new ADSUser("marc", "gamell", o5, "marcgamell@gmail.com", "mgamell", "a");
-        em.persist(u);
+        em.merge(u);
         u = new ADSUser("ali", "veli", o4, "aliveli@hotmail.com", "aliveli", "2222");
-        em.persist(u);
+        em.merge(u);
         
         Box b;
         b = new Box();
-        em.persist(b);
+        em.merge(b);
         b = new Box();
-        em.persist(b);
+        em.merge(b);
         b = new Box();
-        em.persist(b);
+        em.merge(b);
         
         em.getTransaction().commit();
     }
@@ -215,85 +206,85 @@ public class ServerController implements ServerControllerInterface {
         o10.setNextOffice(oe);
         oe.setNextOffice(os);
 
-        em.persist(os);
-        em.persist(o1);
-        em.persist(o2);
-        em.persist(o3);
-        em.persist(o4);
-        em.persist(o5);
-        em.persist(o6);
-        em.persist(o7);
-        em.persist(o8);
-        em.persist(o9);
-        em.persist(o10);
-        em.persist(oe);
+        em.merge(os);
+        em.merge(o1);
+        em.merge(o2);
+        em.merge(o3);
+        em.merge(o4);
+        em.merge(o5);
+        em.merge(o6);
+        em.merge(o7);
+        em.merge(o8);
+        em.merge(o9);
+        em.merge(o10);
+        em.merge(oe);
         // Creating the users
         ADSUser u = new ADSUser("Admin", "istrator", o1, "a@a.c", "admin", "admin");
         u.setAdmin(true);
-        em.persist(u);
+        em.merge(u);
         //Add some additional users for test purposes
         // Users for o1: 602
         u = new ADSUser("yi", "zhao", o1, "yz336@rutgers.edu", "yz", "1111");
-        em.persist(u);
+        em.merge(u);
         u = new ADSUser("yanze", "zhang", o1, "yanze.zhang@rutgers.edu", "yanzez", "1111");
-        em.persist(u);
+        em.merge(u);
         // Users for o2: 603
         u = new ADSUser("daihou", "wang", o2, "daihou.wang@rutgers.edu", "dw", "1111");
-        em.persist(u);
+        em.merge(u);
         u = new ADSUser("anu", "tom", o2, "anuliz.tom@rutgers.edu", "at", "1111");
-        em.persist(u);
+        em.merge(u);
         u = new ADSUser("siddhesh", "surve", o2, "siddhesh.surve@rutgers.edu", "ss", "1111");
-        em.persist(u);
+        em.merge(u);
         // Users for o3: 604
         u = new ADSUser("jagbir", "singh", o3, "jagbir.singh@rutgers.edu", "js", "1111");
-        em.persist(u);
+        em.merge(u);
         u = new ADSUser("swapnil", "sarode", o3, "swapnil.sarode@rutgers.edu", "swapnils", "1111");
-        em.persist(u);
+        em.merge(u);
         // Users for o4: 605
         u = new ADSUser("brien", "range", o4, "brien.range@rutgers.edu", "br", "1111");
-        em.persist(u);
+        em.merge(u);
         u = new ADSUser("vinayak", "pothineni", o4, "vinayak.pothineni@rutgers.edu", "vp", "1111");
-        em.persist(u);
+        em.merge(u);
         u = new ADSUser("prasoon", "mishra", o4, "prasoon.mishra@rutgers.edu", "pp", "1111");
-        em.persist(u);
+        em.merge(u);
         u = new ADSUser("zhongzhou", "li", o4, "vinayak.pothineni@rutgers.edu", "zv", "1111");
-        em.persist(u);
+        em.merge(u);
         // Users for o5: 606
         u = new ADSUser("ivan", "marsic", o5, "marsic@ece.rutgers.edu", "ivanmarsic", "1111");
-        em.persist(u);
+        em.merge(u);
         // Users for o6: 607
         u = new ADSUser("kevin", "kobilinski", o6, "kobi@eden.rutgers.edu", "kk", "1111");
-        em.persist(u);
+        em.merge(u);
         u = new ADSUser("abdul", "abdul", o6, "abdul@eden.rutgers.edu", "ah", "1111");
-        em.persist(u);
+        em.merge(u);
         u = new ADSUser("chao", "han", o6, "ch577@eden.rutgers.edu", "hc", "1111");
-        em.persist(u);
+        em.merge(u);
         u = new ADSUser("yao", "ge", o6, "yaoge@eden.rutgers.edu", "yg", "1111");
-        em.persist(u);
+        em.merge(u);
         // Users for o7: 608
         u = new ADSUser("li", "liu", o7, "li.liu4016@rutgers.edu", "ll", "1111");
-        em.persist(u);
+        em.merge(u);
         // Users for o8: 609
         u = new ADSUser("junwei", "zhao", o8, "junwei.zhao@rutgers.edu", "jz", "1111");
-        em.persist(u);
+        em.merge(u);
         u = new ADSUser("xu", "bingbing", o8, "bingbing.xu@rutgers.edu", "bz", "1111");
-        em.persist(u);
+        em.merge(u);
         // Users for o9: 610
         u = new ADSUser("anusha", "vutukuri", o9, "anusha.vutukuri@rutgers.edu", "av", "1111");
-        em.persist(u);
+        em.merge(u);
         u = new ADSUser("mehmet", "aktas", o9, "mfatihaktas@gmail.com", "mfa", "1111");
-        em.persist(u);        
+        em.merge(u);        
         // Users for o10: 611
         u = new ADSUser("marc", "gamell", o10, "marc.gamell@rutgers.edu", "mgamell", "a");
-        em.persist(u);
+        em.merge(u);
         
         Box b;
         b = new Box();
-        em.persist(b);
+        em.merge(b);
         b = new Box();
-        em.persist(b);
+        em.merge(b);
         b = new Box();
-        em.persist(b);
+        em.merge(b);
         
         em.getTransaction().commit();
     }

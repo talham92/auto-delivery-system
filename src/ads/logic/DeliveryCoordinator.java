@@ -77,8 +77,8 @@ public class DeliveryCoordinator {
             // The following instruction assigns delivery to the ADSuser automatically
             Delivery newDel = new Delivery(sender, receiver, timestampField, priority);
             DeliveryStep state = new BookedDelivery((Timestamp)timestampField.clone(), newDel);
-            em.persist(newDel);
-            em.persist(state);
+            em.merge(newDel);
+            em.merge(state);
 
         }
         em.getTransaction().commit();
