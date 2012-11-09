@@ -69,19 +69,17 @@ public class SystemStatusView extends javax.swing.JPanel {
         jTabbedPane1.addChangeListener(new ChangeListener() {
             @Override
             public void stateChanged(ChangeEvent e) {
-                switch(jTabbedPane1.getTitleAt(jTabbedPane1.getSelectedIndex())) {
-                    case "Robot Status":
-                        break;
-                    case "Deliveries":
-                        controller.wantsToTrackDeliveryStatusAdmin(thisView, deliveryStatusView);
-                        break;
-                    default:
-                        logger.finest("Error! choose tab title: "+jTabbedPane1.getTitleAt(jTabbedPane1.getSelectedIndex()));
-                        JOptionPane.showMessageDialog(thisView,
-                            "Error! choose tab title: "+jTabbedPane1.getTitleAt(jTabbedPane1.getSelectedIndex()),
-                            "Fatal Error",
-                            JOptionPane.ERROR_MESSAGE);
-                        System.exit(-1);
+                String title = jTabbedPane1.getTitleAt(jTabbedPane1.getSelectedIndex());
+                if(title.equals("Robot Status")) {
+                } else if(title.equals("Deliveries")) {
+                    controller.wantsToTrackDeliveryStatusAdmin(thisView, deliveryStatusView);
+                } else {
+                    logger.finest("Error! choose tab title: "+jTabbedPane1.getTitleAt(jTabbedPane1.getSelectedIndex()));
+                    JOptionPane.showMessageDialog(thisView,
+                        "Error! choose tab title: "+jTabbedPane1.getTitleAt(jTabbedPane1.getSelectedIndex()),
+                        "Fatal Error",
+                        JOptionPane.ERROR_MESSAGE);
+                    System.exit(-1);
                 }
             }
         });

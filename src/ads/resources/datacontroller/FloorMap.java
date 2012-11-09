@@ -60,7 +60,7 @@ public class FloorMap {
     {
         Iterator itr;
         EntityManager em = Persistance.getEntityManager();
-        Set<Office> results = new HashSet<>(20);
+        Set<Office> results = new HashSet(20);
         //find the office with start node
         results.addAll(em.createNamedQuery("Office.findByOfficeAdress")
                             .setParameter("officeAddress", "start")
@@ -90,7 +90,7 @@ public class FloorMap {
     public static String clearOffices() {
         String rresult;
         EntityManager em = Persistance.getEntityManager();
-        Set<Office> results = new HashSet<>(20);
+        Set<Office> results = new HashSet(20);
         try {
              results.addAll(em.createNamedQuery("Office.findAll").getResultList());
         } catch(Exception ex) {
@@ -121,10 +121,10 @@ public class FloorMap {
     {
         //Dummy vrs
         String preOfficeAddress, nextOfficeAddress;
-        Set<Office> result = new HashSet<>(20);
+        Set<Office> result = new HashSet(20);
         
         EntityManager em = Persistance.getEntityManager();
-        Set<Office> results = new HashSet<>(20);
+        Set<Office> results = new HashSet(20);
         try {
              results.addAll(em.createNamedQuery("Office.findAll").getResultList());
         } catch(Exception ex) {
@@ -181,10 +181,10 @@ public class FloorMap {
     }
 
     public static ArrayList<String[]> getMapDrawingArray() {
-        ArrayList<String[]> r=new ArrayList<>();
+        ArrayList<String[]> r=new ArrayList();
         
         EntityManager em = Persistance.getEntityManager();
-        Set<Office> results = new HashSet<>(20);
+        Set<Office> results = new HashSet(20);
         results.addAll(em.createNamedQuery("Office.findByOfficeAdress")
                             .setParameter("officeAddress", "start")
                             .getResultList());

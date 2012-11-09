@@ -28,7 +28,7 @@ public class AdminCreateFloorMapView extends javax.swing.JFrame {
         controller=null;
     }
     public AdminCreateFloorMapView(ClientControllerInterface c) {
-        drawingItems=new ArrayList<>();
+        drawingItems=new ArrayList();
         
         initComponents();
         controller = c;

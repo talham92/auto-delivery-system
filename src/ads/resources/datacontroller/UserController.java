@@ -60,7 +60,7 @@ public class UserController {
     
     public static void removeUsers() {
         EntityManager em = Persistance.getEntityManager();
-        Set<ADSUser> results = new HashSet<>(20);
+        Set<ADSUser> results = new HashSet(20);
         try {
             results.addAll(em.createNamedQuery("User.findAll").getResultList());
             em.getTransaction().begin();
@@ -132,7 +132,7 @@ public class UserController {
     public static Set<ADSUser> searchUser_NameOffice(String name, String office) {
         EntityManager em = Persistance.getEntityManager();
 
-        Set<ADSUser> results = new HashSet<>(20);
+        Set<ADSUser> results = new HashSet(20);
         try {
             if(name != null && !name.equals("")) {
                 results.addAll(em.createNamedQuery("User.searchByPartialNameES")

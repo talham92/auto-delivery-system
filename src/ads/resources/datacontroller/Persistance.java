@@ -4,20 +4,20 @@
  */
 package ads.resources.datacontroller;
 
-import adsrobotstub.RobotStub;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import javax.persistence.Query;
-import javax.persistence.metamodel.EntityType;
 
 /**
  *
@@ -33,7 +33,13 @@ public class Persistance {
     }
 
     public static void initPersistance() {
-        emf = Persistence.createEntityManagerFactory("adsPU");
+        Map<String,String> prop = new HashMap();
+        prop.put("javax.persistence.jdbc.url", "jdbc:mysql://sansor:3306/ads?zeroDateTimeBehavior=convertToNull");
+        try {
+            emf = Persistence.createEntityManagerFactory("adsPU", prop);
+        } catch (Exception e) {
+            emf = Persistence.createEntityManagerFactory("adsPU");
+        }
 //        em = emf.createEntityManager();
     }
 

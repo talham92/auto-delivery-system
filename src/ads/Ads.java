@@ -18,10 +18,10 @@ public class Ads {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        if(args.length > 1) {
-            if(args[1].equals("server")) {
+        if(args.length > 0) {
+            if(args[0].equals("server")) {
                 ServerController.main(args);
-            } else if(args[1].equals("stub")) {
+            } else if(args[0].equals("stub")) {
                 RobotStub.main(args);
             } else {
                 ClientController.main(args);
