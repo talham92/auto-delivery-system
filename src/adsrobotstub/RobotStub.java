@@ -31,6 +31,7 @@ public class RobotStub extends javax.swing.JFrame {
     private ServerControllerInterface server;
     private RobotStubInterface robotStubServer;
     private RobotStub thisView;
+    private static Logger logger = Logger.getLogger(RobotStub.class.getName());
 
     /**
      * Creates new form RobotStub
@@ -45,9 +46,8 @@ public class RobotStub extends javax.swing.JFrame {
             public void run() {
                 while(true) {
                     try {
-//                        System.out.println("updating");
+                        logger.finest("updating");
                         SystemStatus status = getSystemStatus();
-//                        System.out.println(" received "+status.getPosition()+" "+status.isMoving());
                         if(status != null && status.isServerInitialized()) {
                             position.setText(status.getRobotPosition());
                             isMoving.setSelected(status.isRobotIsMoving());
@@ -314,7 +314,7 @@ public class RobotStub extends javax.swing.JFrame {
         for(int i=0;i<officeDrawingItems.size();i++)
         {
             String[] ts=officeDrawingItems.get(i);
-            System.out.println(ts[0]+" "+ts[1]+" "+ts[2]+" "+ts[3]+" "+ts[4]);
+            logger.finest(ts[0]+" "+ts[1]+" "+ts[2]+" "+ts[3]+" "+ts[4]);
         }
         //Redraw the panel
         robotPosition = position;

@@ -4,6 +4,7 @@
  */
 package ads.resources.communication;
 
+import adsrobotstub.RobotStub;
 import adsrobotstub.RobotStubStatus;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
@@ -24,6 +25,7 @@ public class ServerCommunicator implements RobotStubInterface {
     private static String passwordReceived;
     private static boolean answered;
     private static Semaphore semaphore;
+    private static Logger logger = Logger.getLogger(ServerCommunicator.class.getName());
 
     public static void init() {
         status = new RobotStubStatus();
@@ -55,7 +57,7 @@ public class ServerCommunicator implements RobotStubInterface {
                 registry.bind("RobotStubInterface", stub);
             }
         } catch (Exception e) {
-            System.err.println("Server exception: " + e.toString());
+            logger.severe("Server exception: " + e.toString());
             e.printStackTrace();
         }
 
@@ -89,7 +91,7 @@ public class ServerCommunicator implements RobotStubInterface {
             while(true) {
                 Thread.sleep(100);
                 semaphore.acquire();
-                System.out.println("passwordReceived "+passwordReceived);
+                logger.finest("passwordReceived "+passwordReceived);
                 if(passwordReceived != null) {
                     String tmp = passwordReceived;
                     status.isRequestingPassword = false;
@@ -115,7 +117,7 @@ public class ServerCommunicator implements RobotStubInterface {
 
     public static void ringBuzzer() {
         try {
-            System.out.println("ringBuzzer");
+            logger.finest("ringBuzzer");
             semaphore.acquire();
             status.isBuzzerRinging = true;
             semaphore.release();
@@ -123,7 +125,7 @@ public class ServerCommunicator implements RobotStubInterface {
             semaphore.acquire();
             status.isBuzzerRinging = false;
             semaphore.release();
-            System.out.println("ringBuzzer end");
+            logger.finest("ringBuzzer end");
         } catch (InterruptedException ex) {
             Logger.getLogger(ServerCommunicator.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -131,7 +133,7 @@ public class ServerCommunicator implements RobotStubInterface {
 
     public static void showPasswordIncorrectError() {
         try {
-            System.out.println("showPasswordIncorrectError");
+            logger.finest("showPasswordIncorrectError");
             semaphore.acquire();
             status.isPasswordError = true;
             answered = false;

@@ -5,12 +5,11 @@
 package ads.resources.datacontroller;
 
 import ads.logic.EmailChecker;
-import ads.logic.ServerNonInitializedException;
 import ads.resources.data.ADSUser;
 import ads.resources.data.Office;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Set;
+import java.util.logging.Logger;
 import javax.persistence.EntityManager;
 
 /**
@@ -21,6 +20,7 @@ public class UserController {
     public static final int userNotCorrect=0;
     public static final int userCorrect_Admin=1;
     public static final int userCorrect_NotAdmin=2;
+    private static Logger logger = Logger.getLogger(UserController.class.getName());
 
     public UserController() throws Exception {
         throw new Exception("Don't try to instantiate me");
@@ -121,8 +121,7 @@ public class UserController {
         catch(Exception ex)
         {
             //em.getTransaction().rollback();
-            System.out.println(ex.toString());
-            ex.printStackTrace();
+            logger.severe(ex.getMessage());
             em.getTransaction().rollback();
             // There was an error, retorn the appropiate error message
             return "Unexpected error occurred when storing user information";

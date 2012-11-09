@@ -4,6 +4,9 @@
  */
 package ads.presentation;
 
+import adsrobotstub.RobotStub;
+import java.util.logging.Logger;
+import javax.swing.JOptionPane;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
@@ -12,6 +15,7 @@ import javax.swing.event.ChangeListener;
  * @author mgamell
  */
 public class UserMainView extends javax.swing.JFrame {
+    private static Logger logger = Logger.getLogger(UserMainView.class.getName());
     private ClientControllerInterface controller;
     private UserMainView thisView;
     private DeliveryStatusView deliveryStatusView;
@@ -38,7 +42,12 @@ public class UserMainView extends javax.swing.JFrame {
                         controller.wantsToTrackDeliveryStatus(thisView, deliveryStatusView);
                         break;
                     default:
-                        System.out.println("Error! choose tab title: "+jTabbedPane1.getTitleAt(jTabbedPane1.getSelectedIndex()));
+                        logger.finest("Error! choose tab title: "+jTabbedPane1.getTitleAt(jTabbedPane1.getSelectedIndex()));
+                        JOptionPane.showMessageDialog(thisView,
+                            "Error! choose tab title: "+jTabbedPane1.getTitleAt(jTabbedPane1.getSelectedIndex()),
+                            "Fatal Error",
+                            JOptionPane.ERROR_MESSAGE);
+                        System.exit(-1);
                 }
             }
         });

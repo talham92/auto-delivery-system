@@ -4,6 +4,7 @@
  */
 package ads.resources.datacontroller;
 
+import adsrobotstub.RobotStub;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
@@ -25,6 +26,7 @@ import javax.persistence.metamodel.EntityType;
 public class Persistance {
     private static EntityManagerFactory emf;
 //    private static EntityManager em = null;
+    private static Logger logger = Logger.getLogger(Persistance.class.getName());
 
     private Persistance() throws Exception {
         throw new Exception("Don't try to instantiate Persistance");
@@ -40,7 +42,7 @@ public class Persistance {
         try {
             for (Class c : ClassesPackagesFinder.getClasses("ads.resources.data")) {
                 final String className = c.getName();
-                System.out.println("Trying select * from: " + className);
+                logger.finest("Trying select * from: " + className);
                 try {
                     em.getTransaction().begin();
                     Query q = em.createQuery("select c from " + className + " c");
@@ -48,10 +50,10 @@ public class Persistance {
                         em.remove(o);
                     }
                     em.getTransaction().commit();
-                    System.out.println("-ok: " + className);
+                    logger.finest("-ok: " + className);
                 } catch (Exception e) {
                     em.getTransaction().rollback();
-                    System.out.println("-not ok: " + className);
+                    logger.finest("-not ok: " + className);
                 }
             }
         } catch (ClassNotFoundException ex) {
