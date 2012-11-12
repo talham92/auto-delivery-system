@@ -33,7 +33,11 @@ import javax.persistence.Transient;
         query="SELECT o FROM Office o WHERE o.officeAddress LIKE :officeAddress"
     )
 })
+/**Define the data structure of office
+ * 
+ */
 public class Office implements Serializable {
+    // Define a static constant
     private static final long serialVersionUID = 8L;
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -42,11 +46,16 @@ public class Office implements Serializable {
     public int getId() {
         return id;
     }
-
+    /**
+     * set the id as the input string
+     * @param string id
+     */
     public void setId(int id) {
         this.id = id;
     }
-
+    /*
+     * define several private variables of offcie class
+     */
     private String officeAddress;
     @Transient
     private String nextOfficeAddress;
@@ -65,7 +74,18 @@ public class Office implements Serializable {
 
     public Office(){}
 
-
+    /**
+     * The constructor of office class with 9 variables
+     * @param officeAddress
+     * @param nextOfficeAddress
+     * @param preOfficeAddress
+     * @param preOfficeDir
+     * @param preOfficeDist
+     * @param nextOfficeDir
+     * @param nextOfficeDist
+     * @param nextOffice
+     * @param preOffice 
+     */
     public Office(String officeAddress, String nextOfficeAddress, String preOfficeAddress,
                   String preOfficeDir, String preOfficeDist, String nextOfficeDir, String nextOfficeDist, Office nextOffice, Office preOffice) {
         this.officeAddress = officeAddress;
@@ -79,7 +99,16 @@ public class Office implements Serializable {
         this.nextOffice=nextOffice;
         this.preOffice=preOffice;
     }
-
+    /**
+     * The constructor of office class with 7 variables
+     * @param officeAddress
+     * @param nextOfficeAddress
+     * @param preOfficeAddress
+     * @param preOfficeDir
+     * @param preOfficeDist
+     * @param nextOfficeDir
+     * @param nextOfficeDist 
+     */
     public Office(String officeAddress, String nextOfficeAddress, String preOfficeAddress,
                   String preOfficeDir, String preOfficeDist, String nextOfficeDir, String nextOfficeDist) {
         this.officeAddress = officeAddress;
@@ -90,7 +119,16 @@ public class Office implements Serializable {
         this.nextOfficeDir=nextOfficeDir;
         this.nextOfficeDist=nextOfficeDist;
     }
-
+    /**
+     * The constructor of office class with 7 variables
+     * @param officeAddress
+     * @param preOfficeDir
+     * @param preOfficeDist
+     * @param nextOfficeDir
+     * @param nextOfficeDist
+     * @param nextOffice
+     * @param preOffice 
+     */
     public Office(String officeAddress,
                   String preOfficeDir, String preOfficeDist, String nextOfficeDir, String nextOfficeDist, Office nextOffice, Office preOffice) {
         this.officeAddress = officeAddress;
@@ -102,95 +140,162 @@ public class Office implements Serializable {
         this.nextOffice=nextOffice;
         this.preOffice=preOffice;
     }
-
+    /**
+     * Get the string value of office address
+     * @return string officeAddress
+     */
     public String getOfficeAddress() {
         return officeAddress;
     }
-
+    /**
+     * Set the office address as the input string
+     * @param string officeAddress 
+     */
     public void setOfficeAddress(String officeAddress) {
         this.officeAddress = officeAddress;
     }
-
+    /**
+     * Get the string value of next office
+     * @return string nextOffice
+     */
     public Office getNextOffice() {
         return nextOffice;
     }
-
+    /**
+     * Set the next office as the input string
+     * @param string nextOffice 
+     */
     public void setNextOffice(Office nextOffice) {
         this.nextOffice = nextOffice;
     }
-
+    /**
+     * Get the string value of previous office
+     * @return string preoffice
+     */
     public Office getPreviousOffice() {
         return preOffice;
     }
-
+    /**
+     * Set the previous office as the input string
+     * @param string previousOffice 
+     */
     public void setPreviousOffice(Office previousOffice) {
         this.preOffice = previousOffice;
     }
-
+    /**
+     * Get the string value of next office address
+     * @return string nextOfficeAddress
+     */
     public String getNextOfficeAddress() {
         return nextOfficeAddress;
     }
-
+    /**
+     * Set the next office address as the input string
+     * @param string nextOfficeAddress 
+     */
     public void setNextOfficeAddress(String nextOfficeAddress) {
         this.nextOfficeAddress = nextOfficeAddress;
     }
-
+    /**
+     * Get the string value of next office direction
+     * @return string getNextOfficeDir
+     */
     public String getNextOfficeDir() {
         return nextOfficeDir;
     }
-
+    /**
+     * Set the next office direction as the input string
+     * @param string nextOfficeDir 
+     */
     public void setNextOfficeDir(String nextOfficeDir) {
         this.nextOfficeDir = nextOfficeDir;
     }
-
+    /**
+     * Get the string value of next office distance
+     * @return string nextOfficeDist
+     */
     public String getNextOfficeDist() {
         return nextOfficeDist;
     }
-
+    /**
+     * Set the next office distance as the input string
+     * @param string nextOfficeDist 
+     */
     public void setNextOfficeDist(String nextOfficeDist) {
         this.nextOfficeDist = nextOfficeDist;
     }
-
+    /**
+     * Get the string value of previous office address
+     * @return string preOfficeAddress
+     */
     public String getPreOfficeAddress() {
         return preOfficeAddress;
     }
-
+    /**
+     * Set the previous office address as the input string
+     * @param string preOfficeAddress 
+     */
     public void setPreOfficeAddress(String preOfficeAddress) {
         this.preOfficeAddress = preOfficeAddress;
     }
-
+    /**
+     * Get the string value of previoud office direction
+     * @return string preOfferDir
+     */
     public String getPreOfficeDir() {
         return preOfficeDir;
     }
-
+    /**
+     * Set the previous office direction as the input string
+     * @param string preOfficeDir 
+     */
     public void setPreOfficeDir(String preOfficeDir) {
         this.preOfficeDir = preOfficeDir;
     }
-
+    /**
+     * Get the string value of previous office distance
+     * @return string preOfficeDist
+     */
     public String getPreOfficeDist() {
         return preOfficeDist;
     }
-
+    /**
+     * Set the previous office distance as the input string
+     * @param preOfficeDist 
+     */
     public void setPreOfficeDist(String preOfficeDist) {
         this.preOfficeDist = preOfficeDist;
     }
-
+    /**
+     * Get the string value of previous office
+     * @return string preOffice
+     */
     public Office getPreOffice() {
         return preOffice;
     }
-
+    /**
+     * Set the previous office as the input string
+     * @param string preOffice 
+     */
     public void setPreOffice(Office preOffice) {
         this.preOffice = preOffice;
     }
     
-    
+    /**
+     * Define an integer number to map object
+     * @return int hash
+     */
     @Override
     public int hashCode() {
         int hash = 0;
         hash += (officeAddress != null ? officeAddress.hashCode() : 0);
         return hash;
     }
-
+    /**To judge whether the input string is legal or not
+     * 
+     * @param object
+     * @return boolean
+     */
     @Override
     public boolean equals(Object object) {
         if (!(object instanceof Office)) {
@@ -202,7 +307,10 @@ public class Office implements Serializable {
         }
         return true;
     }
-
+    /**
+     * Change the officeAddress into string type
+     * @return string OfficeAddress
+     */
     @Override
     public String toString() {
         return "ads.data.Office[ officeAddress=" + officeAddress + " ]";

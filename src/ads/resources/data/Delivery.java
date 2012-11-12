@@ -19,7 +19,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 
-/**
+/**Depicting the process and participants of booking and picking a delivery.
  *
  * @author mgamell
  */
@@ -40,7 +40,13 @@ public class Delivery implements Serializable {
 
     public Delivery() {
     }
-
+    /**
+     * constructor function of Delivery class
+     * @param sender
+     * @param receiver
+     * @param timestampField
+     * @param priority 
+     */
     public Delivery(ADSUser sender, ADSUser receiver, Timestamp timestampField, double priority) {
         this.sender = sender;
         this.receiver = receiver;
@@ -48,48 +54,83 @@ public class Delivery implements Serializable {
         this.priority = priority;
     }
 
-
+    /**
+     * To get the integer value of id
+     * @return int id
+     */
     public int getId() {
         return id;
     }
-
+    /**
+     * set the id as the input integer
+     * @param int id 
+     */
     public void setId(int id) {
         this.id = id;
     }
-
+    /**
+     * To get the double value of priority
+     * @return double priority
+     */
     public double getPriority() {
         return priority;
     }
-
+    /**
+     * Set the priority as the input double
+     * @param double priority 
+     */
     public void setPriority(double priority) {
         this.priority = priority;
     }
 
-    
+    /**
+     * To get the string value of sender
+     * @return string sender
+     */
     public ADSUser getSender() {
         return sender;
     }
-
+    /**
+     * Set the sender as the value of ADSUer sender
+     * @param string sender 
+     */
     public void setSender(ADSUser sender) {
         this.sender = sender;
     }
-
+    /**
+     * Get the value of the receiver in ADSUer class
+     * @return string receiver
+     */
     public ADSUser getReceiver() {
         return receiver;
     }
-
+    /**
+     * Set the receiver as the value of ADSUer receiver
+     * @param string receiver 
+     */
     public void setReceiver(ADSUser receiver) {
         this.receiver = receiver;
     }
-
+    /**
+     * Get the value of TimestampField in Timestamp class
+     * @return timestampField
+     */
     public Timestamp getTimestampField() {
         return timestampField;
     }
-
+    /**
+     * Set the timestampField as the value of Timestamp timestampField
+     * @param timestampField 
+     */
     public void setTimestampField(Timestamp timestampField) {
         this.timestampField = timestampField;
     }
-
+    /**
+     * Get the value of next user in ADSUer class
+     * @return sender, receiver
+     * @exception RuntimeException if the delivery is delivered
+     * @exception RuntimeException if the delivery is unidentified
+     */
     public ADSUser getNextUser() {
         DeliveryStep state = getCurrentState();
         if(state instanceof DeliveredDelivery) {
@@ -102,13 +143,18 @@ public class Delivery implements Serializable {
             throw new RuntimeException("This delivery is in an unidentified state!");
         }
     }
-
+    /**
+     * 
+     */
     public void updateState() {
+        //create a user entity
         EntityManager em = Persistance.getEntityManager();
         em.getTransaction().begin();
+        //create an new date object
         java.util.Date date = new java.util.Date();
         Timestamp timestampAux = new Timestamp(date.getTime());
         DeliveryStep state = getCurrentState();
+        //To judge which state is robot in through "instance of ", which serve as judge whether the left is the instance of class right
         DeliveryStep newState;
         if(state instanceof DeliveredDelivery) {
             em.getTransaction().rollback();
@@ -120,13 +166,17 @@ public class Delivery implements Serializable {
             // Create a new state and store the previous one.
             newState = new DeliveredDelivery((Timestamp)timestampAux.clone(), this);
         } else {
+            //To terminate an transcation and return to previous values
             em.getTransaction().rollback();
             throw new RuntimeException("This delivery is in an unidentified state!");
         }
         em.merge(newState);
         em.getTransaction().commit();
     }
-
+    /**
+     * To judge whether the mail is booked but not finished picking up
+     * @return  boolean true, false
+     */
     public boolean isBookedNotYetPickedUp() {
         DeliveryStep state = getCurrentState();
         if(state instanceof DeliveredDelivery) {
@@ -139,7 +189,10 @@ public class Delivery implements Serializable {
             throw new RuntimeException("This delivery is in an unidentified state!");
         }
     }
-
+    /**
+     * To judge whether it's picked up but not delivered
+     * @return boolean true, false
+     */
     public boolean isPickedUpNotYetDelivered() {
         DeliveryStep state = getCurrentState();
         if(state instanceof DeliveredDelivery) {
@@ -152,7 +205,11 @@ public class Delivery implements Serializable {
             throw new RuntimeException("This delivery is in an unidentified state!");
         }
     }
-
+    /**
+     * To judge whether it's booked
+     * @return boolean true, false
+     * @exception RuntimeException if it's in a unidentifield state
+     */
     public boolean isDelivered() {
         DeliveryStep state = getCurrentState();
         if(state instanceof DeliveredDelivery) {
@@ -165,7 +222,10 @@ public class Delivery implements Serializable {
             throw new RuntimeException("This delivery is in an unidentified state!");
         }
     }
-
+    /**
+     * To get the current state of the robot
+     * @return deliveryStep
+     */
     public DeliveryStep getCurrentState() {
         EntityManager em = Persistance.getEntityManager();
         DeliveryStep deliveryStep = (DeliveryStep) em.createNamedQuery("Delivery.searchStateListOrderedByDate")
@@ -174,7 +234,10 @@ public class Delivery implements Serializable {
                 .getSingleResult();
         return deliveryStep;
     }
-
+   /**
+    * to get the state list of the delivery
+    * @return 
+    */ 
     public List<DeliveryStep> getStateList() {
         EntityManager em = Persistance.getEntityManager();
         List<DeliveryStep> deliverySteps = em.createNamedQuery("Delivery.searchStateListOrderedByDate")
@@ -182,14 +245,21 @@ public class Delivery implements Serializable {
                 .getResultList();
         return deliverySteps;
     }
-
+    /**
+     * Define an integer number to map object
+     * @return hash
+     */
     @Override
     public int hashCode() {
         int hash = 3;
         hash = 83 * hash + this.id;
         return hash;
     }
-
+    /**
+     * get the boolean value of whether it's obj or not
+     * @param obj
+     * @return boolean true, false
+     */
     @Override
     public boolean equals(Object obj) {
         if (obj == null) {

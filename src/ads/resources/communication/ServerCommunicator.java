@@ -15,26 +15,34 @@ import java.util.concurrent.Semaphore;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-/**
+/**Define the robot status and association with system 
  *
  * @author mgamell
  */
 public class ServerCommunicator implements RobotStubInterface {
+    //create a new object of ServerCommunicator
     private static ServerCommunicator singleton = new ServerCommunicator();
+    //Define several private variables
     private static RobotStubStatus status;
     private static String passwordReceived;
     private static boolean answered;
     private static Semaphore semaphore;
     private static Logger logger = Logger.getLogger(ServerCommunicator.class.getName());
-
+    /**
+     * To initialize
+     */
     public static void init() {
         status = new RobotStubStatus();
+        //Aquire a permit from the semaphore, blocking until one is available
         semaphore = new Semaphore(1, true);
         passwordReceived = null;
         answered = false;
         initRMI();
     }
-    
+    /**
+     * To initialize the remote method interface
+     * @exception Exception if the server is not connected
+     */
     private static void initRMI() {
         try {
             ServerCommunicator obj = singleton;
@@ -53,7 +61,11 @@ public class ServerCommunicator implements RobotStubInterface {
         }
 
     }
-
+    /**
+     * When semaphore acquires and shows logically true, current execution thread
+     * release and sleep, else the current execution release
+     * @exception InterruptedException if it's interrupted
+     */
     public static void moveRobotToNextPoint() {
         try {
             semaphore.acquire();
@@ -67,7 +79,13 @@ public class ServerCommunicator implements RobotStubInterface {
             Logger.getLogger(ServerCommunicator.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-
+    /**
+     * Define a string waitForPassword
+     * @param timeout
+     * @param username
+     * @return tmp
+     * @throws TimeoutException if there is problem of time out 
+     */
     public static String waitForPassword(int timeout, String username) throws TimeoutException {
         try {
             semaphore.acquire();
@@ -105,7 +123,10 @@ public class ServerCommunicator implements RobotStubInterface {
             throw new TimeoutException(ex.getMessage());
         }
     }
-
+    /**
+     * Define the event of ringBuzzer
+     * @exception InterruptedException if it's interrupted
+     */
     public static void ringBuzzer() {
         try {
             logger.finest("ringBuzzer");
@@ -121,7 +142,10 @@ public class ServerCommunicator implements RobotStubInterface {
             Logger.getLogger(ServerCommunicator.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-
+    /**
+     * To judge and if true, show the error of incorrect password
+     * @exception Interrupted Exception if it's interrupted
+     */
     public static void showPasswordIncorrectError() {
         try {
             logger.finest("showPasswordIncorrectError");
@@ -148,7 +172,10 @@ public class ServerCommunicator implements RobotStubInterface {
             Logger.getLogger(ServerCommunicator.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-
+    /**
+     * To judge and if true, show the error of incorrect password
+     * @exception Interrupted Exception if it's interrupted
+     */
     public static void showPasswordIncorrectWarning() {
         try {
             semaphore.acquire();
@@ -174,7 +201,10 @@ public class ServerCommunicator implements RobotStubInterface {
             Logger.getLogger(ServerCommunicator.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-
+    /**
+     * To judge and if true, continue current status
+     * @exception Interrupted Exception if it's interrupted
+     */
     public static void showPasswordCorrectMessage() {
         try {
             semaphore.acquire();
@@ -200,7 +230,10 @@ public class ServerCommunicator implements RobotStubInterface {
             Logger.getLogger(ServerCommunicator.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-
+    /**
+     * To judge and if true, open the tray
+     * @param trayNum 
+     */
     public static void openTray(int trayNum) {
         try {
             semaphore.acquire();
@@ -240,7 +273,11 @@ public class ServerCommunicator implements RobotStubInterface {
         }
         
     }
-
+    /**
+     * To get the answer value with string password input
+     * @param password
+     * @throws RemoteException if there is no specified message
+     */
     @Override
     public void answer(String password) throws RemoteException {
         try {
@@ -252,7 +289,10 @@ public class ServerCommunicator implements RobotStubInterface {
             throw new RemoteException(ex.toString());
         }
     }
-
+    /**
+     * Acquire permit from semaphore and check the boolean of answer
+     * @throws RemoteException if the Remote Server is not connected
+     */
     @Override
     public void answer() throws RemoteException {
         try {

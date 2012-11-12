@@ -4,10 +4,11 @@
  */
 package ads.resources.communication;
 
-/**
- *
+/**Define the time out exception
+ * 
  * @author mgamell
  */
+
 public class TimeoutException extends Exception {
 
     public TimeoutException(String message) {

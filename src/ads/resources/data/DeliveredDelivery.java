@@ -13,7 +13,7 @@ import javax.persistence.Id;
 import javax.persistence.OneToOne;
 
 /**
- *
+ *Record the delivered deliveries
  * @author mgamell
  */
 @Entity
@@ -22,11 +22,18 @@ public class DeliveredDelivery extends DeliveryStep implements Serializable {
 
     public DeliveredDelivery() {
     }
-
+    /**
+     * call super class DeliveryStep constructor 
+     * @param timeCreation
+     * @param delivery 
+     */
     public DeliveredDelivery(Timestamp timeCreation, Delivery delivery) {
         super(timeCreation, delivery);
     }
-
+    /**
+     * Call the function getid() of DeliveryStep and return string
+     * @return string Id
+     */
     @Override
     public String toString() {
         return "ads.data.DeliveredDelivery[ id=" + super.getId() + " ]";

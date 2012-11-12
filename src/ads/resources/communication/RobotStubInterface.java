@@ -8,7 +8,7 @@ import adsrobotstub.RobotStubStatus;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 
-/**
+/**Define the function call of the RobotStub
  *
  * @author mgamell
  */

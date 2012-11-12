@@ -14,7 +14,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 
-/**
+/**Define the step status of delivery information
  *
  * @author mgamell
  */
@@ -40,6 +40,7 @@ import javax.persistence.NamedQuery;
         query="SELECT s FROM Delivery s"
     )
 })
+
 public abstract class DeliveryStep implements Serializable {
     private static final long serialVersionUID = 10L;
     @Id
@@ -48,12 +49,18 @@ public abstract class DeliveryStep implements Serializable {
     private Timestamp timeCreation;
     @ManyToOne
     private Delivery delivery;
-
+    /**
+     * The constructor of DeliveryStep
+     * @param timeCreation
+     * @param delivery 
+     */
     public DeliveryStep(Timestamp timeCreation, Delivery delivery) {
         this.timeCreation = timeCreation;
         this.delivery = delivery;
     }
-
+    /**
+     * The constructor of DeliveryStep
+     */
     public DeliveryStep() {
     }
 
@@ -63,7 +70,11 @@ public abstract class DeliveryStep implements Serializable {
         hash += (id != null ? id.hashCode() : 0);
         return hash;
     }
-
+    /**
+     * To judge whether the object is the correct one and the id information
+     * @param object
+     * @return 
+     */
     @Override
     public boolean equals(Object object) {
         if (!(object instanceof DeliveryStep)) {
@@ -75,32 +86,53 @@ public abstract class DeliveryStep implements Serializable {
         }
         return true;
     }
-
+    /**
+     * To return the string type of id
+     * @return string id
+     */
     @Override
     public String toString() {
         return "ads.data.DeliveryStep[ id=" + id + " ]";
     }
-    
+    /**
+     * To get the value of time creation as input 
+     * @return timeCreation
+     */
     public Timestamp getTimeCreation() {
         return timeCreation;
     }
-
+    /**
+     * To set the time creation information as in the Timestramp 
+     * @param timeCreation 
+     */
     public void setTimeCreation(Timestamp timeCreation) {
         this.timeCreation = timeCreation;
     }    
-
+    /**
+     * To get the Id as the input long
+     * @return long id
+     */
     public Long getId() {
         return id;
     }
-
+    /**
+     * To set Id as the long value
+     * @param long id 
+     */
     public void setId(Long id) {
         this.id = id;
     }
-
+    /**
+     * To get the delivery information as input 
+     * @return delivery
+     */
     public Delivery getDelivery() {
         return delivery;
     }
-
+    /**
+     * To set the delivery information as in delivery class
+     * @param delivery 
+     */
     public void setDelivery(Delivery delivery) {
         this.delivery = delivery;
     }
