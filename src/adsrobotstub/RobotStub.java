@@ -26,6 +26,7 @@ import javax.swing.JOptionPane;
  * @author mgamell
  */
 public class RobotStub extends javax.swing.JFrame {
+
     private ArrayList<String[]> officeDrawingItems;
     private String robotPosition;
     private ServerControllerInterface server;
@@ -39,63 +40,63 @@ public class RobotStub extends javax.swing.JFrame {
     public RobotStub() {
         initServerConnection("spring.rutgers.edu");
         thisView = this;
-        officeDrawingItems=new ArrayList();
+        officeDrawingItems = new ArrayList();
         initComponents();
         new Thread(new Runnable() {
             @Override
             public void run() {
-                while(true) {
+                while (true) {
                     try {
                         logger.finest("updating");
                         SystemStatus status = getSystemStatus();
-                        if(status != null && status.isServerInitialized()) {
+                        if (status != null && status.isServerInitialized()) {
                             position.setText(status.getRobotPosition());
                             isMoving.setSelected(status.isRobotIsMoving());
                             drawAction(status.getRobotPosition());
                         }
                         RobotStubStatus robotStatus = getRobotStubStatus();
                         buzzer.setSelected(robotStatus.isBuzzerRinging);
-                        if(robotStatus.isRequestingPassword) {
+                        if (robotStatus.isRequestingPassword) {
                             String password = JOptionPane.showInputDialog(thisView,
-                                "Insert password for user "+robotStatus.passwordUsername,
-                                "Password",
-                                JOptionPane.INFORMATION_MESSAGE);
+                                    "Insert password for user " + robotStatus.passwordUsername,
+                                    "Password",
+                                    JOptionPane.INFORMATION_MESSAGE);
                             robotStubServer.answer(password);
                         }
-                        if(robotStatus.isPasswordCorrect) {
+                        if (robotStatus.isPasswordCorrect) {
                             JOptionPane.showMessageDialog(thisView,
-                                "The password is correct",
-                                "Password correct",
-                                JOptionPane.INFORMATION_MESSAGE);
+                                    "The password is correct",
+                                    "Password correct",
+                                    JOptionPane.INFORMATION_MESSAGE);
                             robotStubServer.answer();
                         }
-                        if(robotStatus.isPasswordWarning) {
+                        if (robotStatus.isPasswordWarning) {
                             JOptionPane.showMessageDialog(thisView,
-                                "The password is incorrect... Try again!",
-                                "Password incorrect",
-                                JOptionPane.WARNING_MESSAGE);
+                                    "The password is incorrect... Try again!",
+                                    "Password incorrect",
+                                    JOptionPane.WARNING_MESSAGE);
                             robotStubServer.answer();
                         }
-                        if(robotStatus.isPasswordError) {
+                        if (robotStatus.isPasswordError) {
                             JOptionPane.showMessageDialog(thisView,
-                                "The password is incorrect... You can't try again!",
-                                "Password incorrect",
-                                JOptionPane.WARNING_MESSAGE);
+                                    "The password is incorrect... You can't try again!",
+                                    "Password incorrect",
+                                    JOptionPane.WARNING_MESSAGE);
                             robotStubServer.answer();
                         }
-                        if(robotStatus.trayOpen != -1) {
+                        if (robotStatus.trayOpen != -1) {
                             JOptionPane.showMessageDialog(thisView,
-                                "Tray "+robotStatus.trayOpen+" is open now! Click OK to close it.",
-                                "Tray open",
-                                JOptionPane.INFORMATION_MESSAGE);
+                                    "Tray " + robotStatus.trayOpen + " is open now! Click OK to close it.",
+                                    "Tray open",
+                                    JOptionPane.INFORMATION_MESSAGE);
                             robotStubServer.answer();
                         }
                     } catch (Exception ex) {
                         ex.printStackTrace();
                         JOptionPane.showMessageDialog(thisView,
-                            ex.getMessage(),
-                            "Error",
-                            JOptionPane.ERROR_MESSAGE);
+                                ex.getMessage(),
+                                "Error",
+                                JOptionPane.ERROR_MESSAGE);
                     }
                     try {
                         Thread.sleep(100);
@@ -104,7 +105,6 @@ public class RobotStub extends javax.swing.JFrame {
                     }
                 }
             }
-
         }).start();
     }
 
@@ -114,14 +114,14 @@ public class RobotStub extends javax.swing.JFrame {
         } catch (RemoteException ex) {
             Logger.getLogger(RobotStub.class.getName()).log(Level.SEVERE, null, ex);
             JOptionPane.showMessageDialog(thisView,
-                "Unexpected error: "+ex.getMessage(),
-                "Error",
-                JOptionPane.ERROR_MESSAGE);
+                    "Unexpected error: " + ex.getMessage(),
+                    "Error",
+                    JOptionPane.ERROR_MESSAGE);
             System.exit(-1);
             return null;
         }
     }
-    
+
     public SystemStatus getSystemStatus() {
         try {
             return server.getSystemStatus("admin", "admin");
@@ -262,8 +262,7 @@ public class RobotStub extends javax.swing.JFrame {
             }
         });
     }
-    
-    
+
     private void initServerConnection(String host) {
         try {
             Registry registry = LocateRegistry.getRegistry(host);
@@ -271,9 +270,9 @@ public class RobotStub extends javax.swing.JFrame {
             robotStubServer = (RobotStubInterface) registry.lookup("RobotStubInterface");
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null,
-                "Unable to connect to remote server. Press OK to try to with local server",
-                "Register error",
-                JOptionPane.ERROR_MESSAGE);
+                    "Unable to connect to remote server. Press OK to try to with local server",
+                    "Register error",
+                    JOptionPane.ERROR_MESSAGE);
             // try local repository
             try {
                 Registry registry = LocateRegistry.getRegistry();
@@ -281,14 +280,13 @@ public class RobotStub extends javax.swing.JFrame {
                 robotStubServer = (RobotStubInterface) registry.lookup("RobotStubInterface");
             } catch (Exception e1) {
                 JOptionPane.showMessageDialog(null,
-                    "Unable to connect to local server. Exiting...",
-                    "Register error",
-                    JOptionPane.ERROR_MESSAGE);
+                        "Unable to connect to local server. Exiting...",
+                        "Register error",
+                        JOptionPane.ERROR_MESSAGE);
                 System.exit(-1);
             }
         }
     }
-    
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JCheckBox buzzer;
     private javax.swing.JPanel dynamicFloorMap;
@@ -297,7 +295,6 @@ public class RobotStub extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel1;
     private javax.swing.JTextField position;
     // End of variables declaration//GEN-END:variables
-
 
     public ArrayList<String[]> getMapDrawingArray() {
         try {
@@ -308,80 +305,67 @@ public class RobotStub extends javax.swing.JFrame {
         }
     }
 
-    public void drawAction(String position)
-    {
-        officeDrawingItems=getMapDrawingArray();
-        for(int i=0;i<officeDrawingItems.size();i++)
-        {
-            String[] ts=officeDrawingItems.get(i);
-            logger.finest(ts[0]+" "+ts[1]+" "+ts[2]+" "+ts[3]+" "+ts[4]);
+    public void drawAction(String position) {
+        officeDrawingItems = getMapDrawingArray();
+        for (int i = 0; i < officeDrawingItems.size(); i++) {
+            String[] ts = officeDrawingItems.get(i);
+            logger.finest(ts[0] + " " + ts[1] + " " + ts[2] + " " + ts[3] + " " + ts[4]);
         }
         //Redraw the panel
         robotPosition = position;
         dynamicFloorMap.repaint();
         //Untill now only the offices are drawn also robot should also be drawn
-        
+
     }
 
-    private void paintMap(Graphics g)
-    {
+    private void paintMap(Graphics g) {
         // Get the drawing area
-        int xt=10;
-        int yt=10;
-        int ovalL=10;
+        int xt = 10;
+        int yt = 10;
+        int ovalL = 10;
         double reducerX = calculateReducerX();
         double reducerY = calculateReducerY();
-        int x=10+(int) (calculateStartX()*reducerX);
-        int y=10+(int) (calculateStartY()*reducerY);
-        
-        
+        int x = 10 + (int) (calculateStartX() * reducerX);
+        int y = 10 + (int) (calculateStartY() * reducerY);
+
+
         // Set current drawing color
-        g.setColor (Color.BLACK);
+        g.setColor(Color.BLACK);
         String[] ts;
         // Draw a circle around the mid-point
-        for(int i=0;i<officeDrawingItems.size();i++)
-        {
-            ts=officeDrawingItems.get(i);
-            if(ts[0].equals(robotPosition)) {
-                g.setColor (Color.RED);
+        for (int i = 0; i < officeDrawingItems.size(); i++) {
+            ts = officeDrawingItems.get(i);
+            if (ts[0].equals(robotPosition)) {
+                g.setColor(Color.RED);
             } else {
-                g.setColor (Color.BLACK);
+                g.setColor(Color.BLACK);
             }
 
             //unitSign for adapting drawing to the negative dists
             //g.fillOval(x, y, 2, 2);
-            if(ts[0].equals("end"))
-            {
-                g.drawOval(x-(ovalL/2), y-(ovalL/2), ovalL, ovalL);
-                g.fillOval(x-(ovalL/2), y-(ovalL/2), ovalL, ovalL);
-            }
-            else
-            {
-                int unitSign=Integer.parseInt(ts[2])/Math.abs(Integer.parseInt(ts[2]));
-                if(ts[0].equals("start"))
-                {
-                    g.drawOval(x-(ovalL/2), y-(ovalL/2), ovalL, ovalL);
-                    g.fillOval(x-(ovalL/4), y-(ovalL/4), ovalL/2, ovalL/2);
+            if (ts[0].equals("end")) {
+                g.drawOval(x - (ovalL / 2), y - (ovalL / 2), ovalL, ovalL);
+                g.fillOval(x - (ovalL / 2), y - (ovalL / 2), ovalL, ovalL);
+            } else {
+                int unitSign = Integer.parseInt(ts[2]) / Math.abs(Integer.parseInt(ts[2]));
+                if (ts[0].equals("start")) {
+                    g.drawOval(x - (ovalL / 2), y - (ovalL / 2), ovalL, ovalL);
+                    g.fillOval(x - (ovalL / 4), y - (ovalL / 4), ovalL / 2, ovalL / 2);
+                } else {
+                    g.drawOval(x - (ovalL / 2), y - (ovalL / 2), ovalL, ovalL);
                 }
-                else
-                {
-                    g.drawOval(x-(ovalL/2), y-(ovalL/2), ovalL, ovalL);
+                g.setColor(Color.BLACK);
+                if (ts[1].equals("x")) {
+                    xt = x + (int) (reducerX * Integer.parseInt(ts[2]));
+                    yt = y;
+                    g.drawLine(x + unitSign * ovalL / 2, y, xt - unitSign * ovalL / 2, yt);
+                } else if (ts[1].equals("y")) {
+                    xt = x;
+                    yt = y + (int) (reducerY * Integer.parseInt(ts[2]));
+                    g.drawLine(x, y + ovalL / 2, xt, yt - ovalL / 2);
                 }
-                g.setColor (Color.BLACK);
-                if(ts[1].equals("x"))
-                {
-                    xt=x + (int) (reducerX*Integer.parseInt(ts[2]));
-                    yt=y;
-                    g.drawLine(x+unitSign*ovalL/2, y, xt-unitSign*ovalL/2, yt);
-                }
-                else if(ts[1].equals("y"))
-                {
-                    xt=x;
-                    yt=y + (int) (reducerY*Integer.parseInt(ts[2]));
-                    g.drawLine(x, y+ovalL/2, xt, yt-ovalL/2);
-                }
-                x=xt;
-                y=yt;
+                x = xt;
+                y = yt;
             }
         }
     }
@@ -389,32 +373,27 @@ public class RobotStub extends javax.swing.JFrame {
     private double calculateReducerX() {
         int maxX = 0;
         int minX = 0;
-        int x=0;
+        int x = 0;
         String[] ts;
         // Draw a circle around the mid-point
-        for(int i=0;i<officeDrawingItems.size();i++)
-        {
-            ts=officeDrawingItems.get(i);
+        for (int i = 0; i < officeDrawingItems.size(); i++) {
+            ts = officeDrawingItems.get(i);
 
-            if(ts[0].equals("end"))
-            {
-            }
-            else
-            {
-                if(ts[1].equals("x"))
-                {
+            if (ts[0].equals("end")) {
+            } else {
+                if (ts[1].equals("x")) {
                     x = x + Integer.parseInt(ts[2]);
-                    if(x > maxX) {
+                    if (x > maxX) {
                         maxX = x;
                     }
-                    if(x < minX) {
+                    if (x < minX) {
                         minX = x;
                     }
                 }
             }
         }
-        if(maxX-minX != 0) {
-            return (dynamicFloorMap.getWidth()-20)/(maxX-minX);
+        if (maxX - minX != 0) {
+            return (dynamicFloorMap.getWidth() - 20) / (maxX - minX);
         } else {
             return 10;
         }
@@ -423,60 +402,49 @@ public class RobotStub extends javax.swing.JFrame {
     private double calculateReducerY() {
         int maxY = 0;
         int minY = 0;
-        int y=0;
+        int y = 0;
         String[] ts;
         // Draw a circle around the mid-point
-        for(int i=0;i<officeDrawingItems.size();i++)
-        {
-            ts=officeDrawingItems.get(i);
+        for (int i = 0; i < officeDrawingItems.size(); i++) {
+            ts = officeDrawingItems.get(i);
 
-            if(ts[0].equals("end"))
-            {
-            }
-            else
-            {
-                if(ts[1].equals("y"))
-                {
+            if (ts[0].equals("end")) {
+            } else {
+                if (ts[1].equals("y")) {
                     y = y + Integer.parseInt(ts[2]);
-                    if(y > maxY) {
+                    if (y > maxY) {
                         maxY = y;
                     }
-                    if(y < minY) {
+                    if (y < minY) {
                         minY = y;
                     }
                 }
             }
         }
-        if(maxY-minY != 0) {
-            return (dynamicFloorMap.getHeight()-20)/(maxY-minY);
+        if (maxY - minY != 0) {
+            return (dynamicFloorMap.getHeight() - 20) / (maxY - minY);
         } else {
             return 10;
         }
     }
 
-
     private int calculateStartX() {
         int maxX = 0;
         int minX = 0;
-        int x=0;
+        int x = 0;
         String[] ts;
         // Draw a circle around the mid-point
-        for(int i=0;i<officeDrawingItems.size();i++)
-        {
-            ts=officeDrawingItems.get(i);
+        for (int i = 0; i < officeDrawingItems.size(); i++) {
+            ts = officeDrawingItems.get(i);
 
-            if(ts[0].equals("end"))
-            {
-            }
-            else
-            {
-                if(ts[1].equals("x"))
-                {
+            if (ts[0].equals("end")) {
+            } else {
+                if (ts[1].equals("x")) {
                     x = x + Integer.parseInt(ts[2]);
-                    if(x > maxX) {
+                    if (x > maxX) {
                         maxX = x;
                     }
-                    if(x < minX) {
+                    if (x < minX) {
                         minX = x;
                     }
                 }
@@ -489,25 +457,20 @@ public class RobotStub extends javax.swing.JFrame {
     private int calculateStartY() {
         int maxY = 0;
         int minY = 0;
-        int y=0;
+        int y = 0;
         String[] ts;
         // Draw a circle around the mid-point
-        for(int i=0;i<officeDrawingItems.size();i++)
-        {
-            ts=officeDrawingItems.get(i);
+        for (int i = 0; i < officeDrawingItems.size(); i++) {
+            ts = officeDrawingItems.get(i);
 
-            if(ts[0].equals("end"))
-            {
-            }
-            else
-            {
-                if(ts[1].equals("y"))
-                {
+            if (ts[0].equals("end")) {
+            } else {
+                if (ts[1].equals("y")) {
                     y = y + Integer.parseInt(ts[2]);
-                    if(y > maxY) {
+                    if (y > maxY) {
                         maxY = y;
                     }
-                    if(y < minY) {
+                    if (y < minY) {
                         minY = y;
                     }
                 }
@@ -516,5 +479,4 @@ public class RobotStub extends javax.swing.JFrame {
 //        System.err.println(-minY);
         return -minY;
     }
-
 }
