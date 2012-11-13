@@ -23,9 +23,19 @@ import javax.persistence.EntityManager;
  *
  * @author mgamell
  */
+
+/** 
+* @class FloorMap
+* @a class designed to create map of the floor for the current routine. 
+*/  
+
 public class FloorMap {
     private static Logger logger = Logger.getLogger(FloorMap.class.getName());
 
+/**  
+* @calculateNumOfHops is a function used to count the hops number for the delivery. 
+*  
+*/  
     public static int calculateNumOfHops(Office origin, Office destination) {
         return giveDistanceFromCurrentToDestination(origin, destination);
     }
@@ -33,6 +43,10 @@ public class FloorMap {
         return giveLengthBtwStartEnd();
     }
 
+/**  
+* @getStartPoint is a function used to find the start point for the delivery. 
+*  
+*/  
     public static Office getStartPoint() {
         EntityManager em = Persistance.getEntityManager();
         Office o = (Office) em.createNamedQuery("Office.findByOfficeAdress")
@@ -41,8 +55,18 @@ public class FloorMap {
         return o;
     }
 
+/**  
+* @giveDistanceFromCurrentToDestination is a function use to let the user know the distance between current position of the robot to the destination. 
+*  
+*/
     public static int giveDistanceFromCurrentToDestination(Office current, Office dest)
     {
+/**
+* @param totalDist a parameter of the total distance
+* @param temp a parameter of current position
+* @return totalDist when current position equals to destination position
+*/  
+        
         int totalDist=0;
         Office temp=current;
         while(!temp.equals(dest))
@@ -55,13 +79,18 @@ public class FloorMap {
         return totalDist;
     }
 
-
+/**  
+* @giveLengthBtwStartEnd is a function use to let the user know the distance with respect to the office between start position to the destination. 
+*  
+*/ 
     public static int giveLengthBtwStartEnd()
     {
         Iterator itr;
         EntityManager em = Persistance.getEntityManager();
         Set<Office> results = new HashSet(20);
-        //find the office with start node
+        /**
+         *@exception find the office with start node
+        */
         results.addAll(em.createNamedQuery("Office.findByOfficeAdress")
                             .setParameter("officeAddress", "start")
                             .getResultList());
@@ -69,7 +98,9 @@ public class FloorMap {
         itr=results.iterator();
         Office startN=(Office) itr.next();
         results.clear();
-        //find the office with end node
+        /**
+        *@exception find the office with end node
+        */
         results.addAll(em.createNamedQuery("Office.findByOfficeAdress")
                             .setParameter("officeAddress", "end")
                             .getResultList());
@@ -78,15 +109,25 @@ public class FloorMap {
         return giveDistanceFromCurrentToDestination(startN, endN);
     }
     
+/**  
+* @createOffice is a function use to create a data structure office. 
+*  
+*/   
     public static void createOffice(Office office) {
-        //persist the office entity to the database
+        /**
+        *@exception persist the office entity to the database
+        */
         EntityManager em = Persistance.getEntityManager();
         em.getTransaction().begin();
         em.merge(office);  
         em.getTransaction().commit();
     }
+
     
-    
+/**  
+* @clearOffices is a function use to clear the created data structure office. 
+*  
+*/ 
     public static String clearOffices() {
         String rresult;
         EntityManager em = Persistance.getEntityManager();
@@ -96,7 +137,9 @@ public class FloorMap {
         } catch(Exception ex) {
             ex.printStackTrace();
         }
-        //First check whether there is already a created map or not in the database
+        /**
+        *First check whether there is already a created map or not in the database
+        */
         if(results.size()!=0)
             rresult="preCreatedMapDeleted";
         else
@@ -106,7 +149,9 @@ public class FloorMap {
         while(itr.hasNext())
         {
             Office o=(Office) itr.next();
-            //Office o2=em.find(Office.class, o.getOfficeAddress());
+           /**
+           *Office o2=em.find(Office.class, o.getOfficeAddress());
+           */
             em.remove(o);
         }
         em.getTransaction().commit();
@@ -117,9 +162,18 @@ public class FloorMap {
         return rresult;
     }
 
+ 
+/**  
+* @createLinksBtwOffices is a function use to create a link between two offices. 
+*  
+*/   
     public static void createLinksBtwOffices()
     {
-        //Dummy vrs
+/**
+* @param preOfficeAddress a parameter of office address of the previous office
+* @param nextOfficeAddress a parameter of office address of the next office
+*/  
+    
         String preOfficeAddress, nextOfficeAddress;
         Set<Office> result = new HashSet(20);
         
@@ -131,16 +185,24 @@ public class FloorMap {
             ex.printStackTrace();
         }
         for(Office o : results) {
-            //Find and link the offices
-            //Link preOffice
+            /**
+            * Find and link the offices
+            * Link preOffice
+            */
             preOfficeAddress=o.getPreOfficeAddress();
             
-            if(preOfficeAddress!=null)//if the office is start this is the case
+            /**
+            * if the office is start this is the case
+            */
+            if(preOfficeAddress!=null)
             {
                 result.clear();
+                /**
+                * Assuming only one office with this name, this is assured in the map creation process
+                */
                 result.addAll(em.createNamedQuery("Office.findByOfficeAdress")
                                   .setParameter("officeAddress", preOfficeAddress)
-                                  .getResultList()); //Assuming only one office with this name, this is assured in the map creation process
+                                  .getResultList()); 
                 if(result.size()!=1) {
 //                    System.out.println("Some problem at finding pre office:"+preOfficeAddress+" result_size: "+result.size());
 //                    for(Office oy : result) {
@@ -154,14 +216,22 @@ public class FloorMap {
                     o.setPreOffice((Office) itr.next());
                 }
             }
-            //Link nextOffice
+            /**
+            * Link nextOffice
+            */
             nextOfficeAddress=o.getNextOfficeAddress();
-            if(nextOfficeAddress!=null)//if the office is end this is the case
+            /**
+            * if the office is end this is the case
+            */
+            if(nextOfficeAddress!=null)
             {
                 result.clear();
+                /**
+                *Assuming only one office with this name, this is assured in the map creation process
+                */
                 result.addAll(em.createNamedQuery("Office.findByOfficeAdress")
                             .setParameter("officeAddress", nextOfficeAddress)
-                            .getResultList()); //Assuming only one office with this name, this is assured in the map creation process
+                            .getResultList()); 
             
                 if(result.size()!=1) {
 //                    System.out.println("Some problem at finding next office: "+nextOfficeAddress+"result_size: "+result.size());
@@ -180,6 +250,10 @@ public class FloorMap {
         //goFromStartToEnd();
     }
 
+/**  
+* @getMapDrawingArray is a function use to get all office address used to create the map. 
+*  
+*/ 
     public static ArrayList<String[]> getMapDrawingArray() {
         ArrayList<String[]> r=new ArrayList();
         

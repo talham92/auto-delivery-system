@@ -2,10 +2,10 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package ads.resources.datacontroller;
+package ads.resources.datacontroller;                   
 
-import ads.resources.data.ADSUser;
-import ads.resources.data.DeliveredDelivery;
+import ads.resources.data.ADSUser;                      
+import ads.resources.data.DeliveredDelivery;   
 import ads.resources.data.Delivery;
 import adsrobotstub.RobotStub;
 import java.io.Serializable;
@@ -18,6 +18,15 @@ import javax.persistence.EntityManager;
  *
  * @author mgamell
  */
+
+
+
+/** 
+* @class DeliveryHistory 
+* @a class designed to record the delivery history. 
+*/  
+
+
 public class DeliveryHistory implements Serializable {
     private static Logger logger = Logger.getLogger(DeliveryHistory.class.getName());
 
@@ -25,11 +34,31 @@ public class DeliveryHistory implements Serializable {
         throw new Exception("Don't try to instantiate me");
     }
 
+/**  
+* @hasPendingDeliveries is a function used to decide if there are pending deliveries. 
+*  
+*/  
     public static boolean hasPendingDeliveries() {
         return DeliveryHistory.getMostPrioritaryDelivery()!=null;
     }
 
+/**  
+* @In auto delivery system, any booked delivery will be assigned a priority from 1 to 5. getMostPrioritaryDelivery is a function used to rank the delivery and find out the delivery with highest priority. 
+*  
+*/
+    
     public static Delivery getMostPrioritaryDelivery() {
+        
+/**
+* @param em a parameter used to detect delivery list
+* @param mostPrioritaryDelivery a parameter used to determine if the current delivery has the highest priority
+* @return Null if no delivery record in the system
+* @return excrescent return
+* @exception logger.finest transform the delivery record into string
+* @exception NullPointerException throw when parameter n is null
+*/
+        
+        
         EntityManager em = Persistance.getEntityManager();
         
         try {
@@ -63,7 +92,20 @@ public class DeliveryHistory implements Serializable {
         }
     }
 
+    
+    
+/**  
+* @getUserDeliveryList is a function used to list all delivery booked by user. 
+*  
+*/
+      
     public static List<Delivery> getUserDeliveryList(ADSUser sender) {
+        
+/**
+* @param em a parameter used to detect delivery list
+* @return deliveries or NULL if the searching is success or not
+*/
+        
         EntityManager em = Persistance.getEntityManager();
         
         try {
@@ -78,6 +120,10 @@ public class DeliveryHistory implements Serializable {
         }
     }
 
+/**  
+* @getDeliveryList is a function used to search all delivery records. 
+*  
+*/     
     public static List<Delivery> getDeliveryList() {
         EntityManager em = Persistance.getEntityManager();
         
@@ -92,6 +138,12 @@ public class DeliveryHistory implements Serializable {
         }
     }
 
+
+/**  
+* @getDelivery is a function used to get a delivery record. 
+*  
+*/
+    
     public static Delivery getDelivery(int deliveryId) {
         EntityManager em = Persistance.getEntityManager();
         return em.find(Delivery.class, deliveryId);
