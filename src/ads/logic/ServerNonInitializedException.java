@@ -8,7 +8,7 @@ public class ServerNonInitializedException extends Exception {
      
     /**
      * Constructs an exception with the specified detail message. 
-     * @param m the detail message
+     * @param message 
      */
     public ServerNonInitializedException(String message) {
         super(message);

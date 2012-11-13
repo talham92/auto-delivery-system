@@ -20,6 +20,9 @@ import javax.persistence.OneToOne;
 public class DeliveredDelivery extends DeliveryStep implements Serializable {
     private static final long serialVersionUID = 13L;
 
+    /**
+     *
+     */
     public DeliveredDelivery() {
     }
     /**

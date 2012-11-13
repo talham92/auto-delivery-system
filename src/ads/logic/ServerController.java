@@ -90,6 +90,7 @@ public class ServerController implements ServerControllerInterface {
     
  /**
   * Main function initialize RMI
+  * @param args 
   * @see ServerController#initRMI() 
   */
     public static void main(String[] args) {

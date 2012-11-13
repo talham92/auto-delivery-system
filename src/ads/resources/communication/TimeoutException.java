@@ -11,6 +11,10 @@ package ads.resources.communication;
 
 public class TimeoutException extends Exception {
 
+    /**
+     *
+     * @param message
+     */
     public TimeoutException(String message) {
         super(message);
     }

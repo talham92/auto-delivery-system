@@ -13,7 +13,21 @@ import java.rmi.RemoteException;
  * @author mgamell
  */
 public interface RobotStubInterface extends Remote {
+    /**
+     *
+     * @return
+     * @throws RemoteException
+     */
     public RobotStubStatus getRobotStubStatus() throws RemoteException;
+    /**
+     *
+     * @param password
+     * @throws RemoteException
+     */
     public void answer(String password) throws RemoteException;
+    /**
+     *
+     * @throws RemoteException
+     */
     public void answer() throws RemoteException;
 }

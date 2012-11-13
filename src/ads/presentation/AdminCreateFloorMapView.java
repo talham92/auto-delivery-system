@@ -30,6 +30,10 @@ public class AdminCreateFloorMapView extends javax.swing.JFrame {
         initComponents();
         controller=null;
     }
+    /**
+     *
+     * @param c
+     */
     public AdminCreateFloorMapView(ClientControllerInterface c) {
         drawingItems=new ArrayList();
         
@@ -320,6 +324,10 @@ public class AdminCreateFloorMapView extends javax.swing.JFrame {
     }
     
     //Temporary main
+    /**
+     *
+     * @param arasdas
+     */
     public static void main(String[] arasdas)
     {
         java.awt.EventQueue.invokeLater(new Runnable() {

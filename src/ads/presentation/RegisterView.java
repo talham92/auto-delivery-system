@@ -16,6 +16,7 @@ public class RegisterView extends javax.swing.JFrame {
 
     /**
      * Creates RegisterView window.
+     * @param c 
      */
     public RegisterView(ClientControllerInterface c) {
         //initiate all Components needed to be drawn

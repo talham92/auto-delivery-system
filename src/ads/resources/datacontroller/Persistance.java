@@ -24,12 +24,12 @@ import org.eclipse.persistence.exceptions.DatabaseException;
  *
  * @author mgamell
  */
-
-/** 
-* @class Persistance
-* @a class designed to set or end the persistence of other classes in the system. 
-*/ 
+/**
+ * A class designed to set or end the persistence of other classes in the
+ * system.
+ */
 public class Persistance {
+
     private static EntityManagerFactory emf;
 //    private static EntityManager em = null;
     private static Logger logger = Logger.getLogger(Persistance.class.getName());
@@ -38,14 +38,14 @@ public class Persistance {
         throw new Exception("Don't try to instantiate Persistance");
     }
 
-/**  
-* @initPersistance is the initiation function of the class. 
-*  
-*/   
+    /**
+     * initPersistance is the initiation function of the class.
+     *     
+*/
     public static void initPersistance() {
-        Map<String,String> prop = new HashMap();
+        Map<String, String> prop = new HashMap();
 //todo        prop.put("javax.persistence.jdbc.url", "jdbc:mysql://sansor:3306/ads?zeroDateTimeBehavior=convertToNull");
-                prop.put("javax.persistence.jdbc.url", "jdbc:mysql://localhost:3306/ads?zeroDateTimeBehavior=convertToNull");
+        prop.put("javax.persistence.jdbc.url", "jdbc:mysql://localhost:3306/ads?zeroDateTimeBehavior=convertToNull");
         try {
             emf = Persistence.createEntityManagerFactory("adsPU", prop);
             emf.createEntityManager();
@@ -57,12 +57,11 @@ public class Persistance {
 //        em = emf.createEntityManager();
     }
 
-    
-    
-/**  
-* @deleteAllPersistanceRecords is a function used to delete all delivery records . 
-*  
-*/ 
+    /**
+     * deleteAllPersistanceRecords is a function used to delete all delivery
+     * records .
+     *     
+*/
     public static void deleteAllPersistanceRecords() {
         EntityManager em = Persistance.getEntityManager();
         try {
@@ -88,28 +87,32 @@ public class Persistance {
             Logger.getLogger(Persistance.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
- 
-/**  
-* @deinitPersistance is the destructive function of the class. 
-*  
-*/ 
-    
+
+    /**
+     * deinitPersistance is the destructive function of the class.
+     *     
+*/
     public static void deinitPersistance() {
 //        em.close();
         emf.close();
     }
 
+    /**
+     *
+     * @return
+     */
     public static EntityManager getEntityManager() {
-        if(emf == null) {
+        if (emf == null) {
             throw new RuntimeException("getEntityManager called before initPersistance");
         }
         return emf.createEntityManager();
     }
-    
-    
+
     private static class ClassesPackagesFinder {
+
         /**
-         * Scans all classes accessible from the context class loader which belong to the given package and subpackages.
+         * Scans all classes accessible from the context class loader which
+         * belong to the given package and subpackages.
          *
          * @param packageName The base package
          * @return The classes
@@ -135,10 +138,12 @@ public class Persistance {
         }
 
         /**
-         * Recursive method used to find all classes in a given directory and subdirs.
+         * Recursive method used to find all classes in a given directory and
+         * subdirs.
          *
-         * @param directory   The base directory
-         * @param packageName The package name for classes found inside the base directory
+         * @param directory The base directory
+         * @param packageName The package name for classes found inside the base
+         * directory
          * @return The classes
          * @throws ClassNotFoundException
          */
@@ -158,6 +163,5 @@ public class Persistance {
             }
             return classes;
         }
-        
     }
 }

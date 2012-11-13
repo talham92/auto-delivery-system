@@ -16,6 +16,9 @@ import javax.persistence.Entity;
 public class PickedUpDelivery extends DeliveryStep implements Serializable {
     private static final long serialVersionUID = 12L;
 
+    /**
+     *
+     */
     public PickedUpDelivery() {
     }
     /**

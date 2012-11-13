@@ -117,7 +117,7 @@ public abstract class DeliveryStep implements Serializable {
     }
     /**
      * To set Id as the long value
-     * @param long id 
+     * @param id 
      */
     public void setId(Long id) {
         this.id = id;

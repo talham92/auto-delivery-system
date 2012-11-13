@@ -45,7 +45,7 @@ public class Box implements Serializable {
     }
     /**
      * To set id as the input int value
-     * @param int id 
+     * @param id 
      */
     public void setId(int id) {
         this.id = id;
