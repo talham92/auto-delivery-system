@@ -1,7 +1,4 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package ads.logic;
 
 import ads.presentation.ClientController;
@@ -24,29 +21,59 @@ import java.util.logging.Logger;
 import javax.persistence.EntityManager;
 
 /**
- *
- * @author MFA, mgamell
+ * Delivery Coordinator is the abstract base class which helps 
+ * with the process of delivery.
+ * <p>
+ * Operations in Delivery Coordinator helping with the process of delivery
+ * includes checking the validity of sender and receiver by comparing the 
+ * input from user with the data stored in the database; checking the priority
+ * in order to decide which delivery should go first; checking the pending 
+ * delivery numbers and checking the location of robot to make the robot pick up 
+ * and deliver correctly.
  */
 public class DeliveryCoordinator {
+    // DeliveryCoordinator object singleton
     private static DeliveryCoordinator singleton = new DeliveryCoordinator();
-    private Thread deliveryWaiterThread;
+    // Thread Object deliveryWaiterThread
+    private Thread deliveryWaiterThread; 
     
-    // Eager initialization
+ /**
+  * Get a object of DeliveryCordinator
+  * @return singleton, which is a user defined DeliveryCoordinator object
+  */
     public static DeliveryCoordinator getInstance() {
         return singleton;
     }
-    
+/**
+ * The DeliveyCoordinator constructor creates a new thread of
+ * control that will execute Thread object's run() method.
+ */
     private DeliveryCoordinator()
     {
         deliveryWaiterThread = new Thread(new DeliveryWaiterThread());
         deliveryWaiterThread.start();
     }
-
+    
+/**
+ * Allow sender books single delivery or multiple deliveries 
+ * to receiver with different priorities (sender and receiver's 
+ * information, including name and office should be in the database).
+ * <p>
+ * If sender or receiver are invalid, priority number is not among 0.0-1.0, 
+ * {@link NonbooedDeliveryException} will be thrown. 
+ * 
+ * @param priority   the priority of deliveries
+ * @param targetListUsername  the list of target usernames
+ * @param username    the receiver name
+ * @throws NonBookedDeliveryException  if sender, receive or priority 
+ * number is not correct
+ */
     public void bookDelivery(double priority, List<String> targetListUsername, String username)
     throws NonBookedDeliveryException
     {
         EntityManager em = Persistance.getEntityManager();
         ADSUser sender = null;
+        // find the username in ADSUser
         try {
             sender = em.find(ADSUser.class, username);
         } catch (Exception e) {
@@ -57,7 +84,7 @@ public class DeliveryCoordinator {
         if(sender == null) {
             throw new NonBookedDeliveryException("receiver username "+username+"were not found");
         }
-
+        // if the priority is not valid, then we can't book the delivery
         if(priority > 1.0 || priority < 0.0) {
             throw new NonBookedDeliveryException("urgency must be a double value between 0.0 and 1.0");
         }
@@ -66,6 +93,7 @@ public class DeliveryCoordinator {
         // Add the assigned deliveries to the pending deliveries
         for(String receiverUsername : targetListUsername) {
             ADSUser receiver;
+            // find the receiverUsername in ADSUser
             try {
                 receiver = em.find(ADSUser.class, receiverUsername);
             } catch (Exception e) {
@@ -81,11 +109,28 @@ public class DeliveryCoordinator {
             em.merge(state);
 
         }
+        // commit the delivery into database
         em.getTransaction().commit();
     }
-    
+/**
+ * When a thread belonging to the class DeliveryWaiterThread is run,
+ * it will check whether there are pending deliveries, the robot 
+ * position, the priority of the delivery and the validity 
+ * of the password.
+ * <p>
+ * If there is no pending delivery and the robot is in position 0, the system
+ * will wait and retry in 5 seconds; if the robot is not in position 0, move
+ * the robot to next point.If there are pending deliveries in the system, 
+ * just move the robot to next point.If there are deliveries with high 
+ * priority, it will be delivered first. Also, the password will be checked, if
+ * password is correct,first check whether the package is picked up or not, if
+ * it has been picked up but not delivered, open a tray to deliver; if
+ * it is booked but bot picked up, open a tray to pick it up. 
+ * If the password is not correct, show Incorrect Error. 
+ */
     private class DeliveryWaiterThread implements Runnable {
         private boolean finish;
+        // constructor defines bollean finish is false
         private DeliveryWaiterThread() {
             this.finish = false;
         }
@@ -126,7 +171,6 @@ public class DeliveryCoordinator {
                     log.log(Level.INFO, " robot in point ... id={0}", RobotPositionAccessor.getRobotPosition().getId());
                     // Check if the robot needs to stop at that position or it
                     // needs to continue to the next one
-                    
                     for(Delivery delivery = DeliveryHistory.getMostPrioritaryDelivery(); (delivery != null) && delivery.getNextUser().getOffice().equals(RobotPositionAccessor.getRobotPosition())
                             && !(SectionedBox.isFull() && delivery.isBookedNotYetPickedUp());
                             delivery = DeliveryHistory.getMostPrioritaryDelivery()) {
@@ -135,6 +179,7 @@ public class DeliveryCoordinator {
                         // The robot needs to stop!
                         ServerCommunicator.ringBuzzer();
                         boolean error = true;
+                        // check the password
                         for(int i=0 ; i<3 ; i++) {
                             String password;
                             try {
@@ -149,10 +194,11 @@ public class DeliveryCoordinator {
                                 ServerCommunicator.showPasswordIncorrectWarning();
                             }
                         }
+                        // if the password is correct, show correct message
                         if (!error) {
                             ServerCommunicator.showPasswordCorrectMessage();
                             int trayNum = -1;
-
+                            // check whether the delivery is picked up.
                             if(delivery.isPickedUpNotYetDelivered()) {
                                 trayNum = SectionedBox.deallocateBox(delivery);
                             } else if (delivery.isBookedNotYetPickedUp()) {
@@ -160,15 +206,18 @@ public class DeliveryCoordinator {
                             } else {
                                 throw new RuntimeException("This delivery is picked up and delivered!");
                             }
-                            
+                            // open a tray
                             ServerCommunicator.openTray(trayNum);
                             
                             delivery.updateState();
                         } else {
+                            // if the password is not correct, show error
                             ServerCommunicator.showPasswordIncorrectError();
-                            //todo: IMPORTANT: add state to the delivery saying that this pickup/delivery failed!
-                            
-                            // todo: assumption: if the password is incorrectly inserted three times in this office, leave the office (regardless the remaining deliveries)
+                            //todo: IMPORTANT: add state to the delivery saying 
+                            //that this pickup/delivery failed.
+                            // todo: assumption: if the password is incorrectly 
+                            //inserted three times in this office, leave the 
+                            //office (regardless the remaining deliveries)
                             break;
                         }
                     }
