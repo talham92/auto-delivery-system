@@ -12,6 +12,9 @@ import java.util.logging.Logger;
 import javax.swing.JTextArea;
 
 /**
+ * This class implements creating floor map by inputting coordinates of different
+ * offices. The administrator needs to input all these information to get a floor
+ * map each time the server is started or new user registers into the system.
  *
  * @author MFA
  */
@@ -230,6 +233,11 @@ public class AdminCreateFloorMapView extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    /**
+     * This methods handles with the situation that "create map" button is clicked
+     * 
+     * @param evt the event that "create map" button is clicked
+     */
     private void createMapActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_createMapActionPerformed
         String text=enterMapTA.getText();
         if(text.length()==0)
@@ -239,6 +247,7 @@ public class AdminCreateFloorMapView extends javax.swing.JFrame {
         else
         {
             try{
+                //handles with the text entered by administrator
                 controller.createFloorMap(text,this);
                 outputText.append("Map is successfully created.\n\n");
                 //At last ready for drawing the map
@@ -253,6 +262,11 @@ public class AdminCreateFloorMapView extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_createMapActionPerformed
 
+    /**
+     * This method handles with the case that "Clear Map" button is clicked
+     * 
+     * @param evt 
+     */
     private void clearMapActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_clearMapActionPerformed
         //We need to clear the database of the offices
         try{
@@ -266,6 +280,13 @@ public class AdminCreateFloorMapView extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_clearMapActionPerformed
 
+    /**
+     * This method handles the case where "Back" button is clicked.
+     * <p>
+     * the createfloormap window will close and return to the AdminMainView window
+     * 
+     * @param evt 
+     */
     private void backButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_backButtonActionPerformed
         // set frame invisible
         this.setVisible(false);
@@ -273,6 +294,10 @@ public class AdminCreateFloorMapView extends javax.swing.JFrame {
         this.dispose();
         controller.stateAdminMain();
     }//GEN-LAST:event_backButtonActionPerformed
+    
+    /**
+     * Draw the floormap according to map data generated formerly
+     */
     public void drawAction()
     {
         drawingItems=controller.getMapDrawingArray();
@@ -284,6 +309,12 @@ public class AdminCreateFloorMapView extends javax.swing.JFrame {
         //Redraw the panel
         floorMapPanel.repaint();
     }
+    
+    /**
+     * Output text to the window
+     * 
+     * @return 
+     */
     public JTextArea getOutputText() {
         return outputText;
     }
