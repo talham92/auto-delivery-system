@@ -103,7 +103,7 @@ public class IntegrationTest {
         System.out.println("bookDelivery_Correct");
         InsertTestingData();
         double priority = 0.0;
-        List<String> targetListUsername = new ArrayList<>();
+        List<String> targetListUsername = new ArrayList();
         targetListUsername.add("mfa1");
         targetListUsername.add("mfa2");
         String username = "mfa";
@@ -121,7 +121,7 @@ public class IntegrationTest {
         System.out.println("bookDelivery_UserNotCorrect");
         InsertTestingData();
         double priority = 0.0;
-        List<String> targetListUsername = new ArrayList<>();
+        List<String> targetListUsername = new ArrayList();
         targetListUsername.add("mfa1");
         targetListUsername.add("mfa2");
         String username = "m";
@@ -139,7 +139,7 @@ public class IntegrationTest {
         System.out.println("bookDelivery_PriorityNotCorrect");
         
         double priority = -1.0;
-        List<String> targetListUsername = new ArrayList<>();
+        List<String> targetListUsername = new ArrayList();
         targetListUsername.add("mfa1");
         targetListUsername.add("mfa2");
         String username = "mfa";
@@ -220,12 +220,12 @@ public void testCheckEmail_Correct(){
             Registry registry = LocateRegistry.getRegistry(); 
             try {
                 registry.unbind("ServerControllerInterface");
-            } catch (RemoteException | NotBoundException ex) {}
+            } catch (Exception ex) {}
             // Binds a remote reference to the "ServerControllerInterface" in
            // this registry
             registry.bind("ServerControllerInterface", stub);
             System.out.println("Server ready");
-        } catch (RemoteException | AlreadyBoundException e) {
+        } catch (Exception e) {
             System.err.println("Server exception: " + e.toString());
         }
 

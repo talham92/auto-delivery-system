@@ -66,7 +66,7 @@ public class DeliveryCoordinatorTest {
         em.persist(u);
         em.getTransaction().commit();
         double priority = 0.0;
-        List<String> targetListUsername = new ArrayList<>();
+        List<String> targetListUsername = new ArrayList();
         targetListUsername.add("mfa1");
         targetListUsername.add("mfa2");
         String username = "mfa";
@@ -84,7 +84,7 @@ public class DeliveryCoordinatorTest {
         System.out.println("bookDelivery_UserNotCorrect");
         InsertTestingData();
         double priority = 0.0;
-        List<String> targetListUsername = new ArrayList<>();
+        List<String> targetListUsername = new ArrayList();
         targetListUsername.add("mfa1");
         targetListUsername.add("mfa2");
         String username = "m";
@@ -102,7 +102,7 @@ public class DeliveryCoordinatorTest {
         System.out.println("bookDelivery_PriorityNotCorrect");
         
         double priority = -1.0;
-        List<String> targetListUsername = new ArrayList<>();
+        List<String> targetListUsername = new ArrayList();
         targetListUsername.add("mfa1");
         targetListUsername.add("mfa2");
         String username = "mfa";

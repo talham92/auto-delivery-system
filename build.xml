@@ -16,7 +16,10 @@
     </target> 
 
     <target name="-post-jar">
-        <copy file="run_server_linux.sh" todir="${dist.dir}" /> 
+        <copy file="src/ads/run_server_linux.sh" todir="${dist.dir}" /> 
+        <copy file="src/ads/run_robotstub_linux.sh" todir="${dist.dir}" /> 
+        <copy file="src/ads/run_server_windows.bat" todir="${dist.dir}" /> 
+        <copy file="src/ads/run_robotstub_windows.bat" todir="${dist.dir}" /> 
     </target>
     <!--
 

@@ -57,15 +57,15 @@ public class Office implements Serializable {
      * define several private variables of offcie class
      */
     private String officeAddress;
-    @Transient
+    //todo: @Transient
     private String nextOfficeAddress;
-    @Transient
+    //todo: @Transient
     private String preOfficeAddress;
     private String nextOfficeDir;
     private String nextOfficeDist;
-    @Transient
+    //todo: @Transient
     private String preOfficeDir;
-    @Transient
+    //todo: @Transient
     private String preOfficeDist;
     @OneToOne(fetch=FetchType.LAZY, cascade=CascadeType.ALL)
     private Office nextOffice;
