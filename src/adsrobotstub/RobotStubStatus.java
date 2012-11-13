@@ -10,20 +10,22 @@ import java.io.Serializable;
  *
  * @author mgamell
  */
-/**
- * @class RobotStubStatus
- * @a class of stubbing the robot status
- */
-public class RobotStubStatus implements Serializable {
 
+/** 
+* @class RobotStubStatus 
+* @a class of stubbing the robot status
+*/ 
+
+public class RobotStubStatus implements Serializable {
     private static final long serialVersionUID = 11081273897L;
+
     public boolean isMoving;
 //    public String       movingTarget;
     public boolean isRequestingPassword;
-    public boolean isPasswordCorrect;
-    public boolean isPasswordWarning;
-    public boolean isPasswordError;
-    public String passwordUsername;
+    public boolean      isPasswordCorrect;
+    public boolean      isPasswordWarning;
+    public boolean      isPasswordError;
+    public String       passwordUsername;
     public boolean isBuzzerRinging;
     public int trayOpen;
 
@@ -41,4 +43,5 @@ public class RobotStubStatus implements Serializable {
     public RobotStubStatus() {
         trayOpen = -1;
     }
+    
 }

@@ -24,6 +24,11 @@ import org.eclipse.persistence.exceptions.DatabaseException;
  *
  * @author mgamell
  */
+
+/** 
+* @class Persistance
+* @a class designed to set or end the persistence of other classes in the system. 
+*/ 
 public class Persistance {
     private static EntityManagerFactory emf;
 //    private static EntityManager em = null;
@@ -33,6 +38,10 @@ public class Persistance {
         throw new Exception("Don't try to instantiate Persistance");
     }
 
+/**  
+* @initPersistance is the initiation function of the class. 
+*  
+*/   
     public static void initPersistance() {
         Map<String,String> prop = new HashMap();
         prop.put("javax.persistence.jdbc.url", "jdbc:mysql://sansor:3306/ads?zeroDateTimeBehavior=convertToNull");
@@ -47,6 +56,12 @@ public class Persistance {
 //        em = emf.createEntityManager();
     }
 
+    
+    
+/**  
+* @deleteAllPersistanceRecords is a function used to delete all delivery records . 
+*  
+*/ 
     public static void deleteAllPersistanceRecords() {
         EntityManager em = Persistance.getEntityManager();
         try {
@@ -72,6 +87,11 @@ public class Persistance {
             Logger.getLogger(Persistance.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
+ 
+/**  
+* @deinitPersistance is the destructive function of the class. 
+*  
+*/ 
     
     public static void deinitPersistance() {
 //        em.close();

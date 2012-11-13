@@ -15,11 +15,27 @@ import javax.persistence.NonUniqueResultException;
  *
  * @author mgamell
  */
+
+/** 
+* @class SectionedBox  
+* @a class used to section the box into different segments and allocate these segments to the booked delivery. 
+*/ 
+
 public class SectionedBox {
+
+/**  
+* @SectionedBox deal with the exception in sectioning box. 
+*  
+*/    
 
     public SectionedBox() throws Exception {
         throw new Exception("Don't try to instantiate me");
     }
+    
+/**  
+* @allocateBox is a function of allocating box to the delivery. 
+*  
+*/
     
     public static int allocateBox(Delivery delivery) {
         EntityManager em = Persistance.getEntityManager();
@@ -43,7 +59,11 @@ public class SectionedBox {
 //Thread.sleep(10000);
         return box.getId();
     }
-
+    
+/**  
+* @deallocateBox is a function of deleting the allocated box. 
+*  
+*/
     public static int deallocateBox(Delivery delivery) {
         EntityManager em = Persistance.getEntityManager();
         Box box = (Box) em.createNamedQuery("Box.searchDelivery")
@@ -58,8 +78,16 @@ public class SectionedBox {
         return box.getId();
     }
 
-
+/**  
+* @ifFull is a function of determining if the box is full. 
+*  
+*/
     public static boolean isFull() {
+        
+/**
+* @param em a parameter about the persistence of the delivery
+* @return True or False
+*/
         EntityManager em = Persistance.getEntityManager();
         try {
             em.createNamedQuery("Box.searchEmpty")
