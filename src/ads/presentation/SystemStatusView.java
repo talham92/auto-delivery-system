@@ -16,6 +16,7 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 //TODO: remove all System.out.println and put logger.debug, instead!
 /**
+ * This class will get system status and show the status in the window
  *
  * @author mgamell
  */
@@ -41,6 +42,7 @@ public class SystemStatusView extends javax.swing.JPanel {
             public void run() {
                 while(true) {
                     try {
+                        //get System Status from ClientCotroller
 //                        System.out.println("updating");
                         SystemStatus status = controller.getSystemStatus();
 //                        System.out.println(" received "+status.getPosition()+" "+status.isMoving());
@@ -65,7 +67,7 @@ public class SystemStatusView extends javax.swing.JPanel {
                 }
             }
         }).start();
-        
+        //Listens to the tab select changing between "Robot Status" and "Deliveries"
         jTabbedPane1.addChangeListener(new ChangeListener() {
             @Override
             public void stateChanged(ChangeEvent e) {
@@ -85,6 +87,11 @@ public class SystemStatusView extends javax.swing.JPanel {
         });
     }
     
+    /**
+     * draw map into the system status view window
+     * 
+     * @param g object of Graphics
+     */
     private void paintMap(Graphics g)
     {
         // Get the drawing area
@@ -262,7 +269,12 @@ public class SystemStatusView extends javax.swing.JPanel {
         );
     }// </editor-fold>//GEN-END:initComponents
 
-    
+    /**
+     * This method get drawing array from ClientController and draw maps
+     * according to the data of it.
+     * 
+     * @param position 
+     */
     public void drawAction(String position)
     {
         officeDrawingItems=controller.getMapDrawingArray();
@@ -278,6 +290,10 @@ public class SystemStatusView extends javax.swing.JPanel {
         
     }
 
+    /**
+     * this method returns the DeliveryStatus
+     * @return 
+     */
     public DeliveryStatusView getDeliveryStatusView() {
         return deliveryStatusView;
     }
@@ -294,6 +310,11 @@ public class SystemStatusView extends javax.swing.JPanel {
     private javax.swing.JTextField usersInPosition;
     // End of variables declaration//GEN-END:variables
 
+    /**
+     * This method calculate the reduce amount in x coordinate 
+     * 
+     * @return reducer amount
+     */
     private double calculateReducerX() {
         int maxX = 0;
         int minX = 0;
@@ -328,6 +349,11 @@ public class SystemStatusView extends javax.swing.JPanel {
         }
     }
 
+    /**
+     * This method calculate the reduce amount in y coordinates
+     * 
+     * @return reducer amount
+     */
     private double calculateReducerY() {
         int maxY = 0;
         int minY = 0;
@@ -363,6 +389,11 @@ public class SystemStatusView extends javax.swing.JPanel {
     }
 
 
+    /**
+     * This method calculates the starting point of X
+     * 
+     * @return starting point x
+     */
     private int calculateStartX() {
         int maxX = 0;
         int minX = 0;
@@ -394,6 +425,11 @@ public class SystemStatusView extends javax.swing.JPanel {
         return -minX;
     }
 
+    /**
+     * This method calculates the starting point in y coordinate
+     * 
+     * @return 
+     */
     private int calculateStartY() {
         int maxY = 0;
         int minY = 0;

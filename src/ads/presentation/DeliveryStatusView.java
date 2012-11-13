@@ -11,20 +11,27 @@ import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 
 /**
- *
+ * This class can show delivery information one by one and show detailed delivery
+ * information if user clicked one specific delivery history item.
+ * 
  * @author mgamell
  */
 public final class DeliveryStatusView extends javax.swing.JPanel {
     private ClientControllerInterface controller;
     DeliveryStatusView thisDeliveryStatusView;
     /**
-     * Creates new form DeliveryStatusView
+     * Creates new form DeliveryStatusView.
+     * 
+     * @param c parameter used to communicate with ClientController
      */
     public DeliveryStatusView(ClientControllerInterface c) {
         thisDeliveryStatusView = this;
         controller = c;
         initComponents();
+        //clear delivery history that draws formerly
         reset();
+        //listen to mouse click on each delivery item, if one is selected,then
+        //ClientController will call wantsToSeeDeliveryDetails method for details
         deliveriesTable.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -148,12 +155,22 @@ public final class DeliveryStatusView extends javax.swing.JPanel {
     private javax.swing.JTable deliveryDetailsTable;
     // End of variables declaration//GEN-END:variables
 
+    /**
+     * remove Deliveries Table, Delivery Details Table, and hide all items of the
+     * window as a full reset.
+     */
     public void reset() {
         resetDeliveriesTable();
         resetDeliveryDetailsTable();
         hideDeliveryDetails();
     }
 
+    /**
+     * Remove Delivery Tables row by row
+     * <p>
+     * Removing method is done by first obtaining table model, count the number
+     * of rows and then remove them row by row
+     */
     public void resetDeliveriesTable() {
         // Obtain the model for the table
         DefaultTableModel deliveriesTableModel = (DefaultTableModel) deliveriesTable.getModel();
@@ -165,6 +182,12 @@ public final class DeliveryStatusView extends javax.swing.JPanel {
         }
     }
 
+    /**
+     * Remove Delivery Details table row by row
+     * <p>
+     * Removing methods is done by first obtaining table model, count the number
+     * of rows and then remove them row by row
+     */
     public void resetDeliveryDetailsTable() {
         // Obtain the model for the table
         DefaultTableModel deliveryDetailsTableModel = (DefaultTableModel) deliveryDetailsTable.getModel();
@@ -175,19 +198,49 @@ public final class DeliveryStatusView extends javax.swing.JPanel {
             deliveryDetailsTableModel.removeRow(i); 
         }
     }
-
+    
+    /**
+     * Add Delivery information to the table;
+     * <p>
+     * AddDelivery method is done by first obtaing table model, then add one row
+     */
+    /**
+     * Add Delivery information to the table;
+     * <p>
+     * AddDelivery method is done by first obtaing table model, then add one row
+     * 
+     * @param id id of delivery history
+     * @param timestampField timestamp of delivery
+     * @param usernameSender sender's name of the delivery
+     * @param usernameReceiver receiver's name of the delivery
+     * @param priority priority of the delivery
+     */
     public void addDelivery(int id, Timestamp timestampField, String usernameSender, String usernameReceiver, double priority) {
         // Obtain the model for the table
         DefaultTableModel deliveriesTableModel = (DefaultTableModel) deliveriesTable.getModel();
         deliveriesTableModel.addRow(new String[]{Integer.toString(id), timestampField.toString(), usernameSender, usernameReceiver, Double.toString(priority)});
     }
 
+    /**
+     * Add Delivery Details to the table
+     * <p>
+     * Delivery detailed is passed from parameter String[] s 
+     * 
+     * @param s delivery details
+     */
     public void addDeliveryDetail(String[] s) {
         // Obtain the model for the table
         DefaultTableModel deliveryDetailsTableModel = (DefaultTableModel) deliveryDetailsTable.getModel();
         deliveryDetailsTableModel.addRow(s);
     }
 
+    /**
+     * This method shows Delivery details of a specific delivery information
+     * <p>
+     * This is done by setting IDLabel, Label, Talbe, and Scroll Pane as visible
+     * 
+     * @param deliveryId 
+     */
     public void showDeliveryDetails(int deliveryId) {
         deliveryDetailsIDLabel.setText("id = "+deliveryId);
         deliveryDetailsLabel.setVisible(true);
@@ -196,6 +249,11 @@ public final class DeliveryStatusView extends javax.swing.JPanel {
         deliveryDetailsScrollPane.setVisible(true);
     }
 
+    /**
+     * Set DeliveryDetails as invisible
+     * <p>
+     * Removed items include Label, ID, Table, and Scroll Pane 
+     */
     public void hideDeliveryDetails() {
         deliveryDetailsLabel.setVisible(false);
         deliveryDetailsIDLabel.setVisible(false);

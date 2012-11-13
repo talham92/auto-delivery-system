@@ -15,7 +15,12 @@ import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 
 /**
- *
+ * This method implements functions required to book a deliery by user.
+ * <p>
+ * A user can book a delivery by search for name/office, choose one or more
+ * receiver (three at most ) to send packages, then click Confirm button to 
+ * confirm the delivery. The user is also able to delete booking information
+ * 
  * @author MFA, mgamell
  */
 public class BookDeliveryView extends javax.swing.JPanel {
@@ -27,6 +32,9 @@ public class BookDeliveryView extends javax.swing.JPanel {
     public BookDeliveryView(ClientControllerInterface c) {
         initComponents();
         targetList=new HashSet();
+        //add mouse listenr to listen mouse click in resultTable
+        //when double click an item, choose the person(s) in the list
+        //as a receiver
         resultTable.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -268,6 +276,14 @@ public class BookDeliveryView extends javax.swing.JPanel {
         );
     }// </editor-fold>//GEN-END:initComponents
 
+    /**
+     * This method handles with the situation that search button is clicked
+     * <p>
+     * It searches user-office list stored in the server and returns possible 
+     * results.
+     * 
+     * @param evt the event in which search button is clicked 
+     */
     private void searchButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchButtonActionPerformed
         // Obtain the result for the search
         List<String[]> data;
@@ -276,7 +292,7 @@ public class BookDeliveryView extends javax.swing.JPanel {
         // Obtain the model for the table
         DefaultTableModel model = (DefaultTableModel) resultTable.getModel();
 
-        // Remove all rows
+        // Remove all rows to get a clear view
         int rows = model.getRowCount();
         for(int i = rows - 1; i >=0; i--) {
             model.removeRow(i);
@@ -291,13 +307,25 @@ public class BookDeliveryView extends javax.swing.JPanel {
         //jTable2.getSelectionModel().addListSelectionListener(new TableSelectionHandler());
     }//GEN-LAST:event_searchButtonActionPerformed
 
+    /**
+     * This method handles with the situation where "Confirm ALl" button is clicked/
+     * <p>
+     * When "Confirm All" is clicked, it will send all receivers' information 
+     * shown in the list to the server as pending delivereis, so that all 
+     * deliveries will be booked. 
+     * 
+     * @param evt event that ConfirmAllButton is clicked
+     */
     private void confirmAllButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_confirmAllButtonActionPerformed
         List<String> targetUsernames = new ArrayList(targetList.size());
 
         for(String[] target : targetList) {
             targetUsernames.add(target[0]);
         }
-
+        
+        //categorize scenarios into whether the targetlist is empty.
+        //booking lists in the selected items if there are any, and if none is
+        //selected in the table, show message to user.
         if(!targetList.isEmpty()){
             controller.bookDelivery(
                 ((double)Integer.parseInt(jComboBox1.getSelectedItem().toString()))/((double)jComboBox1.getItemCount()),
@@ -317,11 +345,22 @@ public class BookDeliveryView extends javax.swing.JPanel {
         }
     }//GEN-LAST:event_confirmAllButtonActionPerformed
 
+    /**
+     * handles with the scenario that "Clear All" botton is clicked
+     * <p>
+     * When "Clear All" button is clicked, it will remove every row shown in the
+     * selected items window.
+     * 
+     * @param evt the event that "Clear All" button is pressed.
+     * 
+     */
     private void clearAllButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_clearAllButtonActionPerformed
         DefaultTableModel model = (DefaultTableModel) targetTable.getModel();
+        //clear tables shown in the window
         while (model.getRowCount()>0){
             model.removeRow(0);
         }
+        //clear target list
         targetList.clear();
     }//GEN-LAST:event_clearAllButtonActionPerformed
 

@@ -5,10 +5,17 @@
 package ads.presentation;
 
 /**
- *
+ * shows Login window to the user.
+ * <p>
+ * This class functions to show Login window in the screen.It inherits methods
+ * in javax.swing.JFrame to draw panes and buttons and characters into the window.
+ * when certain action is activated, such as clicking "Log in" or "Register",
+ * methods in ClientController will be called for further operation.
+ * 
  * @author mgamell
  */
 public class LoginView extends javax.swing.JFrame {
+    //
     private final ClientControllerInterface controller;
 
     /**
@@ -109,20 +116,44 @@ public class LoginView extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
+   
+    /**
+    * This method handles the case when username pane is activated 
+    * 
+    * @param evt username activation event
+    */
     private void usernameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_usernameActionPerformed
+        //call login method to record username
         controller.login(username.getText(), new String(password.getPassword()), this);
     }//GEN-LAST:event_usernameActionPerformed
-
+    
+    /**
+    * This method handles the case when password pane is activated 
+    * 
+    * @param evt password actication event
+    */
     private void passwordActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_passwordActionPerformed
+        //call login method to record password
         controller.login(username.getText(), new String(password.getPassword()), this);
     }//GEN-LAST:event_passwordActionPerformed
 
+    /**
+     * This method handles the case when login button is pressed.
+     * 
+     * @param evt login button pressed
+     */
     private void loginButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loginButtonActionPerformed
+        //call login method to check username and password.
         controller.login(username.getText(), new String(password.getPassword()), this);
     }//GEN-LAST:event_loginButtonActionPerformed
 
+    /**
+     * This method handles the case when register button is pressed
+     * 
+     * @param evt register button pressed
+     */
     private void registerButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_registerButtonActionPerformed
+        //call wantsToRegister method in order to move th Register View window
         controller.wantsToRegister(this);
     }//GEN-LAST:event_registerButtonActionPerformed
 

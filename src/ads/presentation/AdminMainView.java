@@ -11,6 +11,10 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 /**
+ * This class implements window shown to administrator.
+ * <p>
+ * It contains components to draw the window, and the logic differentiating
+ * when server is initiated or not.
  *
  * @author MFA
  */
@@ -24,6 +28,7 @@ public class AdminMainView extends javax.swing.JFrame {
         controller = c;
         initComponents();
 
+        //Judge whether server has been initialized by administrator
         if(controller.getSystemStatus().isServerInitialized()) {
             setInitializedAppearance();
         } else {
@@ -175,18 +180,41 @@ public class AdminMainView extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    /**
+     * handles with the case when admin press the jButton1
+     * 
+     * @param evt when admin clicked the jbutton1
+     */   
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        //change state to create floor map
         controller.wantsToCreateFloorMap(this);
     }//GEN-LAST:event_jButton1ActionPerformed
 
+    /**
+     * This method handles the situation where administrator would like to 
+     * initiate system with testing data
+     * 
+     * @param evt 
+     */
     private void initTestingDataActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_initTestingDataActionPerformed
         controller.initializeWithTestingData(this);
     }//GEN-LAST:event_initTestingDataActionPerformed
 
+    /**
+     * This method handles with the situation where the admin clicks the 
+     * initialize button and would like to initialize the system
+     * 
+     * @param evt 
+     */
     private void initializeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_initializeActionPerformed
         controller.initializeSystem(this);
     }//GEN-LAST:event_initializeActionPerformed
 
+    /**
+     * go back to log-in window when administrator clicked the Log-out button
+     * 
+     * @param evt event that log-out button is clicked
+     */
     private void logoutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_logoutActionPerformed
         controller.stateNonLoggedIn(this);
     }//GEN-LAST:event_logoutActionPerformed
@@ -205,14 +233,29 @@ public class AdminMainView extends javax.swing.JFrame {
     private javax.swing.JLabel serverStatus;
     // End of variables declaration//GEN-END:variables
 
+    /**
+     * This method sets up the appearance of admin window when server is not 
+     * initialized.
+     * <p>
+     * It will warn the administrator that server is not initiated right now,
+     * and indicate how to initialize it.
+     */
     public void setNonInitializedAppearance() {
         serverStatus.setForeground(Color.RED);
         serverStatus.setText("Server non initialized");
+        //do not show status tab when server is not initiated
         jTabbedPane1.setEnabledAt(jTabbedPane1.indexOfTab("Status"), false);
+        //warn the admin to initialize the server
         jTabbedPane1.setEnabledAt(jTabbedPane1.indexOfTab("Initialize Server"), true);
         jTabbedPane1.setSelectedIndex(jTabbedPane1.indexOfTab("Initialize Server"));
     }
 
+    /**
+     * This method sets up the appearance of admin window when server is initialized.
+     * <p>
+     * It will not show button of "Initialize Server", while the status tab
+     * will be shown
+     */
     public void setInitializedAppearance() {
         serverStatus.setForeground(Color.decode("#347235"));
         serverStatus.setText("Server initialized");

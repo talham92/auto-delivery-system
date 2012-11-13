@@ -5,17 +5,22 @@
 package ads.presentation;
 
 /**
- *
+ * This class contains methods of creating registering window and further
+ * call when certain events is activated
+ * 
  * @author mgamell
  */
 public class RegisterView extends javax.swing.JFrame {
+    //pricate object of class ClientControllerInterface
     private final ClientControllerInterface controller;
 
     /**
-     * Creates new form RegisterView
+     * Creates RegisterView window.
      */
     public RegisterView(ClientControllerInterface c) {
+        //initiate all Components needed to be drawn
         initComponents();
+        //pass the object from ClientController to RegisterView
         controller = c;
     }
 
@@ -196,7 +201,13 @@ public class RegisterView extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    /**
+     * This method responses to the situation when "register" button is pressed
+     * 
+     * @param evt the event pressing register button
+     */
     private void registerButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_registerButtonActionPerformed
+        //call register() method to handle with all registration information 
         controller.register(
                 firstName.getText(),
                 lastName.getText(),
@@ -208,7 +219,13 @@ public class RegisterView extends javax.swing.JFrame {
                 this);
     }//GEN-LAST:event_registerButtonActionPerformed
 
+    /**
+     * This method responses to the situation when user clicked the logout button
+     * 
+     * @param evt the event that user clicked the Logout button
+     */
     private void logoutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_logoutActionPerformed
+        //change state to STATE_NON_LOGGED_IN and show log-in window
         controller.stateNonLoggedIn(this);
     }//GEN-LAST:event_logoutActionPerformed
 
