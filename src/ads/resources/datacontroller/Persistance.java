@@ -44,7 +44,8 @@ public class Persistance {
 */   
     public static void initPersistance() {
         Map<String,String> prop = new HashMap();
-        prop.put("javax.persistence.jdbc.url", "jdbc:mysql://sansor:3306/ads?zeroDateTimeBehavior=convertToNull");
+//todo        prop.put("javax.persistence.jdbc.url", "jdbc:mysql://sansor:3306/ads?zeroDateTimeBehavior=convertToNull");
+                prop.put("javax.persistence.jdbc.url", "jdbc:mysql://localhost:3306/ads?zeroDateTimeBehavior=convertToNull");
         try {
             emf = Persistence.createEntityManagerFactory("adsPU", prop);
             emf.createEntityManager();

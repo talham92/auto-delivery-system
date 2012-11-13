@@ -45,6 +45,7 @@ public class ServerController implements ServerControllerInterface {
     private static final int STATE_SYSTEM_NON_INITIALIZED = 0; 
     private static final int STATE_SYSTEM_INITIALIZED = 1;
     private int state;
+    private static final Logger logger = Logger.getLogger(ServerController.class.getName());
     
 /**
  *  Check whether the system is initialized.
@@ -568,8 +569,11 @@ public class ServerController implements ServerControllerInterface {
     @Override
     public void createLinksBtwOffices() throws ServerInitializedException 
     {
+        logger.info("createLinksBtwOffices 1");
         checkSystemNonInitialized();
+        logger.info("createLinksBtwOffices 2");
         FloorMap.createLinksBtwOffices();
+        logger.info("createLinksBtwOffices 3");
     }
 /**
  * Get the details of delivery

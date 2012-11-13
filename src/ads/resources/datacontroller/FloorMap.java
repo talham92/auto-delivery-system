@@ -169,11 +169,6 @@ public class FloorMap {
 */   
     public static void createLinksBtwOffices()
     {
-/**
-* @param preOfficeAddress a parameter of office address of the previous office
-* @param nextOfficeAddress a parameter of office address of the next office
-*/  
-    
         String preOfficeAddress, nextOfficeAddress;
         Set<Office> result = new HashSet(20);
         
@@ -185,17 +180,20 @@ public class FloorMap {
             ex.printStackTrace();
         }
         for(Office o : results) {
+            logger.info("office! "+o.getOfficeAddress());
             /**
             * Find and link the offices
             * Link preOffice
             */
             preOfficeAddress=o.getPreOfficeAddress();
+            logger.info("office! preofficeaddress "+o.getPreOfficeAddress());
             
             /**
             * if the office is start this is the case
             */
             if(preOfficeAddress!=null)
             {
+                logger.info("office preOfficeAddress is !null "+preOfficeAddress);
                 result.clear();
                 /**
                 * Assuming only one office with this name, this is assured in the map creation process
@@ -208,12 +206,16 @@ public class FloorMap {
 //                    for(Office oy : result) {
 //                        System.out.println(oy.getOfficeAddress());
 //                    }
+                    logger.severe("office preOfficeAddress does not exist ");
                     throw new RuntimeException();
                 }
                 else
                 {
                     Iterator itr=result.iterator();
                     o.setPreOffice((Office) itr.next());
+                    em.getTransaction().begin();
+                    em.persist(o);
+                    em.getTransaction().commit();
                 }
             }
             /**
