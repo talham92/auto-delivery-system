@@ -43,12 +43,16 @@ public class Office implements Serializable {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
 
+    /**
+     *
+     * @return
+     */
     public int getId() {
         return id;
     }
     /**
      * set the id as the input string
-     * @param string id
+     * @param id 
      */
     public void setId(int id) {
         this.id = id;
@@ -72,6 +76,9 @@ public class Office implements Serializable {
     @OneToOne(fetch=FetchType.LAZY, cascade=CascadeType.ALL)
     private Office preOffice;
 
+    /**
+     *
+     */
     public Office(){}
 
     /**
@@ -149,7 +156,7 @@ public class Office implements Serializable {
     }
     /**
      * Set the office address as the input string
-     * @param string officeAddress 
+     * @param officeAddress 
      */
     public void setOfficeAddress(String officeAddress) {
         this.officeAddress = officeAddress;
@@ -163,7 +170,7 @@ public class Office implements Serializable {
     }
     /**
      * Set the next office as the input string
-     * @param string nextOffice 
+     * @param nextOffice 
      */
     public void setNextOffice(Office nextOffice) {
         this.nextOffice = nextOffice;
@@ -177,7 +184,7 @@ public class Office implements Serializable {
     }
     /**
      * Set the previous office as the input string
-     * @param string previousOffice 
+     * @param previousOffice 
      */
     public void setPreviousOffice(Office previousOffice) {
         this.preOffice = previousOffice;
@@ -191,7 +198,7 @@ public class Office implements Serializable {
     }
     /**
      * Set the next office address as the input string
-     * @param string nextOfficeAddress 
+     * @param nextOfficeAddress 
      */
     public void setNextOfficeAddress(String nextOfficeAddress) {
         this.nextOfficeAddress = nextOfficeAddress;
@@ -205,7 +212,7 @@ public class Office implements Serializable {
     }
     /**
      * Set the next office direction as the input string
-     * @param string nextOfficeDir 
+     * @param nextOfficeDir 
      */
     public void setNextOfficeDir(String nextOfficeDir) {
         this.nextOfficeDir = nextOfficeDir;
@@ -219,7 +226,7 @@ public class Office implements Serializable {
     }
     /**
      * Set the next office distance as the input string
-     * @param string nextOfficeDist 
+     * @param nextOfficeDist 
      */
     public void setNextOfficeDist(String nextOfficeDist) {
         this.nextOfficeDist = nextOfficeDist;
@@ -233,7 +240,7 @@ public class Office implements Serializable {
     }
     /**
      * Set the previous office address as the input string
-     * @param string preOfficeAddress 
+     * @param preOfficeAddress 
      */
     public void setPreOfficeAddress(String preOfficeAddress) {
         this.preOfficeAddress = preOfficeAddress;
@@ -247,7 +254,7 @@ public class Office implements Serializable {
     }
     /**
      * Set the previous office direction as the input string
-     * @param string preOfficeDir 
+     * @param preOfficeDir 
      */
     public void setPreOfficeDir(String preOfficeDir) {
         this.preOfficeDir = preOfficeDir;
@@ -275,7 +282,7 @@ public class Office implements Serializable {
     }
     /**
      * Set the previous office as the input string
-     * @param string preOffice 
+     * @param preOffice 
      */
     public void setPreOffice(Office preOffice) {
         this.preOffice = preOffice;

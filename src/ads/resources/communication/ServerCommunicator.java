@@ -64,7 +64,6 @@ public class ServerCommunicator implements RobotStubInterface {
     /**
      * When semaphore acquires and shows logically true, current execution thread
      * release and sleep, else the current execution release
-     * @exception InterruptedException if it's interrupted
      */
     public static void moveRobotToNextPoint() {
         try {
@@ -125,7 +124,6 @@ public class ServerCommunicator implements RobotStubInterface {
     }
     /**
      * Define the event of ringBuzzer
-     * @exception InterruptedException if it's interrupted
      */
     public static void ringBuzzer() {
         try {
@@ -144,7 +142,6 @@ public class ServerCommunicator implements RobotStubInterface {
     }
     /**
      * To judge and if true, show the error of incorrect password
-     * @exception Interrupted Exception if it's interrupted
      */
     public static void showPasswordIncorrectError() {
         try {
@@ -174,7 +171,6 @@ public class ServerCommunicator implements RobotStubInterface {
     }
     /**
      * To judge and if true, show the error of incorrect password
-     * @exception Interrupted Exception if it's interrupted
      */
     public static void showPasswordIncorrectWarning() {
         try {
@@ -203,7 +199,6 @@ public class ServerCommunicator implements RobotStubInterface {
     }
     /**
      * To judge and if true, continue current status
-     * @exception Interrupted Exception if it's interrupted
      */
     public static void showPasswordCorrectMessage() {
         try {
@@ -260,6 +255,11 @@ public class ServerCommunicator implements RobotStubInterface {
         }
     }
 
+    /**
+     *
+     * @return
+     * @throws RemoteException
+     */
     @Override
     public RobotStubStatus getRobotStubStatus() throws RemoteException {
         try {

@@ -69,6 +69,9 @@ public class ADSUser implements Serializable {
     private String password;
     private boolean administrator;
     
+    /**
+     *
+     */
     public ADSUser() {
     }
     /**
@@ -132,7 +135,7 @@ public class ADSUser implements Serializable {
     }
     /**To set the string value of first name to the administrator of ADSuser class
      * 
-     * @param string firstName 
+     * @param firstName 
      */
     public void setFirstName(String firstName) {
         this.firstName = firstName;
@@ -146,7 +149,7 @@ public class ADSUser implements Serializable {
     }
     /**To set the string value of last name to the administrator of ADSuser class
      * 
-     * @param string lastName 
+     * @param lastName 
      */
     public void setLastName(String lastName) {
         this.lastName = lastName;
@@ -160,7 +163,7 @@ public class ADSUser implements Serializable {
     }
     /**To set the string value of email to the administrator of ADSuser class
      * 
-     * @param string email 
+     * @param email 
      */
     public void setEmail(String email) {
         this.email = email;
@@ -174,7 +177,7 @@ public class ADSUser implements Serializable {
     }
     /**
      * set the user name as the input string
-     * @param string username
+     * @param username 
      */
     public void setUsername(String username) {
         this.username = username;
@@ -202,7 +205,7 @@ public class ADSUser implements Serializable {
     }
     /** To set the string value of office to the administrator of ADSuser class
      * 
-     * @param String office 
+     * @param office 
      */
     public void setOffice(Office office) {
         this.office = office;
@@ -216,7 +219,7 @@ public class ADSUser implements Serializable {
     }
     /** To set the boolean value of admin to the administrator of ADSuser class 
      * 
-     * @param boolean admin it judges whether it's administrator or not 
+     * @param admin 
      */
     public void setAdmin(boolean admin) {
         this.administrator = admin;

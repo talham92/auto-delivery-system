@@ -23,6 +23,7 @@ public class AdminMainView extends javax.swing.JFrame {
     
     /**
      * Creates new form AdminMainView
+     * @param c 
      */
     public AdminMainView(ClientControllerInterface c) {
         controller = c;

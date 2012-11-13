@@ -19,16 +19,44 @@ import java.io.Serializable;
 public class RobotStubStatus implements Serializable {
     private static final long serialVersionUID = 11081273897L;
 
+    /**
+     *
+     */
     public boolean isMoving;
 //    public String       movingTarget;
+    /**
+     *
+     */
     public boolean isRequestingPassword;
+    /**
+     *
+     */
     public boolean      isPasswordCorrect;
+    /**
+     *
+     */
     public boolean      isPasswordWarning;
+    /**
+     *
+     */
     public boolean      isPasswordError;
+    /**
+     *
+     */
     public String       passwordUsername;
+    /**
+     *
+     */
     public boolean isBuzzerRinging;
+    /**
+     *
+     */
     public int trayOpen;
 
+    /**
+     *
+     * @param status
+     */
     public RobotStubStatus(RobotStubStatus status) {
         isMoving = status.isMoving;
         isRequestingPassword = status.isRequestingPassword;
@@ -40,6 +68,9 @@ public class RobotStubStatus implements Serializable {
         trayOpen = status.trayOpen;
     }
 
+    /**
+     *
+     */
     public RobotStubStatus() {
         trayOpen = -1;
     }

@@ -38,6 +38,9 @@ public class Delivery implements Serializable {
     private Timestamp timestampField;
     private double priority;
 
+    /**
+     *
+     */
     public Delivery() {
     }
     /**
@@ -63,7 +66,7 @@ public class Delivery implements Serializable {
     }
     /**
      * set the id as the input integer
-     * @param int id 
+     * @param id 
      */
     public void setId(int id) {
         this.id = id;
@@ -77,7 +80,7 @@ public class Delivery implements Serializable {
     }
     /**
      * Set the priority as the input double
-     * @param double priority 
+     * @param priority 
      */
     public void setPriority(double priority) {
         this.priority = priority;
@@ -92,7 +95,7 @@ public class Delivery implements Serializable {
     }
     /**
      * Set the sender as the value of ADSUer sender
-     * @param string sender 
+     * @param sender 
      */
     public void setSender(ADSUser sender) {
         this.sender = sender;
@@ -106,7 +109,7 @@ public class Delivery implements Serializable {
     }
     /**
      * Set the receiver as the value of ADSUer receiver
-     * @param string receiver 
+     * @param receiver 
      */
     public void setReceiver(ADSUser receiver) {
         this.receiver = receiver;
@@ -129,7 +132,6 @@ public class Delivery implements Serializable {
      * Get the value of next user in ADSUer class
      * @return sender, receiver
      * @exception RuntimeException if the delivery is delivered
-     * @exception RuntimeException if the delivery is unidentified
      */
     public ADSUser getNextUser() {
         DeliveryStep state = getCurrentState();

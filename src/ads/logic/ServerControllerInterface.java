@@ -19,7 +19,8 @@ public interface ServerControllerInterface extends Remote {
     /**
     * Create Office object to database
     * @param office The Office object
-    * @throws Remote Exception  If execution of a remote method call
+    * @throws RemoteException 
+    * @throws ServerInitializedException 
     * @throw ServerInitializedException  If the server is initialized 
     * @see FloorMap#createOffice(Office) 
      */
@@ -27,6 +28,7 @@ public interface ServerControllerInterface extends Remote {
       /**
      * Clear Offices
      * @return String showing office is cleared
+     * @throws RemoteException 
      * @throws ServerInitializedException  If the server is initialized 
      * 
      * @see FloorMap#clearOffices() 

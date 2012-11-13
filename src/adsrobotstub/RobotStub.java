@@ -122,6 +122,10 @@ public class RobotStub extends javax.swing.JFrame {
         }
     }
 
+    /**
+     *
+     * @return
+     */
     public SystemStatus getSystemStatus() {
         try {
             return server.getSystemStatus("admin", "admin");
@@ -296,6 +300,10 @@ public class RobotStub extends javax.swing.JFrame {
     private javax.swing.JTextField position;
     // End of variables declaration//GEN-END:variables
 
+    /**
+     *
+     * @return
+     */
     public ArrayList<String[]> getMapDrawingArray() {
         try {
             return server.getMapDrawingArray();
@@ -305,6 +313,10 @@ public class RobotStub extends javax.swing.JFrame {
         }
     }
 
+    /**
+     *
+     * @param position
+     */
     public void drawAction(String position) {
         officeDrawingItems = getMapDrawingArray();
         for (int i = 0; i < officeDrawingItems.size(); i++) {

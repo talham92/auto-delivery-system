@@ -30,6 +30,7 @@ public class SystemStatusView extends javax.swing.JPanel {
 
     /**
      * Creates new form StatusPanel
+     * @param c 
      */
     public SystemStatusView(ClientControllerInterface c) {
         thisView = this;

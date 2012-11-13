@@ -15,28 +15,29 @@ import javax.persistence.NonUniqueResultException;
  *
  * @author mgamell
  */
-
-/** 
-* @class SectionedBox  
-* @a class used to section the box into different segments and allocate these segments to the booked delivery. 
-*/ 
-
+/**
+ * A class used to section the box into different segments and allocate these
+ * segments to the booked delivery.
+ */
 public class SectionedBox {
 
-/**  
-* @SectionedBox deal with the exception in sectioning box. 
-*  
-*/    
-
+    /**
+     * SectionedBox deal with the exception in sectioning box.
+     *
+     * @throws Exception
+     *     
+*/
     public SectionedBox() throws Exception {
         throw new Exception("Don't try to instantiate me");
     }
-    
-/**  
-* @allocateBox is a function of allocating box to the delivery. 
-*  
+
+    /**
+     * allocateBox is a function of allocating box to the delivery.
+     *
+     * @param delivery
+     * @return
+     *     
 */
-    
     public static int allocateBox(Delivery delivery) {
         EntityManager em = Persistance.getEntityManager();
         Box box;
@@ -44,12 +45,12 @@ public class SectionedBox {
             box = (Box) em.createNamedQuery("Box.searchEmpty")
                     .setMaxResults(1)
                     .getSingleResult();
-        } catch(NonUniqueResultException e) {
+        } catch (NonUniqueResultException e) {
             throw e;
-        } catch(NoResultException e) {
+        } catch (NoResultException e) {
             throw e;
         }
-        if(box.getDelivery() != null) {
+        if (box.getDelivery() != null) {
             throw new RuntimeException("Box.searchEmpty returned a box nonempty!");
         }
         em.getTransaction().begin();
@@ -59,17 +60,20 @@ public class SectionedBox {
 //Thread.sleep(10000);
         return box.getId();
     }
-    
-/**  
-* @deallocateBox is a function of deleting the allocated box. 
-*  
+
+    /**
+     * deallocateBox is a function of deleting the allocated box.
+     *
+     * @param delivery
+     * @return
+     *     
 */
     public static int deallocateBox(Delivery delivery) {
         EntityManager em = Persistance.getEntityManager();
         Box box = (Box) em.createNamedQuery("Box.searchDelivery")
                 .setParameter("delivery", delivery)
                 .getSingleResult();
-        if(!box.getDelivery().equals(delivery)) {
+        if (!box.getDelivery().equals(delivery)) {
             throw new RuntimeException("Box.searchDelivery returned a box incorrect!");
         }
         em.getTransaction().begin();
@@ -78,27 +82,24 @@ public class SectionedBox {
         return box.getId();
     }
 
-/**  
-* @ifFull is a function of determining if the box is full. 
-*  
+    /**
+     * ifFull is a function of determining if the box is full.
+     *
+     * @param em a parameter about the persistence of the delivery
+     * @return True or False
+     *     
 */
     public static boolean isFull() {
-        
-/**
-* @param em a parameter about the persistence of the delivery
-* @return True or False
-*/
         EntityManager em = Persistance.getEntityManager();
         try {
             em.createNamedQuery("Box.searchEmpty")
                     .setMaxResults(1)
                     .getSingleResult();
-        } catch(NonUniqueResultException e) {
+        } catch (NonUniqueResultException e) {
             throw e;
-        } catch(NoResultException e) {
+        } catch (NoResultException e) {
             return true;
         }
         return false;
     }
-    
 }

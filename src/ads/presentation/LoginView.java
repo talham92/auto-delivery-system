@@ -20,6 +20,7 @@ public class LoginView extends javax.swing.JFrame {
 
     /**
      * Creates new form Login
+     * @param c 
      */
     public LoginView(ClientControllerInterface c) {
         initComponents();

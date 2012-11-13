@@ -28,6 +28,7 @@ public class BookDeliveryView extends javax.swing.JPanel {
     private ClientControllerInterface controller;
     /**
      * Creates new form BookDeliveryView
+     * @param c 
      */
     public BookDeliveryView(ClientControllerInterface c) {
         initComponents();
