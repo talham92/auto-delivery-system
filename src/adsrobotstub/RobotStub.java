@@ -265,24 +265,24 @@ public class RobotStub extends javax.swing.JFrame {
 
     private void initServerConnection(String host) {
         try {
-            Registry registry = LocateRegistry.getRegistry(host);
+            Registry registry = LocateRegistry.getRegistry();
             server = (ServerControllerInterface) registry.lookup("ServerControllerInterface");
             robotStubServer = (RobotStubInterface) registry.lookup("RobotStubInterface");
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null,
-                    "Unable to connect to remote server. Press OK to try to with local server",
-                    "Register error",
-                    JOptionPane.ERROR_MESSAGE);
+                "Unable to connect to local server. Press OK to try to with remote server",
+                "Register error",
+                JOptionPane.ERROR_MESSAGE);
             // try local repository
             try {
-                Registry registry = LocateRegistry.getRegistry();
+                Registry registry = LocateRegistry.getRegistry(host);
                 server = (ServerControllerInterface) registry.lookup("ServerControllerInterface");
                 robotStubServer = (RobotStubInterface) registry.lookup("RobotStubInterface");
             } catch (Exception e1) {
                 JOptionPane.showMessageDialog(null,
-                        "Unable to connect to local server. Exiting...",
-                        "Register error",
-                        JOptionPane.ERROR_MESSAGE);
+                    "Unable to connect to remote server. Exiting...",
+                    "Register error",
+                    JOptionPane.ERROR_MESSAGE);
                 System.exit(-1);
             }
         }

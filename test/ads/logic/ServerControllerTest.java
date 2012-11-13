@@ -90,12 +90,12 @@ public class ServerControllerTest {
             Registry registry = LocateRegistry.getRegistry(); 
             try {
                 registry.unbind("ServerControllerInterface");
-            } catch (RemoteException | NotBoundException ex) {}
+            } catch (Exception ex) {}
             // Binds a remote reference to the "ServerControllerInterface" in
            // this registry
             registry.bind("ServerControllerInterface", stub);
             System.out.println("Server ready");
-        } catch (RemoteException | AlreadyBoundException e) {
+        } catch (Exception e) {
             System.err.println("Server exception: " + e.toString());
         }
 
