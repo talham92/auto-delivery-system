@@ -1,20 +1,18 @@
 
 package ads.logic;
 
+import ads.resources.communication.ServerCommunicatorReal;
 import ads.resources.communication.ServerCommunicator;
-import ads.presentation.AdminCreateFloorMapView;
 import ads.resources.data.ADSUser;
 import ads.resources.data.Box;
 import ads.resources.data.Delivery;
 import ads.resources.data.DeliveryStep;
 import ads.resources.data.Office;
-import ads.resources.data.RobotPosition;
 import ads.resources.datacontroller.DeliveryHistory;
 import ads.resources.datacontroller.FloorMap;
 import ads.resources.datacontroller.Persistance;
 import ads.resources.datacontroller.RobotPositionAccessor;
 import ads.resources.datacontroller.UserController;
-import com.sun.org.apache.xalan.internal.xsltc.compiler.FlowList;
 import java.rmi.AccessException;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
@@ -22,8 +20,6 @@ import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
@@ -46,6 +42,7 @@ public class ServerController implements ServerControllerInterface {
     private static final int STATE_SYSTEM_INITIALIZED = 1;
     private int state;
     private static final Logger logger = Logger.getLogger(ServerController.class.getName());
+    ServerCommunicator serverCommunicator;
     
 /**
  *  Check whether the system is initialized.
@@ -85,7 +82,8 @@ public class ServerController implements ServerControllerInterface {
         state = STATE_SYSTEM_NON_INITIALIZED;
         Persistance.initPersistance();
         UserController.addAdmin();
-        ServerCommunicator.init();
+        serverCommunicator = new ServerCommunicatorReal();
+        serverCommunicator.init();
     }
     
  /**
@@ -177,6 +175,7 @@ public class ServerController implements ServerControllerInterface {
         insertBigTestingDataSet();
         RobotPositionAccessor.init();
         delCoordinator = DeliveryCoordinator.getInstance();
+        delCoordinator.setServerCommunicator(serverCommunicator);
         state = STATE_SYSTEM_INITIALIZED;
     }
     
@@ -193,6 +192,7 @@ public class ServerController implements ServerControllerInterface {
         // todo: check that we have offices
         RobotPositionAccessor.init();
         delCoordinator = DeliveryCoordinator.getInstance();
+        delCoordinator.setServerCommunicator(serverCommunicator);
         state = STATE_SYSTEM_INITIALIZED;
     }
     /**

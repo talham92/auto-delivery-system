@@ -43,6 +43,6 @@ public class ServerCommunicatorTest {
     @Test
     public void testInit() {
         System.out.println("init");
-        ServerCommunicator.init();
+        //ServerCommunicatorStub.init();
     }
 }

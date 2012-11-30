@@ -26,8 +26,8 @@ public class RobotSocketServer {
     }
     
     // Note: do not access to this 3 variables outside init, sendMessage and waitForResponseMessage!
-    PrintWriter out;
-    BufferedReader in;
+    private PrintWriter out;
+    private BufferedReader in;
     private static Semaphore semaphore;
 
     
@@ -54,7 +54,7 @@ public class RobotSocketServer {
             System.exit(1);
         }
         try {
-            clientSocket.setSoTimeout(15000);
+            clientSocket.setSoTimeout(50000);
         } catch (SocketException ex) {
             Logger.getLogger(RobotSocketServer.class.getName()).log(Level.SEVERE, null, ex);
             System.exit(1);
@@ -105,7 +105,7 @@ public class RobotSocketServer {
                         if(r.startsWith("I am alive")) {
                             System.out.println("Robot is alive!");
                         } else {
-                            System.err.println("Robot is not alive (1)!");
+                            System.err.println("Robot is not alive (1)! Msg received: "+r);
                             System.exit(-1);
                         }
                     } catch (SocketTimeoutException ex) {
@@ -117,7 +117,7 @@ public class RobotSocketServer {
         }).start();
     }
 
-    private String sendMessageAndWaitForResponse(String msg) throws SocketTimeoutException {
+    public String sendMessageAndWaitForResponse(String msg) throws SocketTimeoutException {
         String msgR = null;
         try {
             semaphore.acquire();
@@ -178,4 +178,5 @@ public class RobotSocketServer {
                 break;
         }
         */
+
 }

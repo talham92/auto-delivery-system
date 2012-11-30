@@ -36,6 +36,11 @@ public class DeliveryCoordinator {
     private static DeliveryCoordinator singleton = new DeliveryCoordinator();
     // Thread Object deliveryWaiterThread
     private Thread deliveryWaiterThread; 
+    private ServerCommunicator serverCommunicator;
+    
+    public void setServerCommunicator(ServerCommunicator serverCommunicator) {
+        this.serverCommunicator = serverCommunicator;
+    }
     
  /**
   * Get a object of DeliveryCordinator
@@ -112,6 +117,7 @@ public class DeliveryCoordinator {
         // commit the delivery into database
         em.getTransaction().commit();
     }
+
 /**
  * When a thread belonging to the class DeliveryWaiterThread is run,
  * it will check whether there are pending deliveries, the robot 
@@ -153,7 +159,7 @@ public class DeliveryCoordinator {
                         // The robot is not in the point 0, continue moving.
                         // Move the robot to the next point
                         RobotPositionAccessor.setMoving(true);
-                        ServerCommunicator.moveRobotToNextPoint();
+                        serverCommunicator.moveRobotToNextPoint();
                         // Update the position
                         RobotPositionAccessor.setMoving(false);
                         RobotPositionAccessor.updateRobotPositionToNext();
@@ -163,7 +169,7 @@ public class DeliveryCoordinator {
                     // There are pending deliveries!
                     // Move the robot to the next point
                     RobotPositionAccessor.setMoving(true);
-                    ServerCommunicator.moveRobotToNextPoint();
+                    serverCommunicator.moveRobotToNextPoint();
                     // Update the position
                     RobotPositionAccessor.setMoving(false);
                     RobotPositionAccessor.updateRobotPositionToNext();
@@ -177,13 +183,13 @@ public class DeliveryCoordinator {
                         log.log(Level.INFO, "  mostPrioritaryDelivery in point ... id={0}", delivery.getNextUser().getOffice().getId());
                         log.log(Level.INFO, "  needs to stop!");
                         // The robot needs to stop!
-                        ServerCommunicator.ringBuzzer();
+                        serverCommunicator.ringBuzzer();
                         boolean error = true;
                         // check the password
                         for(int i=0 ; i<3 ; i++) {
                             String password;
                             try {
-                                password = ServerCommunicator.waitForPassword(10, delivery.getNextUser().getUsername());
+                                password = serverCommunicator.waitForPassword(10, delivery.getNextUser().getUsername());
                             } catch(TimeoutException e) {
                                 break;
                             }
@@ -191,12 +197,12 @@ public class DeliveryCoordinator {
                                 error = false;
                                 break;
                             } else {
-                                ServerCommunicator.showPasswordIncorrectWarning();
+                                serverCommunicator.showPasswordIncorrectWarning();
                             }
                         }
                         // if the password is correct, show correct message
                         if (!error) {
-                            ServerCommunicator.showPasswordCorrectMessage();
+                            serverCommunicator.showPasswordCorrectMessage();
                             int trayNum = -1;
                             // check whether the delivery is picked up.
                             if(delivery.isPickedUpNotYetDelivered()) {
@@ -207,12 +213,12 @@ public class DeliveryCoordinator {
                                 throw new RuntimeException("This delivery is picked up and delivered!");
                             }
                             // open a tray
-                            ServerCommunicator.openTray(trayNum);
+                            serverCommunicator.openTray(trayNum);
                             
                             delivery.updateState();
                         } else {
                             // if the password is not correct, show error
-                            ServerCommunicator.showPasswordIncorrectError();
+                            serverCommunicator.showPasswordIncorrectError();
                             //todo: IMPORTANT: add state to the delivery saying 
                             //that this pickup/delivery failed.
                             // todo: assumption: if the password is incorrectly 
