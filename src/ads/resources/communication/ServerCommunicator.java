@@ -28,10 +28,14 @@ public class ServerCommunicator implements RobotStubInterface {
     private static boolean answered;
     private static Semaphore semaphore;
     private static Logger logger = Logger.getLogger(ServerCommunicator.class.getName());
+    private static RobotSocketServer robotSocketServer;
     /**
      * To initialize
      */
     public static void init() {
+        robotSocketServer = new RobotSocketServer();
+
+        
         status = new RobotStubStatus();
         //Aquire a permit from the semaphore, blocking until one is available
         semaphore = new Semaphore(1, true);
