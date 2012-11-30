@@ -15,7 +15,7 @@ import ads.logic.SystemStatus;
 import ads.presentation.AdminCreateFloorMapView;
 import ads.presentation.AdminMainView;
 import ads.presentation.*;
-import ads.resources.communication.ServerCommunicator;
+import ads.resources.communication.ServerCommunicatorStub;
 import ads.resources.data.ADSUser;
 import ads.resources.data.BookedDelivery;
 import ads.resources.data.Box;
@@ -745,7 +745,7 @@ public void testCheckEmail_Correct(){
     @Test
     public void testInit() {
         System.out.println("init");
-        ServerCommunicator.init();
+        //ServerCommunicatorStub.init();
     }
     
     @Test
