@@ -69,25 +69,16 @@ public class RobotSocketServer {
                     try {
                         Thread.sleep(5000);
                     } catch (InterruptedException ex) {}
-
+/*
                     try {
                         sendMessage("alive?");
-                        /*
-                        System.out.println("Checking if robot is alive");
-                        String r = sendMessageAndWaitForResponse("alive?");
-                        if(r.startsWith("I am alive")) {
-                            System.out.println("Robot is alive!");
-                        } else {
-                            System.err.println("Robot is not alive (1)! Msg received: "+r);
-                            System.exit(-1);
-                        }
-                        */
                     } catch (SocketTimeoutException ex) {
                         System.err.println("Robot is not alive (2)!");
                         System.exit(-1);
                     } catch (IOException ex) {
                         Logger.getLogger(RobotSocketServer.class.getName()).log(Level.SEVERE, null, ex);
                     }
+*/
                 }
             }
         }).start();
@@ -111,12 +102,13 @@ public class RobotSocketServer {
         return msgR;
     }
 
-    private void sendMessage(String msg) throws IOException {
+    public void sendMessage(String msg) throws IOException {
         Socket socket = null;
         PrintWriter out = null;
 
         socket = new Socket("192.168.10.102", 10001);
         out = new PrintWriter(socket.getOutputStream(), true);
+        System.out.println("Sending message: "+msg);
         out.println(msg);
         BufferedReader in;
         in = new BufferedReader(
@@ -133,6 +125,10 @@ public class RobotSocketServer {
         in.close();
 	out.close();
 	socket.close();
+
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException ex) {}
     }
 
     private String waitForResponseMessage() throws IOException, SocketTimeoutException {
@@ -156,15 +152,20 @@ public class RobotSocketServer {
         in = new BufferedReader(
                                 new InputStreamReader(
                                 clientSocket.getInputStream()));
-
         String r = in.readLine();
+        System.out.println("Received message: "+r);
         PrintWriter out = new PrintWriter(clientSocket.getOutputStream(), true);
         out.println("OK from server");
+        System.out.println("Sending OK from server");
         in.close();
         out.close();
         clientSocket.close();
-        serverSocket.close();
+//        serverSocket.close();
         
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException ex) {}
+
         return r;
     }
                 
