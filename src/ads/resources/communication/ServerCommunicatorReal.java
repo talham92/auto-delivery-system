@@ -43,7 +43,7 @@ public class ServerCommunicatorReal implements ServerCommunicator {
         
         try {
             // send a message to the robot
-            String response = robotSocketServer.sendMessageAndWaitForResponse("move robot to next point");
+            String response = robotSocketServer.sendMessageAndWaitForResponse(true, "move robot to next point");
             if(!response.equals("next point found")) {
                 System.err.println("moveRobotToNextPoint RECEIVED MESSAGE DIFFERENT THAN \"next point found\": "+response);
                 System.exit(1);
