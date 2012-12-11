@@ -27,8 +27,7 @@ public class RobotSocketServer {
     
     // Note: do not access to this 3 variables outside init, sendMessage and waitForResponseMessage!
     private Semaphore semaphore;
-    private ServerSocket serverSocketSide;
-    private ServerSocket serverSocketMain;
+    private ServerSocket serverSocket;
     
     public RobotSocketServer() {
         init();
@@ -36,8 +35,7 @@ public class RobotSocketServer {
     
     private void init() {
         try {
-            serverSocketMain = new ServerSocket(10000);
-            serverSocketSide = new ServerSocket(9999);
+            serverSocket = new ServerSocket(10000);
         } catch (IOException e) {
             System.err.println("Could not listen on port: 10000.");
             System.exit(1);
@@ -71,36 +69,27 @@ public class RobotSocketServer {
                     try {
                         Thread.sleep(5000);
                     } catch (InterruptedException ex) {}
-
+/*
                     try {
-                        sendMessage(false, "alive?");
-                        /*
-                        System.out.println("Checking if robot is alive");
-                        String r = sendMessageAndWaitForResponse("alive?");
-                        if(r.startsWith("I am alive")) {
-                            System.out.println("Robot is alive!");
-                        } else {
-                            System.err.println("Robot is not alive (1)! Msg received: "+r);
-                            System.exit(-1);
-                        }
-                        */
+                        sendMessage("alive?");
                     } catch (SocketTimeoutException ex) {
                         System.err.println("Robot is not alive (2)!");
                         System.exit(-1);
                     } catch (IOException ex) {
                         Logger.getLogger(RobotSocketServer.class.getName()).log(Level.SEVERE, null, ex);
                     }
+*/
                 }
             }
         }).start();
     }
 
-    public String sendMessageAndWaitForResponse(boolean mainChannel, String msg) throws SocketTimeoutException {
+    public String sendMessageAndWaitForResponse(String msg) throws SocketTimeoutException {
         String msgR = null;
         try {
             semaphore.acquire();
-            sendMessage(mainChannel, msg);
-            msgR = waitForResponseMessage(mainChannel);
+            sendMessage(msg);
+            msgR = waitForResponseMessage();
         } catch (InterruptedException ex) {
             Logger.getLogger(RobotSocketServer.class.getName()).log(Level.SEVERE, null, ex);
         } catch (SocketTimeoutException ex) {
@@ -113,13 +102,13 @@ public class RobotSocketServer {
         return msgR;
     }
 
-    private void sendMessage(boolean mainChannel, String msg) throws IOException {
+    public void sendMessage(String msg) throws IOException {
         Socket socket = null;
         PrintWriter out = null;
-        int port = mainChannel ? 10001 : 10002;
-        socket = new Socket("192.168.10.102", port);
+
+        socket = new Socket("192.168.10.102", 10001);
         out = new PrintWriter(socket.getOutputStream(), true);
-        System.out.println("sendMessage sending message"+msg);
+        System.out.println("Sending message: "+msg);
         out.println(msg);
         BufferedReader in;
         in = new BufferedReader(
@@ -128,7 +117,7 @@ public class RobotSocketServer {
         System.out.println("sendMessage waiting for OK");
         String r = in.readLine();
         if(!r.startsWith("OK from client")) {
-            System.err.println("ERROR: sendMessage did not receive OK from client, received "+r);
+            System.err.println("ERROR: sendMessage did not receive OK from client");
             System.exit(-1);
         } else {
             System.out.println("sendMessage received OK from client");
@@ -136,10 +125,13 @@ public class RobotSocketServer {
         in.close();
 	out.close();
 	socket.close();
+
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException ex) {}
     }
 
-    private String waitForResponseMessage(boolean mainChannel) throws IOException, SocketTimeoutException {
-        ServerSocket serverSocket = mainChannel? serverSocketMain : serverSocketSide;
+    private String waitForResponseMessage() throws IOException, SocketTimeoutException {
         Socket clientSocket = null;
         try {
             clientSocket = serverSocket.accept();
@@ -160,15 +152,20 @@ public class RobotSocketServer {
         in = new BufferedReader(
                                 new InputStreamReader(
                                 clientSocket.getInputStream()));
-
         String r = in.readLine();
+        System.out.println("Received message: "+r);
         PrintWriter out = new PrintWriter(clientSocket.getOutputStream(), true);
         out.println("OK from server");
+        System.out.println("Sending OK from server");
         in.close();
         out.close();
         clientSocket.close();
-        serverSocket.close();
+//        serverSocket.close();
         
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException ex) {}
+
         return r;
     }
                 

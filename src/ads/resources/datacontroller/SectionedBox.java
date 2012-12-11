@@ -58,7 +58,7 @@ public class SectionedBox {
         em.getTransaction().commit();
 //System.out.println("ALLOCATED BOX: "+);
 //Thread.sleep(10000);
-        return box.getId();
+        return box.getBoxId();
     }
 
     /**
@@ -79,7 +79,7 @@ public class SectionedBox {
         em.getTransaction().begin();
         box.setDelivery(null);
         em.getTransaction().commit();
-        return box.getId();
+        return box.getBoxId();
     }
 
     /**

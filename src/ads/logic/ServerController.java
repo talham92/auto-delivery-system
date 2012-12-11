@@ -84,6 +84,31 @@ public class ServerController implements ServerControllerInterface {
         UserController.addAdmin();
         serverCommunicator = new ServerCommunicatorReal();
         serverCommunicator.init();
+
+        try {
+            initializeWithTestingData();
+try {
+//TODO: eliminate
+Thread.sleep(4000);
+} catch (InterruptedException ex) {
+Logger.getLogger(ServerController.class.getName()).log(Level.SEVERE, null, ex);
+}
+List<String> l = new ArrayList<String>();
+l.add("mfa");
+try {
+    bookDelivery("mgamell", "1111", 1, l);
+} catch (RemoteException ex) {
+    Logger.getLogger(ServerController.class.getName()).log(Level.SEVERE, null, ex);
+} catch (NonBookedDeliveryException ex) {
+    Logger.getLogger(ServerController.class.getName()).log(Level.SEVERE, null, ex);
+} catch (ServerNonInitializedException ex) {
+    Logger.getLogger(ServerController.class.getName()).log(Level.SEVERE, null, ex);
+}
+
+
+        } catch (ServerInitializedException ex) {
+            Logger.getLogger(ServerController.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
     
  /**
@@ -247,114 +272,54 @@ public class ServerController implements ServerControllerInterface {
  * Insert testing data.
  * Create some Office, ADSUser and Box objects, and put them in database.
  */
-    private void insertBigTestingDataSet() {
+ private void insertBigTestingDataSet() {
         EntityManager em = Persistance.getEntityManager();
         em.getTransaction().begin();
         // Creating map datas
-        Office os = new Office("start", "y", "-12", "x", "10", (Office)null, null);
-        Office o1 = new Office("602", "x", "10", "x", "7", null, os);
-        Office o2 = new Office("603", "x", "7", "x", "15", null, o1);
-        Office o3 = new Office("604", "x", "5", "x", "10", null, o2);
-        Office o4 = new Office("605", "x", "10", "y", "5", null, o3);
-        Office o5 = new Office("606", "y", "5", "y", "12", null, o4);
-        Office o6 = new Office("607", "y", "12", "x", "-10", null, o5);
-        Office o7 = new Office("608", "x", "-10", "x", "-7", null, o6);
-        Office o8 = new Office("609", "x", "-7", "x", "-15", null, o7);
-        Office o9 = new Office("610", "x", "-15", "x", "-10", null, o8);
-        Office o10 = new Office("611", "x", "-7", "x", "-15", null, o9);
-        Office oe = new Office("end", "x", "-15", "y", "-17", null, o10);
-        os.setPreviousOffice(oe);
+        Office os = new Office("start", "y", "-10", "x", "10", (Office)null, null);
+        Office o1 = new Office("602", "x", "-10", "y", "10", null, os);
+        Office o2 = new Office("603", "y", "-10", "x", "10", null, o1);
+        Office o3 = new Office("604", "x", "-10", "y", "10", null, o2);
+        
+        os.setPreviousOffice(o3);
         os.setNextOffice(o1);
         o1.setNextOffice(o2);
         o2.setNextOffice(o3);
-        o3.setNextOffice(o4);
-        o4.setNextOffice(o5);
-        o5.setNextOffice(o6);
-        o6.setNextOffice(o7);
-        o7.setNextOffice(o8);
-        o8.setNextOffice(o9);
-        o9.setNextOffice(o10);
-        o10.setNextOffice(oe);
-        oe.setNextOffice(os);
+        o3.setNextOffice(os);
 
         em.merge(os);
         em.merge(o1);
         em.merge(o2);
         em.merge(o3);
-        em.merge(o4);
-        em.merge(o5);
-        em.merge(o6);
-        em.merge(o7);
-        em.merge(o8);
-        em.merge(o9);
-        em.merge(o10);
-        em.merge(oe);
         // Creating the users
         ADSUser u = new ADSUser("Admin", "istrator", o1, "a@a.c", "admin", "admin");
         u.setAdmin(true);
         em.merge(u);
         //Add some additional users for test purposes
         // Users for o1: 602
-        u = new ADSUser("yi", "zhao", o1, "yz336@rutgers.edu", "yz", "1111");
+        u = new ADSUser("ivan", "marsic", o1, "marsic@ece.rutgers.edu", "ivanmarsic", "1111");
         em.merge(u);
-        u = new ADSUser("yanze", "zhang", o1, "yanze.zhang@rutgers.edu", "yanzez", "1111");
+		u = new ADSUser("marc", "gamell", o2, "marc.gamell@rutgers.edu", "mgamell", "1111");
         em.merge(u);
         // Users for o2: 603
-        u = new ADSUser("daihou", "wang", o2, "daihou.wang@rutgers.edu", "dw", "1111");
-        em.merge(u);
+        u = new ADSUser("mehmet", "aktas", o2, "mfatihaktas@gmail.com", "mfa", "1111");
+        em.merge(u);        
         u = new ADSUser("anu", "tom", o2, "anuliz.tom@rutgers.edu", "at", "1111");
         em.merge(u);
-        u = new ADSUser("siddhesh", "surve", o2, "siddhesh.surve@rutgers.edu", "ss", "1111");
+        u = new ADSUser("siddhesh", "surve", o3, "siddhesh.surve@rutgers.edu", "ss", "1111");
         em.merge(u);
         // Users for o3: 604
         u = new ADSUser("jagbir", "singh", o3, "jagbir.singh@rutgers.edu", "js", "1111");
         em.merge(u);
         u = new ADSUser("swapnil", "sarode", o3, "swapnil.sarode@rutgers.edu", "swapnils", "1111");
         em.merge(u);
-        // Users for o4: 605
-        u = new ADSUser("brien", "range", o4, "brien.range@rutgers.edu", "br", "1111");
-        em.merge(u);
-        u = new ADSUser("vinayak", "pothineni", o4, "vinayak.pothineni@rutgers.edu", "vp", "1111");
-        em.merge(u);
-        u = new ADSUser("prasoon", "mishra", o4, "prasoon.mishra@rutgers.edu", "pp", "1111");
-        em.merge(u);
-        u = new ADSUser("zhongzhou", "li", o4, "vinayak.pothineni@rutgers.edu", "zv", "1111");
-        em.merge(u);
-        // Users for o5: 606
-        u = new ADSUser("ivan", "marsic", o5, "marsic@ece.rutgers.edu", "ivanmarsic", "1111");
-        em.merge(u);
-        // Users for o6: 607
-        u = new ADSUser("kevin", "kobilinski", o6, "kobi@eden.rutgers.edu", "kk", "1111");
-        em.merge(u);
-        u = new ADSUser("abdul", "abdul", o6, "abdul@eden.rutgers.edu", "ah", "1111");
-        em.merge(u);
-        u = new ADSUser("chao", "han", o6, "ch577@eden.rutgers.edu", "hc", "1111");
-        em.merge(u);
-        u = new ADSUser("yao", "ge", o6, "yaoge@eden.rutgers.edu", "yg", "1111");
-        em.merge(u);
-        // Users for o7: 608
-        u = new ADSUser("li", "liu", o7, "li.liu4016@rutgers.edu", "ll", "1111");
-        em.merge(u);
-        // Users for o8: 609
-        u = new ADSUser("junwei", "zhao", o8, "junwei.zhao@rutgers.edu", "jz", "1111");
-        em.merge(u);
-        u = new ADSUser("xu", "bingbing", o8, "bingbing.xu@rutgers.edu", "bz", "1111");
-        em.merge(u);
-        // Users for o9: 610
-        u = new ADSUser("anusha", "vutukuri", o9, "anusha.vutukuri@rutgers.edu", "av", "1111");
-        em.merge(u);
-        u = new ADSUser("mehmet", "aktas", o9, "mfatihaktas@gmail.com", "mfa", "1111");
-        em.merge(u);        
-        // Users for o10: 611
-        u = new ADSUser("marc", "gamell", o10, "marc.gamell@rutgers.edu", "mgamell", "a");
-        em.merge(u);
         // Create some Box object fot test purposes
         Box b;
-        b = new Box();
+        b = new Box(1);
         em.merge(b);
-        b = new Box();
+        b = new Box(2);
         em.merge(b);
-        b = new Box();
+        b = new Box(3);
         em.merge(b);
         
         em.getTransaction().commit();
