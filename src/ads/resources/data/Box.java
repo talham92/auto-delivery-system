@@ -36,6 +36,16 @@ public class Box implements Serializable {
     private int id;
     @OneToOne
     private Delivery delivery;
+    private int boxId;
+
+    public Box(int boxId) {
+        this.boxId = boxId;
+    }
+
+    public Box() {
+    }
+
+
     /**
      * To get the integer value as id
      * @return int id
@@ -50,6 +60,15 @@ public class Box implements Serializable {
     public void setId(int id) {
         this.id = id;
     }
+
+    public int getBoxId() {
+        return boxId;
+    }
+
+    public void setBoxId(int boxId) {
+        this.boxId = boxId;
+    }
+    
     /**
      * To get the delivery as in Delivery
      * @return delivery
