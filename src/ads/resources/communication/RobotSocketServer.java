@@ -115,12 +115,17 @@ public class RobotSocketServer {
                                 new InputStreamReader(
                                 socket.getInputStream()));
         System.out.println("sendMessage waiting for OK");
-        String r = in.readLine();
-        if(!r.startsWith("OK from client")) {
-            System.err.println("ERROR: sendMessage did not receive OK from client");
-            System.exit(-1);
-        } else {
-            System.out.println("sendMessage received OK from client");
+        try {
+            String r = in.readLine();
+            if(!r.startsWith("OK from client")) {
+                System.err.println("ERROR: sendMessage did not receive OK from client");
+                System.exit(-1);
+            } else {
+                System.out.println("sendMessage received OK from client");
+            }
+        } catch(SocketException e) {
+            System.out.println("RobotSocketServer.sendMessage (wait for OK) Exception caught: ");
+            e.printStackTrace();
         }
         in.close();
 	out.close();
@@ -152,7 +157,13 @@ public class RobotSocketServer {
         in = new BufferedReader(
                                 new InputStreamReader(
                                 clientSocket.getInputStream()));
-        String r = in.readLine();
+        String r = "";
+        try {
+             r = in.readLine();
+        } catch (SocketException e) {
+            System.out.println("RobotSocketServer.waitForResponseMessage (wait for message) Exception caught: ");
+            e.printStackTrace();
+        }
         System.out.println("Received message: "+r);
         PrintWriter out = new PrintWriter(clientSocket.getOutputStream(), true);
         out.println("OK from server");
