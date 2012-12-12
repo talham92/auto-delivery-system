@@ -95,7 +95,7 @@ Thread.sleep(4000);
 Logger.getLogger(ServerController.class.getName()).log(Level.SEVERE, null, ex);
 }
 List<String> l = new ArrayList<String>();
-l.add("mfa");
+l.add("twang");
 try {
     bookDelivery("mgamell", "1111", 1, l);
 } catch (RemoteException ex) {
@@ -277,10 +277,10 @@ try {
         EntityManager em = Persistance.getEntityManager();
         em.getTransaction().begin();
         // Creating map datas
-        Office os = new Office("start", "y", "-10", "x", "10", (Office)null, null);
+        Office os = new Office("start", "y", "10", "x", "10", (Office)null, null);
         Office o1 = new Office("602", "x", "-10", "y", "10", null, os);
-        Office o2 = new Office("603", "y", "-10", "x", "10", null, o1);
-        Office o3 = new Office("604", "x", "-10", "y", "10", null, o2);
+        Office o2 = new Office("603", "y", "-10", "x", "-10", null, o1);
+        Office o3 = new Office("604", "x", "10", "y", "-10", null, o2);
         
         os.setPreviousOffice(o3);
         os.setNextOffice(o1);
@@ -293,26 +293,31 @@ try {
         em.merge(o2);
         em.merge(o3);
         // Creating the users
-        ADSUser u = new ADSUser("Admin", "istrator", o1, "a@a.c", "admin", "admin");
+        ADSUser u = new ADSUser("Admin", "istrator", os, "a@a.c", "admin", "admin");
         u.setAdmin(true);
         em.merge(u);
         //Add some additional users for test purposes
         // Users for o1: 602
         u = new ADSUser("ivan", "marsic", o1, "marsic@ece.rutgers.edu", "ivanmarsic", "1111");
         em.merge(u);
-		u = new ADSUser("marc", "gamell", o2, "marc.gamell@rutgers.edu", "mgamell", "1111");
+
+        u = new ADSUser("marc", "gamell", o2, "marc.gamell@rutgers.edu", "mgamell", "1111");
         em.merge(u);
-        // Users for o2: 603
         u = new ADSUser("mehmet", "aktas", o2, "mfatihaktas@gmail.com", "mfa", "1111");
         em.merge(u);        
+        // Users for o2: 603
         u = new ADSUser("anu", "tom", o2, "anuliz.tom@rutgers.edu", "at", "1111");
         em.merge(u);
-        u = new ADSUser("siddhesh", "surve", o3, "siddhesh.surve@rutgers.edu", "ss", "1111");
+        u = new ADSUser("siddhesh", "surve", o2, "siddhesh.surve@rutgers.edu", "ss", "1111");
         em.merge(u);
         // Users for o3: 604
         u = new ADSUser("jagbir", "singh", o3, "jagbir.singh@rutgers.edu", "js", "1111");
         em.merge(u);
         u = new ADSUser("swapnil", "sarode", o3, "swapnil.sarode@rutgers.edu", "swapnils", "1111");
+        em.merge(u);
+        u = new ADSUser("tuo", "wang", o3, "tuowang1989@hotmail.com", "twang", "1111");
+        em.merge(u);
+        u = new ADSUser("qiannan", "li", o3, "qiannanli@hotmail.com", "qli", "1111");
         em.merge(u);
         // Create some Box object fot test purposes
         Box b;
@@ -418,11 +423,7 @@ try {
         if(this.checkLogin(username, password)==UserController.userNotCorrect) {
             return;
         }
-        try {
-            delCoordinator.bookDelivery(urgency, targetListUsernames, username);
-        } catch (MessagingException ex) {
-            Logger.getLogger(ServerController.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        delCoordinator.bookDelivery(urgency, targetListUsernames, username);
     }
 /**
  * Get system status, including where is the robot and whether it is 

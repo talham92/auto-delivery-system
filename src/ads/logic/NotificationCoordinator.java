@@ -14,7 +14,7 @@ public class NotificationCoordinator {
 
     public NotificationCoordinator() {
     }
-    public static void notifyReceiver_DeliveryBooked(String receiverName, String receiverAddress, String bookingDateAndTime) throws MessagingException
+    public static void notifyReceiver_DeliveryBooked(String receiverName, String receiverAddress, String bookingDateAndTime)
     {
         String subject="You have a delivery booked !";
         String messageText="Hi "+receiverName+"\nYou have a delivery booked at time "
@@ -22,7 +22,7 @@ public class NotificationCoordinator {
         
         new Email().send(receiverAddress, subject, messageText, null);
     }
-    public static void notifySender_DeliveryDelivered(String senderName, String senderAddress, String bookingDateAndTime) throws MessagingException
+    public static void notifySender_DeliveryDelivered(String senderName, String senderAddress, String bookingDateAndTime)
     {
         String subject="Your delivery is booked !";
         String messageText="Hi "+senderName+"\nYour delivery which are booked at "
