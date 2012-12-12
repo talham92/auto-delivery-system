@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.mail.MessagingException;
 import javax.persistence.EntityManager;
 
 /**
@@ -417,8 +418,11 @@ try {
         if(this.checkLogin(username, password)==UserController.userNotCorrect) {
             return;
         }
-
-        delCoordinator.bookDelivery(urgency, targetListUsernames, username);
+        try {
+            delCoordinator.bookDelivery(urgency, targetListUsernames, username);
+        } catch (MessagingException ex) {
+            Logger.getLogger(ServerController.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 /**
  * Get system status, including where is the robot and whether it is 

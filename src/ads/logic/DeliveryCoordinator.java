@@ -15,9 +15,13 @@ import ads.resources.datacontroller.RobotPositionAccessor;
 import ads.resources.datacontroller.SectionedBox;
 import ads.resources.datacontroller.UserController;
 import java.sql.Timestamp;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.mail.MessagingException;
 import javax.persistence.EntityManager;
 
 /**
@@ -74,7 +78,7 @@ public class DeliveryCoordinator {
  * number is not correct
  */
     public void bookDelivery(double priority, List<String> targetListUsername, String username)
-    throws NonBookedDeliveryException
+    throws NonBookedDeliveryException, MessagingException
     {
         EntityManager em = Persistance.getEntityManager();
         ADSUser sender = null;
@@ -112,7 +116,10 @@ public class DeliveryCoordinator {
             DeliveryStep state = new BookedDelivery((Timestamp)timestampField.clone(), newDel);
             em.merge(newDel);
             em.merge(state);
-
+            //Notify the receiver about the booked deliveries
+            DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+            NotificationCoordinator.notifyReceiver_DeliveryBooked((receiver.getFirstName()+" "+receiver.getLastName()),
+                                                                  receiver.getEmail(), dateFormat.format(date));
         }
         // commit the delivery into database
         em.getTransaction().commit();
@@ -174,7 +181,7 @@ public class DeliveryCoordinator {
                     RobotPositionAccessor.setMoving(false);
                     RobotPositionAccessor.updateRobotPositionToNext();
                     // Get Most prioritary delivery.
-                    log.log(Level.INFO, " robot in point ... id={0}", RobotPositionAccessor.getRobotPosition().getId());
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  log.log(Level.INFO, " robot in point ... id={0}", RobotPositionAccessor.getRobotPosition().getId());
                     // Check if the robot needs to stop at that position or it
                     // needs to continue to the next one
                     for(Delivery delivery = DeliveryHistory.getMostPrioritaryDelivery(); (delivery != null) && delivery.getNextUser().getOffice().equals(RobotPositionAccessor.getRobotPosition())
@@ -207,6 +214,17 @@ public class DeliveryCoordinator {
                             // check whether the delivery is picked up.
                             if(delivery.isPickedUpNotYetDelivered()) {
                                 trayNum = SectionedBox.deallocateBox(delivery);
+                                //That means the delivery is successfully delivered !
+                                String senderFullName=delivery.getSender().getFirstName()+" "+delivery.getSender().getLastName();
+                                try {
+                                    Date date=(Date)(delivery.getTimestampField());
+                                    DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+                                    System.out.println(dateFormat.format(date));
+                                    NotificationCoordinator.notifySender_DeliveryDelivered(senderFullName, 
+                                                                                            delivery.getSender().getEmail(),dateFormat.format(date));
+                                } catch (MessagingException ex) {
+                                    Logger.getLogger(DeliveryCoordinator.class.getName()).log(Level.SEVERE, null, ex);
+                                }
                             } else if (delivery.isBookedNotYetPickedUp()) {
                                 trayNum = SectionedBox.allocateBox(delivery);
                             } else {
