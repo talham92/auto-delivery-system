@@ -78,7 +78,7 @@ public class DeliveryCoordinator {
  * number is not correct
  */
     public void bookDelivery(double priority, List<String> targetListUsername, String username)
-    throws NonBookedDeliveryException, MessagingException
+    throws NonBookedDeliveryException
     {
         EntityManager em = Persistance.getEntityManager();
         ADSUser sender = null;
@@ -216,15 +216,11 @@ public class DeliveryCoordinator {
                                 trayNum = SectionedBox.deallocateBox(delivery);
                                 //That means the delivery is successfully delivered !
                                 String senderFullName=delivery.getSender().getFirstName()+" "+delivery.getSender().getLastName();
-                                try {
-                                    Date date=(Date)(delivery.getTimestampField());
-                                    DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
-                                    System.out.println(dateFormat.format(date));
-                                    NotificationCoordinator.notifySender_DeliveryDelivered(senderFullName, 
-                                                                                            delivery.getSender().getEmail(),dateFormat.format(date));
-                                } catch (MessagingException ex) {
-                                    Logger.getLogger(DeliveryCoordinator.class.getName()).log(Level.SEVERE, null, ex);
-                                }
+                                Date date=(Date)(delivery.getTimestampField());
+                                DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+                                System.out.println(dateFormat.format(date));
+                                NotificationCoordinator.notifySender_DeliveryDelivered(senderFullName, 
+                                                                                        delivery.getSender().getEmail(),dateFormat.format(date));
                             } else if (delivery.isBookedNotYetPickedUp()) {
                                 trayNum = SectionedBox.allocateBox(delivery);
                             } else {
