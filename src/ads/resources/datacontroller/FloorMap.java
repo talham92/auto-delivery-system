@@ -296,7 +296,7 @@ public class FloorMap {
             ts[4] = so.getPreOfficeDist();
             r.add(ts);
 
-            if (so.getOfficeAddress().equals("end")) {
+            if (so.getNextOffice().getOfficeAddress().equals("start")) {
                 break;
             }
             so = so.getNextOffice();
