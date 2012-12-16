@@ -277,11 +277,25 @@ try {
         EntityManager em = Persistance.getEntityManager();
         em.getTransaction().begin();
         // Creating map datas
-        Office os = new Office("start", "y", "10", "x", "10", (Office)null, null);
-        Office o1 = new Office("602", "x", "-10", "y", "10", null, os);
-        Office o2 = new Office("603", "y", "-10", "x", "-10", null, o1);
-        Office o3 = new Office("604", "x", "10", "y", "-10", null, o2);
-        
+        Office os = new Office("start", "y", "-10", "x", "10", (Office)null, null);
+        Office o1 = new Office("602", "x", "10", "y", "10", null, os);
+        Office o2 = new Office("603", "y", "10", "x", "-10", null, o1);
+        Office o3 = new Office("604", "x", "-10", "y", "-10", null, o2);
+
+/*
+        Office os = new Office("start", "y", "-12", "x", "10", (Office)null, null);
+        Office o1 = new Office("602", "x", "10", "x", "7", null, os);
+        Office o2 = new Office("603", "x", "7", "x", "15", null, o1);
+        Office o3 = new Office("604", "x", "5", "x", "10", null, o2);
+        Office o4 = new Office("605", "x", "10", "y", "5", null, o3);
+        Office o5 = new Office("606", "y", "5", "y", "12", null, o4);
+        Office o6 = new Office("607", "y", "12", "x", "-10", null, o5);
+        Office o7 = new Office("608", "x", "-10", "x", "-7", null, o6);
+        Office o8 = new Office("609", "x", "-7", "x", "-15", null, o7);
+        Office o9 = new Office("610", "x", "-15", "x", "-10", null, o8);
+        Office o10 = new Office("611", "x", "-7", "x", "-15", null, o9);
+        Office oe = new Office("end", "x", "-15", "y", "-17", null, o10);
+*/
         os.setPreviousOffice(o3);
         os.setNextOffice(o1);
         o1.setNextOffice(o2);
